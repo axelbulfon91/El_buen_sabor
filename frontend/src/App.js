@@ -12,6 +12,9 @@ import UserLogin from './components/Componentes-Cliente/UserLogin';
 import LoginAdmin from './components/Componentes-Admin/LoginAdmin';
 import UserRegister from './components/Componentes-Cliente/UserRegister';
 import InfoNegocio from './components/Componentes-Admin/InfoNegocio';
+import MainCajero from './components/Componentes-Cajero/MainCajero';
+
+
 function App() {
 
   return (
@@ -34,6 +37,10 @@ function App() {
               <Route exact path="/admin/crearProducto" component={CrearProducto}></Route>              
               <Route exact path="/admin/editarProducto/:id" component={CrearProducto}></Route>
               <Route exact path="/admin/crearCategoria" component={CrearCategoria}></Route>
+            
+              <Route exact path="/cajero" component={MainCajero}></Route>
+              <Route exact path="/cajero/:id" component={MainCajero}></Route>
+                        
             </div>      
        
       </Router>

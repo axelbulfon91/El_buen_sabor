@@ -40,6 +40,7 @@ app.use(passport.session());
 app.use('/api/usuarios', require('./routes/usuarios'));
 app.use('/api/productos', require('./routes/productos'));
 app.use('/api/categorias', require('./routes/categories'));
+app.use('/api/pedidos', require('./routes/pedido'));
 
 //Archivos estaticos
 app.use(express.static(path.join(__dirname, 'public')));
