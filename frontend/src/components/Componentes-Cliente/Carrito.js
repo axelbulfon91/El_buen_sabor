@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react'
 import { Link } from 'react-router-dom';
 import { Table, Image, Button } from 'react-bootstrap';
 import store from '../../store';
+import axios from 'axios';
 
 class Carrito extends PureComponent {
     constructor(props) {
@@ -44,6 +45,29 @@ class Carrito extends PureComponent {
         this.setState({
             tipoEntrega : e.target.value
         })       
+    }
+
+    realizarPedido = async ()=>{
+        console.log(this.state.carrito)
+        const pedido = {
+            'productosPedidos': this.state.carrito,
+            'id_usuario': 1,            //Uso el id de usuario 1 para realizar el pedido (Falta identificacion por JWT)
+            'estado': 'Creado'
+        }
+        console.log(pedido)
+        const res = await axios.post('http://localhost:4000/api/pedidos', pedido );
+        
+        if(res.data.respuesta === "OK"){
+            alert("Pedido realizado correctamente")
+            store.dispatch({
+                type: 'VACIAR_CARRITO'
+            })
+            window.sessionStorage.setItem('carrito', JSON.stringify(store.getState().carrito))
+            window.location.href = "/"            
+        }else{
+            alert("Error al realizar el pedido")
+        }
+
     }
 
 
@@ -151,7 +175,7 @@ class Carrito extends PureComponent {
 
                     <tr>
                         <td colSpan={6} className="text-center mt-5">
-                            {carrito.length !== 0 ? <button className="btn btn-lg btn-success">PEDIR</button>
+                            {carrito.length !== 0 ? <button className="btn btn-lg btn-success" onClick={this.realizarPedido}>PEDIR</button>
                             : <button disabled className="btn btn-lg btn-success">PEDIR</button>
                             }                            
                         </td>                        

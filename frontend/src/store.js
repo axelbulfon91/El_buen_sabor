@@ -16,6 +16,13 @@ const reductor = (state, action) => {
                 carrito: state.carrito.filter(pro => pro.product.id !== action.producto.product.id)
             }
             
+        }else if(action.type === 'VACIAR_CARRITO'){
+
+            return {
+                ...state,
+                carrito: []
+            }
+            
         }else{
             return state;
         }   
