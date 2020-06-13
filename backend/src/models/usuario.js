@@ -1,40 +1,38 @@
-module.exports = (sequelize, type) => {
+const Sequelize = require('sequelize')
+const sequelize = require('../database');
 
-    return sequelize.define('Usuario', {
+const userModel = sequelize.define('Usuario', {
 
-        nombre: {
-            type: type.STRING,            
-            
-        },        
-        
-        email: {
-            type: type.STRING,
-            allowNull: true            
-        },
+    nombre: {
+        type: Sequelize.STRING,
 
-        esAdmin: {
-            type: type.BOOLEAN,                        
-        },
+    },
+    email: {
+        type: Sequelize.STRING,
+        allowNull: true
+    },
 
-        password: {
-            type: type.STRING
-        },
+    esAdmin: {
+        type: Sequelize.BOOLEAN,
+    },
 
-        provider: {
-            type: type.STRING
-        },
+    password: {
+        type: Sequelize.STRING
+    },
 
-        providerId: {
-            type: type.STRING
-        },
+    provider: {
+        type: Sequelize.STRING
+    },
 
+    providerId: {
+        type: Sequelize.STRING
+    },
 
+}, {
+    timestamps: true,
+    underscored: true
+});
 
-    }, {
-        timestamps: true,
-        underscored: true
-    });
-
-}
+module.exports = userModel;
 
 

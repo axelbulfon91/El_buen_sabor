@@ -1,23 +1,24 @@
-module.exports = (sequelize, type) => {
+const Sequelize = require('sequelize')
+const sequelize = require('../database');
 
-    return sequelize.define('Detalle_Venta', {
-        
-        id_venta: {
-            type: type.INTEGER,
-            allowNull: false
-        },
-        id_producto: {
-            type: type.INTEGER,
-            allowNull: false
-        },
-        cantidad: {
-            type: type.DOUBLE,
-            allowNull: false
-        }
+const detalle_venta_model = sequelize.define('Detalle_Venta', {
 
-    }, {
-        timestamps: true,
-        underscored: true
-    });
+    id_venta: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    id_producto: {
+        type: Sequelize.INTEGER,
+        allowNull: false
+    },
+    cantidad: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
+    }
 
-}
+}, {
+    timestamps: true,
+    underscored: true
+});
+
+module.exports = detalle_venta_model;
