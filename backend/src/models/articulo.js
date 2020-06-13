@@ -7,12 +7,7 @@ const articuloModel = sequelize.define('Articulo', {
         type: Sequelize.STRING,
         allowNull: false
     },
-
-    costoPorUnidad: {
-        type: Sequelize.DOUBLE,
-        allowNull: false
-    },
-
+    
     nombreImg: {
         type: Sequelize.STRING
     },

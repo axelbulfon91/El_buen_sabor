@@ -1,21 +1,23 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
+
 const userModel = sequelize.define('Usuario', {
 
     nombre: {
         type: Sequelize.STRING,
-
     },
     email: {
         type: Sequelize.STRING,
         allowNull: true
     },
-
-    esAdmin: {
-        type: Sequelize.BOOLEAN,
+    telefono: {
+        type: Sequelize.STRING,
+        allowNull: false
     },
-
+    rol: {
+        type: Sequelize.STRING,
+    },
     password: {
         type: Sequelize.STRING
     },

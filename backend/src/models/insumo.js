@@ -3,10 +3,7 @@ const sequelize = require('../database');
 
 const insumoModel = sequelize.define('insumo', {
 
-    precioCompra: {
-        type: Sequelize.DOUBLE,
-        allowNull: false
-    }
+
 },
     {
         timestamps: true,

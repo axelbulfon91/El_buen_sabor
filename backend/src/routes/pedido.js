@@ -1,9 +1,9 @@
 const { Router } = require('express');
 const router = Router();
-const { ventaModel } = require('../database');
-const { detalle_venta_model } = require('../database');
-const { productModel } = require('../database');
-const { userModel } = require('../database');
+const  ventaModel  = require('../models/venta');
+const  detalle_venta_model  = require('../models/detalle_venta');
+const  elaboradoModel = require('../models/elaborado');
+const  userModel  = require('../models/usuario');
 
 
 
@@ -40,7 +40,8 @@ router.get('/', async (req, res) => {
             model: detalle_venta_model,
             attributes: ['cantidad'],
             include: [{
-                model: productModel,
+                model: elaboradoModel
+,
                 attributes: ['id','nombre', 'precio']
             }]                        
         },{
@@ -70,7 +71,8 @@ router.get('/:id', async (req, res) => {
                 id_venta: venta.id
             },        
             include: [{
-                model: productModel,
+                model: elaboradoModel
+,
                 attributes: ['id', 'nombre', 'precio']
             }]
         });

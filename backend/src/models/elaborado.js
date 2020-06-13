@@ -25,9 +25,6 @@ const elaboradoModel = sequelize.define('elaborado', {
     esCatalogo: {
         type: Sequelize.BOOLEAN
     },
-    esOferta: {
-        type: Sequelize.BOOLEAN
-    }
 
 }, {
     timestamps: true,

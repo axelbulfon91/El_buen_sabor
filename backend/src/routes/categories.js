@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const { categorieModel } = require('../database');
+const  categorieModel  = require('../models/categorie');
 
 router.get('/', async (req, res) => {
     const categories = await categorieModel.findAll();
@@ -8,27 +8,14 @@ router.get('/', async (req, res) => {
 });
 
 router.post('/', async (req, res) => {
-
     await categorieModel.create({
-
-        nombre: req.body.nombre
-
+        nombre: req.body.nombre,
+        tipo: req.body.tipo
     });
-
     res.redirect('/');
-
 });
 
 router.delete('/:id', async (req, res) => {
-
-    const categorie = await categorieModel.findOne(
-        {
-            where: {
-                id: req.params.id
-            }
-        }
-    );
-
     const catEliminada = await categorieModel.destroy(
         {
             where: {
@@ -36,13 +23,11 @@ router.delete('/:id', async (req, res) => {
             }
         }
     );
-
     if (catEliminada === 0) {
         res.json("Categoria no encontrada");
     } else {
         res.send('/');
     }
-
 });
 
 //---------------------------------------------------------------Ver si hace falta
