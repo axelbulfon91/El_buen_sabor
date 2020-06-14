@@ -59,7 +59,7 @@ router.get('/', async (req, res) => {
         attributes: ['id'],
         include: [{
             model: articuloModel,
-            attributes: ['nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
+            attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
                 attributes: ['id', 'nombre']
@@ -88,7 +88,7 @@ router.get('/:id', async (req, res) => {
         attributes: ['id'],
         include: [{
             model: articuloModel,
-            attributes: ['nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
+            attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
                 attributes: ['id', 'nombre']

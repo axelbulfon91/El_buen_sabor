@@ -8,8 +8,9 @@ const insumoModel = require('./models/insumo');
 const detalle_venta_model = require('./models/detalle_venta');
 const semielaboradoModel = require('./models/semielaborado');
 const detalle_semielaboradoModel = require('./models/detalle_semielaborado');
-const detalle_elaboradoModel = require('./models/detalle_elaborado');
+const detalleElaboradoModel = require('./models/detalle_elaborado');
 const existenciaModel = require('./models/existencia');
+const ofertaModel = require('./models/oferta');
 
 //Asociaciones entre Modelos
 //Categoria
@@ -19,10 +20,16 @@ categorieModel.hasMany(articuloModel, { foreignKey: 'categoria_id' });
 //Elaborado
 elaboradoModel.belongsTo(categorieModel, { foreignKey: 'categoria_id' });
 elaboradoModel.hasMany(detalle_venta_model, { foreignKey: 'id_elaborado' });
+elaboradoModel.hasMany(detalleElaboradoModel, { foreignKey: 'elaborado_id' });
+elaboradoModel.hasOne(ofertaModel, { foreignKey: 'elaborado_id' });
 
 //Detalle_elaborado
-detalle_elaboradoModel.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
-detalle_elaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' });
+detalleElaboradoModel.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
+detalleElaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' });
+
+//Oferta
+ofertaModel.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
+ofertaModel.belongsTo(insumoModel, { foreignKey: 'insumo_id' });
 
 //Cliente
 userModel.hasMany(ventaModel, { foreignKey: 'id_cliente' });
@@ -40,6 +47,7 @@ articuloModel.belongsTo(categorieModel, { foreignKey: 'categoria_id' });
 articuloModel.hasOne(insumoModel, { foreignKey: 'articulo_id' });
 articuloModel.hasOne(semielaboradoModel, { foreignKey: 'articulo_id' });
 articuloModel.hasMany(existenciaModel, { foreignKey: 'articulo_id' });
+articuloModel.hasMany(detalleElaboradoModel, { foreignKey: 'articulo_id' });
 
 //Existencia
 existenciaModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
@@ -47,6 +55,8 @@ existenciaModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 //Insumo
 insumoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 insumoModel.hasMany(detalle_semielaboradoModel, { foreignKey: 'insumo_id' })
+insumoModel.hasOne(ofertaModel, { foreignKey: 'insumo_id' })
+
 
 //Semielaborado
 semielaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })

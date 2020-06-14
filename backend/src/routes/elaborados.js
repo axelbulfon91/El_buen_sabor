@@ -1,150 +1,184 @@
 const { Router } = require('express');
 const router = Router();
-const path = require('path');
-const multer = require('multer');
 const elaboradoModel = require('../models/elaborado')
+const detalleElaboradoModel = require('../models/detalle_elaborado')
 const categorieModel = require('../models/categorie');
+const articuloModel = require('../models/articulo');
 const fs = require('fs');
+const upload = require('../lib/multerConfig');
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'src/public/imgs');
-    },
-    filename: (req, file, cb) => {
-        cb(null, Date.now() + path.extname(file.originalname));
+//Creacion de un nuevo Elaborado
+router.post('/', upload.single('imagen'), async (req, res) => {
+    let elaborado = null;
+    try {
+        if (req.file) {
+            const { filename } = req.file;
+            elaborado = await elaboradoModel.create({
+                nombre: req.body.nombre,
+                categoria_id: req.body.categoria,
+                precio: req.body.precio,
+                detalle: req.body.detalle,
+                esCatalogo: req.body.esCatalogo,
+                nombreImg: filename
+            });
+        } else {
+            elaborado = await elaboradoModel.create({
+                nombre: req.body.nombre,
+                categoria_id: req.body.categoria,
+                precio: req.body.precio,
+                detalle: req.body.detalle,
+                esCatalogo: req.body.esCatalogo,
+                nombreImg: 'Sin imagen'
+            });
+        }
+        req.body.detalles.forEach(async (articulo) => {//Creacion de los detalles
+            await detalleElaboradoModel.create({
+                cantidad: articulo.cantidad,
+                elaborado_id: elaborado.id,
+                articulo_id: articulo.id
+            })
+        })
+        res.json({ message: "Elaborado creado con exito" });
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Peticion Invalida")
     }
-});
-const fileFilter = (req, file, cb) => {
-    if (file.mimetype === 'image/jpg' || file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
-        cb(null, true);
-    } else {
-        cb(null, false);
-    }
-}
-const upload = multer({
-    storage: storage,
-    limits: {
-        fileSize: 1024 * 1024 * 5 //Peso de imagen maximo (5MB)
-    },
-    fileFilter: fileFilter
+
 });
 
+
+
+//Trae todos los Elaborados
 router.get('/', async (req, res) => {
-    const elaborados = await elaboradoModel.findAll({
+    try {
+        const elaborados = await elaboradoModel.findAll({
+            attributes: ['id', 'nombre', 'precio', 'nombreImg', 'detalle', 'esCatalogo'],
             include: [{
                 model: categorieModel,
                 attributes: ['nombre', 'id']
+            }, {
+                model: detalleElaboradoModel,
+                attributes: ['cantidad'],
+                include: {
+                    model: articuloModel,
+                    attributes: ['nombre', 'unidadMedida']
+                }
             }]
         });
-    res.json(elaborados);
-});
-
-router.post('/', upload.single('imagen'), async (req, res) => {
-
-    if (req.file) {
-
-        const { filename } = req.file;
-
-        await elaboradoModel
-            .create({
-                nombre: req.body.nombre,
-                precio: req.body.precio,
-                detalle: req.body.detalle,
-                nombreImg: filename,
-                categoria_id: req.body.categoria
-            });
-    } else {
-
-        await elaboradoModel
-            .create({
-                nombre: req.body.nombre,
-                precio: req.body.precio,
-                detalle: req.body.detalle,
-                nombreImg: 'Sin imagen',
-                categoria_id: req.body.categoria
-            });
+        res.json(elaborados);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error de Servidor")
     }
-    res.redirect('/');
+
 
 });
 
+//Trae un solo Elaborado
 router.get('/:id', async (req, res) => {
-    const elaborado = await elaboradoModel.findOne(
-            {
-                where: {
-                    id: req.params.id
+    try {
+        const elaborados = await elaboradoModel.findOne({
+            where: { id: req.params.id },
+            attributes: ['id', 'nombre', 'precio', 'nombreImg', 'detalle', 'esCatalogo'],
+            include: [{
+                model: categorieModel,
+                attributes: ['nombre', 'id']
+            }, {
+                model: detalleElaboradoModel,
+                attributes: ['cantidad'],
+                include: {
+                    model: articuloModel,
+                    attributes: ['nombre', 'unidadMedida']
                 }
-            }
-        );
-    if (elaborado) {
-        res.json(elaborado
-        );
-    } else {
-        res.json("Producto no encontrado");
+            }]
+        });
+        res.json(elaborados);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("Error de Servidor")
     }
 });
 
-router.put('/:id', upload.single('imagen'), async (req, res) => {
-    const elaborado = await elaboradoModel.findOne(
-                {
-                    where: { id: req.params.id }
-                }
-            );
-    if (elaborado) {
-        if (elaborado.nombreImg !== 'Sin imagen') {
-            await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
+
+//Eliminar un Elaborado
+router.delete('/:id', async (req, res) => {
+    try {
+        const elaborado = await elaboradoModel.findOne(
+            { where: { id: req.params.id } }
+        );
+        if (elaborado) {//Eliminado de la imagen del servidor
+            if (elaborado.nombreImg !== '') {
+                await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
+            }
         }
-        if (req.file) {
-            const { filename } = req.file;
-            await elaborado
-                .update({
+        //Eliminado de los detalleElaborados
+        await detalleElaboradoModel.destroy({
+            where: { elaborado_id: elaborado.id }
+        })
+        //Eliminado del Elaborado
+        await elaboradoModel.destroy(
+            { where: { id: req.params.id } }
+        );
+
+        res.json({ message: 'Borrado con Exito' })
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Peticion Invalida")
+    }
+
+
+});
+
+//Editar un Elaborado
+//Modificar un elaborado
+router.put('/:id', upload.single('imagen'), async (req, res) => {
+    try {
+        let elaborado = await elaboradoModel.findOne(
+            { where: { id: req.params.id } }
+        );
+            if (elaborado.nombreImg !== 'Sin imagen') {
+                await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
+            }
+            //Modificacion de los atributos del elaborado
+            if (req.file) {
+                const { filename } = req.file;
+                elaborado = await elaborado.update({
                     nombre: req.body.nombre,
+                    categoria_id: req.body.categoria,
                     precio: req.body.precio,
                     detalle: req.body.detalle,
-                    nombreImg: filename,
-                    categoria_id: req.body.categoria
+                    esCatalogo: req.body.esCatalogo,
+                    nombreImg: filename
                 });
-        } else {
-            await elaborado.update({
-                nombre: req.body.nombre,
-                precio: req.body.precio,
-                detalle: req.body.detalle,
-                nombreImg: 'Sin imagen',
-                categoria_id: req.body.categoria
-            });
-        }
-        res.send('/');
-
-    } else {
-        res.json("Producto no encontrado");
-    }
-});
-
-router.delete('/:id', async (req, res) => {
-
-    const elaborado = await elaboradoModel.findOne(
-            {
-                where: { id: req.params.id }
+            } else {
+                elaborado = await elaborado.update({
+                    nombre: req.body.nombre,
+                    categoria_id: req.body.categoria,
+                    precio: req.body.precio,
+                    detalle: req.body.detalle,
+                    esCatalogo: req.body.esCatalogo,
+                    nombreImg: 'Sin imagen'
+                });
             }
-        );
-    if (elaborado) {
-        if (elaborado.nombreImg !== '') {
-            await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
-        }
-    }
-    const eliminado = await elaboradoModel.destroy(
-            {
-                where: { id: req.params.id }
-            }
-        );
+            //Eliminacion de los detalleRelaborado relacionados
+            await detalleElaboradoModel.destroy({
+                where: { elaborado_id: elaborado.id }
+            })
+            //Nueva asignacion de los detallesSemielaborados
+            req.body.detalles.forEach(async (articulo) => {//Creacion de los detalles
+                await detalleElaboradoModel.create({
+                    cantidad: articulo.cantidad,
+                    elaborado_id: elaborado.id,
+                    articulo_id: articulo.id
+                })
+            })
+            res.json({ message: 'Modificado con Exito' });
 
-    if (eliminado === 0) {
-        res.json("Producto no encontrado");
-    } else {
-        res.send('/');
+    } catch (error) {
+        console.log(error);
+        res.status(400).send("Peticion Invalida")
     }
 
 });
-
 
 module.exports = router;
