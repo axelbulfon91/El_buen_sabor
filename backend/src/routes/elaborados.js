@@ -55,13 +55,13 @@ router.get('/', async (req, res) => {
             attributes: ['id', 'nombre', 'precio', 'nombreImg', 'detalle', 'esCatalogo'],
             include: [{
                 model: categorieModel,
-                attributes: ['nombre', 'id']
+                attributes: ['id','nombre', 'id']
             }, {
                 model: detalleElaboradoModel,
-                attributes: ['cantidad'],
+                attributes: ['id','cantidad'],
                 include: {
                     model: articuloModel,
-                    attributes: ['nombre', 'unidadMedida']
+                    attributes: ['id','nombre', 'unidadMedida']
                 }
             }]
         });
@@ -82,20 +82,20 @@ router.get('/:id', async (req, res) => {
             attributes: ['id', 'nombre', 'precio', 'nombreImg', 'detalle', 'esCatalogo'],
             include: [{
                 model: categorieModel,
-                attributes: ['nombre', 'id']
+                attributes: ['id','nombre', 'id']
             }, {
                 model: detalleElaboradoModel,
-                attributes: ['cantidad'],
+                attributes: ['id','cantidad'],
                 include: {
                     model: articuloModel,
-                    attributes: ['nombre', 'unidadMedida']
+                    attributes: ['id','nombre', 'unidadMedida']
                 }
             }]
         });
         res.json(elaborados);
     } catch (error) {
         console.log(error);
-        res.status(500).send("Error de Servidor")
+        res.status(400).send("Peticion Invalida")
     }
 });
 
@@ -129,7 +129,6 @@ router.delete('/:id', async (req, res) => {
 
 });
 
-//Editar un Elaborado
 //Modificar un elaborado
 router.put('/:id', upload.single('imagen'), async (req, res) => {
     try {

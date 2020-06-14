@@ -11,6 +11,7 @@ const detalle_semielaboradoModel = require('./models/detalle_semielaborado');
 const detalleElaboradoModel = require('./models/detalle_elaborado');
 const existenciaModel = require('./models/existencia');
 const ofertaModel = require('./models/oferta');
+const bebidaModel = require('./models/bebida');
 
 //Asociaciones entre Modelos
 //Categoria
@@ -29,7 +30,7 @@ detalleElaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' });
 
 //Oferta
 ofertaModel.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
-ofertaModel.belongsTo(insumoModel, { foreignKey: 'insumo_id' });
+ofertaModel.belongsTo(bebidaModel, { foreignKey: 'bebida_id' });
 
 //Cliente
 userModel.hasMany(ventaModel, { foreignKey: 'id_cliente' });
@@ -55,7 +56,6 @@ existenciaModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 //Insumo
 insumoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 insumoModel.hasMany(detalle_semielaboradoModel, { foreignKey: 'insumo_id' })
-insumoModel.hasOne(ofertaModel, { foreignKey: 'insumo_id' })
 
 
 //Semielaborado
@@ -66,3 +66,7 @@ semielaboradoModel.hasMany(detalle_semielaboradoModel, { foreignKey: 'semielabor
 //Detalle_semielaborado
 detalle_semielaboradoModel.belongsTo(semielaboradoModel, { foreignKey: 'semielaborado_id' })
 detalle_semielaboradoModel.belongsTo(insumoModel, { foreignKey: 'insumo_id' })
+
+//Bebida
+bebidaModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
+bebidaModel.hasOne(ofertaModel, { foreignKey: 'bebida_id' })

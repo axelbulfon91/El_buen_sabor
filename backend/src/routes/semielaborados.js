@@ -66,13 +66,13 @@ router.get('/', async (req, res) => {
             }
         }, {
             model: detalleSemielaboradoModel,
-            attributes: ['cantidad'],
+            attributes: ['id','cantidad'],
             include: {
                 model: insumoModel,
                 attributes: ['id'],
                 include: {
                     model: articuloModel,
-                    attributes: ['nombre', 'unidadMedida'],
+                    attributes: ['id','nombre', 'unidadMedida'],
                 }
             }
         }]
@@ -101,7 +101,7 @@ router.get('/:id', async (req, res) => {
                 attributes: ['id'],
                 include: {
                     model: articuloModel,
-                    attributes: ['nombre', 'unidadMedida'],
+                    attributes: ['id','nombre', 'unidadMedida'],
                 }
             }
         }]
@@ -176,6 +176,10 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
                 stockActual: req.body.stockActual
             });
         }
+        await semielaborado.update({
+            costoFabricacion: req.body.costoFabricacion
+        })
+
         //Eliminacion de los detalleSemielaborado relacionado
         await detalleSemielaboradoModel.destroy({
             where: { semielaborado_id: semielaborado.id }

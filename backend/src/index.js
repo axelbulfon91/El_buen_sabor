@@ -47,6 +47,7 @@ app.use('/api/productos/semielaborados', require('./routes/semielaborados'));
 app.use('/api/productos/elaborados', require('./routes/elaborados'));
 app.use('/api/productos/categorias', require('./routes/categories'));
 app.use('/api/productos/ofertas', require('./routes/ofertas'));
+app.use('/api/productos/bebidas', require('./routes/bebidas'));
 
 app.use('/api/facturas', require('./routes/facturas'));
 
