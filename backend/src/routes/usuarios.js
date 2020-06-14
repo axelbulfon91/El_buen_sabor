@@ -1,12 +1,17 @@
 const { Router } = require('express');
 const router = Router();
-const { userModel } = require('../database');
+const userModel = require('../models/usuario');
 const jwt = require("jsonwebtoken");
 const {encriptarPassword} = require('../lib/encriptador');
 const passport = require ('passport')
 
 
 //REGISTRO LOCAL
+router.get('/', async (req, res) => { //Obtencion de todos los usuarios
+    const usuarios = await userModel.findAll();
+    res.json(usuarios)
+})
+
 router.post('/registro', async (req, res)=>{
     const nuevoUsuario = await userModel.findOne({where:{email : req.body.username}});        
     try{
@@ -15,7 +20,9 @@ router.post('/registro', async (req, res)=>{
             const nuevoUsuario = await userModel.create({
                 nombre: req.body.nombre,
                 email: req.body.username,
-                password: passwordHash
+                password: passwordHash,
+                telefono: req.body.telefono,
+                rol: 'CLIENTE'
             });    
             
             res.json({usuario : nuevoUsuario.dataValues});
