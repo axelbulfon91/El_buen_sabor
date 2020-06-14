@@ -12,7 +12,7 @@ router.post('/', async (req, res) => {
         nombre: req.body.nombre,
         tipo: req.body.tipo
     });
-    res.redirect('/');
+    res.json({message: "Categoria creada con exito"});
 });
 
 router.delete('/:id', async (req, res) => {
@@ -26,7 +26,7 @@ router.delete('/:id', async (req, res) => {
     if (catEliminada === 0) {
         res.json("Categoria no encontrada");
     } else {
-        res.send('/');
+        res.json({message: "Categoria borrada con exito"});
     }
 });
 
