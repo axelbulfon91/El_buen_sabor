@@ -69,8 +69,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
-    const elaborado = await elaboradoModel
-        .findOne(
+    const elaborado = await elaboradoModel.findOne(
             {
                 where: {
                     id: req.params.id
@@ -86,26 +85,16 @@ router.get('/:id', async (req, res) => {
 });
 
 router.put('/:id', upload.single('imagen'), async (req, res) => {
-    const elaborado
-        = await elaboradoModel
-            .findOne(
+    const elaborado = await elaboradoModel.findOne(
                 {
-                    where: {
-                        id: req.params.id
-                    }
+                    where: { id: req.params.id }
                 }
             );
-
     if (elaborado) {
-
-
-        if (elaborado.nombreImg !== '') {
-            await fs.unlink('src/public/imgs/' + elaborado
-                .nombreImg, () => null);
+        if (elaborado.nombreImg !== 'Sin imagen') {
+            await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
         }
-
         if (req.file) {
-
             const { filename } = req.file;
             await elaborado
                 .update({
@@ -115,9 +104,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
                     nombreImg: filename,
                     categoria_id: req.body.categoria
                 });
-
         } else {
-
             await elaborado.update({
                 nombre: req.body.nombre,
                 precio: req.body.precio,
@@ -126,38 +113,28 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
                 categoria_id: req.body.categoria
             });
         }
-
         res.send('/');
 
     } else {
         res.json("Producto no encontrado");
     }
-
 });
 
 router.delete('/:id', async (req, res) => {
 
-    const elaborado = await elaboradoModel
-        .findOne(
+    const elaborado = await elaboradoModel.findOne(
             {
-                where: {
-                    id: req.params.id
-                }
+                where: { id: req.params.id }
             }
         );
     if (elaborado) {
         if (elaborado.nombreImg !== '') {
-            await fs.unlink('src/public/imgs/' + elaborado
-                .nombreImg, () => null);
+            await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
         }
     }
-
-    const eliminado = await elaboradoModel
-        .destroy(
+    const eliminado = await elaboradoModel.destroy(
             {
-                where: {
-                    id: req.params.id
-                }
+                where: { id: req.params.id }
             }
         );
 
