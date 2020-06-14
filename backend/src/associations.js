@@ -2,14 +2,15 @@
 const elaboradoModel = require('./models/elaborado');
 const userModel = require('./models/usuario');
 const categorieModel = require('./models/categorie');
-const ventaModel = require('./models/venta');
+const pedidoModel = require('./models/pedido');
 const articuloModel = require('./models/articulo');
 const insumoModel = require('./models/insumo');
-const detalle_venta_model = require('./models/detalle_venta');
+const detalle_pedido_model = require('./models/detalle_pedido');
 const semielaboradoModel = require('./models/semielaborado');
 const detalle_semielaboradoModel = require('./models/detalle_semielaborado');
 const detalle_elaboradoModel = require('./models/detalle_elaborado');
 const existenciaModel = require('./models/existencia');
+const facturaModel = require('./models/factura')
 
 //Asociaciones entre Modelos
 //Categoria
@@ -18,22 +19,25 @@ categorieModel.hasMany(articuloModel, { foreignKey: 'categoria_id' });
 
 //Elaborado
 elaboradoModel.belongsTo(categorieModel, { foreignKey: 'categoria_id' });
-elaboradoModel.hasMany(detalle_venta_model, { foreignKey: 'id_elaborado' });
 
 //Detalle_elaborado
 detalle_elaboradoModel.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
 detalle_elaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' });
 
 //Cliente
-userModel.hasMany(ventaModel, { foreignKey: 'id_cliente' });
+userModel.hasMany(pedidoModel, { foreignKey: 'id_cliente' });
 
-//Venta
-ventaModel.hasMany(detalle_venta_model, { foreignKey: 'id_venta' });
-ventaModel.belongsTo(userModel, { foreignKey: 'id_cliente' });
+//Pedido
+pedidoModel.hasMany(detalle_pedido_model, { foreignKey: 'id_pedido'});
+pedidoModel.belongsTo(userModel, { foreignKey: 'id_cliente' });
 
-//Detalle_venta
-detalle_venta_model.belongsTo(elaboradoModel, { foreignKey: 'id_elaborado' });
-detalle_venta_model.belongsTo(ventaModel, { foreignKey: 'id_venta' });
+//Detalle_pedido
+detalle_pedido_model.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
+detalle_pedido_model.belongsTo(pedidoModel, { foreignKey: 'id_pedido' });
+
+//Factura
+facturaModel.belongsTo(pedidoModel,{ foreignKey: 'id_pedido'})
+facturaModel.belongsTo(userModel,{ foreignKey: 'id_cajero'})
 
 //Articulo
 articuloModel.belongsTo(categorieModel, { foreignKey: 'categoria_id' });
