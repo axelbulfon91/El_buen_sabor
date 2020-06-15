@@ -5,13 +5,12 @@ const jwt = require("jsonwebtoken");
 const {encriptarPassword} = require('../lib/encriptador');
 const passport = require ('passport')
 
-
-//REGISTRO LOCAL
 router.get('/', async (req, res) => { //Obtencion de todos los usuarios
     const usuarios = await userModel.findAll();
     res.json(usuarios)
 })
 
+//REGISTRO LOCAL
 router.post('/registro', async (req, res)=>{
     const nuevoUsuario = await userModel.findOne({where:{email : req.body.username}});        
     try{

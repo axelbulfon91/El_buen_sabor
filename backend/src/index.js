@@ -39,6 +39,7 @@ app.use(passport.session());
 //Rutas
 
 app.use('/api/usuarios', require('./routes/usuarios'));
+app.use('/api/usuarios/domicilios', require('./routes/domicilio'));
 
 app.use('/api/pedidos', require('./routes/pedido'));
 

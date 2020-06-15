@@ -11,6 +11,10 @@ const detalle_semielaboradoModel = require('./models/detalle_semielaborado');
 const detalle_elaboradoModel = require('./models/detalle_elaborado');
 const existenciaModel = require('./models/existencia');
 const facturaModel = require('./models/factura')
+const domicilioModel = require('./models/Ubicacion/domicilio');
+const localidadModel = require('./models/Ubicacion/localidad');
+const provinciaModel = require('./models/Ubicacion/provincia');
+const paisModel = require('./models/Ubicacion/pais');
 
 //Asociaciones entre Modelos
 //Categoria
@@ -56,7 +60,18 @@ insumoModel.hasMany(detalle_semielaboradoModel, { foreignKey: 'insumo_id' })
 semielaboradoModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 semielaboradoModel.hasMany(detalle_semielaboradoModel, { foreignKey: 'semielaborado_id' })
 
-
 //Detalle_semielaborado
 detalle_semielaboradoModel.belongsTo(semielaboradoModel, { foreignKey: 'semielaborado_id' })
 detalle_semielaboradoModel.belongsTo(insumoModel, { foreignKey: 'insumo_id' })
+
+//Usuario - Domicilio
+paisModel.hasMany(provinciaModel, { foreignKey: 'id_pais' })
+provinciaModel.belongsTo(paisModel, { foreignKey: 'id_pais' })
+provinciaModel.hasMany(localidadModel, { foreignKey: 'id_provincia' })
+localidadModel.belongsTo(provinciaModel, { foreignKey: 'id_provincia' })
+localidadModel.hasMany(domicilioModel, { foreignKey: 'id_localidad' })
+domicilioModel.belongsTo(localidadModel, { foreignKey: 'id_localidad' })
+userModel.hasMany(domicilioModel, { foreignKey: 'id_usuario' })
+domicilioModel.belongsTo(userModel, { foreignKey: 'id_usuario' })
+
+
