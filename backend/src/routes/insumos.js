@@ -34,6 +34,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
         });
     }
     insumo = await insumoModel.create({
+        id: articulo.id,
         articulo_id: articulo.id
     })
     res.json({message: 'Nuevo Insumo creado con Exito'});
@@ -49,7 +50,7 @@ router.get('/', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }
     })
@@ -70,7 +71,7 @@ router.get('/:id', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }
     })

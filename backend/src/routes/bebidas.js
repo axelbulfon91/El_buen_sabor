@@ -34,6 +34,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
         });
     }
     bebida = await bebidaModel.create({
+        id: articulo.id,
         precio : req.body.precio,
         articulo_id: articulo.id
     })
@@ -50,7 +51,7 @@ router.get('/', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }
     })
@@ -71,7 +72,7 @@ router.get('/:id', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }
     })

@@ -39,6 +39,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
         });
     }
     semielaborado = await semielaboradoModel.create({
+        id: articulo.id,
         articulo_id: articulo.id,
         costoFabricacion: req.body.costoFabricacion
     })
@@ -62,7 +63,7 @@ router.get('/', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }, {
             model: detalleSemielaboradoModel,
@@ -73,6 +74,10 @@ router.get('/', async (req, res) => {
                 include: {
                     model: articuloModel,
                     attributes: ['id','nombre', 'unidadMedida'],
+                    include: {
+                        model:categoriaModel,
+                        attributes: ['id', 'nombre', 'tipo']
+                    }
                 }
             }
         }]
@@ -91,7 +96,7 @@ router.get('/:id', async (req, res) => {
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
             include: {
                 model: categoriaModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', 'tipo']
             }
         }, {
             model: detalleSemielaboradoModel,
@@ -102,6 +107,10 @@ router.get('/:id', async (req, res) => {
                 include: {
                     model: articuloModel,
                     attributes: ['id','nombre', 'unidadMedida'],
+                    include: {
+                        model:categoriaModel,
+                        attributes: ['id', 'nombre', 'tipo']
+                    }
                 }
             }
         }]
