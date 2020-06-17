@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
-const ventaModel = sequelize.define('Venta', {
+const pedidoModel = sequelize.define('Pedido', {
 
     id_cliente: {
         type: Sequelize.INTEGER,
@@ -9,6 +9,9 @@ const ventaModel = sequelize.define('Venta', {
     },
     estado: {
         type: Sequelize.STRING
+    },
+    tipoRetiro: {
+        type: Sequelize.INTEGER  // 1- Delivery , 2- Retiro por local
     }
 },
     {
@@ -16,4 +19,4 @@ const ventaModel = sequelize.define('Venta', {
         underscored: true
     });
 
-module.exports = ventaModel;
+module.exports = pedidoModel;

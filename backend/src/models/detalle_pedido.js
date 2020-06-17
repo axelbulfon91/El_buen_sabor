@@ -1,13 +1,9 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
-const detalle_venta_model = sequelize.define('Detalle_Venta', {
+const detalle_pedido_model = sequelize.define('Detalle_Pedido', {
 
-    id_venta: {
-        type: Sequelize.INTEGER,
-        allowNull: false
-    },
-    id_producto: {
+    id_pedido: {
         type: Sequelize.INTEGER,
         allowNull: false
     },
@@ -21,4 +17,4 @@ const detalle_venta_model = sequelize.define('Detalle_Venta', {
     underscored: true
 });
 
-module.exports = detalle_venta_model;
+module.exports = detalle_pedido_model;
