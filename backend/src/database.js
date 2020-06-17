@@ -25,7 +25,7 @@ module.exports = sequelize;
 
 //Generacion de Modelos y sus Asociaciones
 require('./associations')
-
+    
 ///////////////Sincronicacion de modelos en bd
-sequelize.sync({ force: false })
-    .then(() => console.log('Tablas sincronizadas'));
+// sequelize.sync({ force: false })
+//     .then(() => console.log('Tablas sincronizadas'));

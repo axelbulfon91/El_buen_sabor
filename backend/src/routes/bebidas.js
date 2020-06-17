@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const insumoModel = require('../models/insumo');
+const bebidaModel = require('../models/bebida');
 const articuloModel = require('../models/articulo');
 const categoriaModel = require('../models/categorie');
 const upload = require('../lib/multerConfig');
@@ -7,10 +7,10 @@ const router = Router();
 const fs = require('fs');
 
 //ABM
-//Creacion de un nuevo Insumo
+//Creacion de una nueva Bebida
 router.post('/', upload.single('imagen'), async (req, res) => {
     let articulo = null;
-    let insumo = null;
+    let bebida = null;
     if (req.file) {
         const { filename } = req.file;
         articulo = await articuloModel.create({
@@ -33,18 +33,19 @@ router.post('/', upload.single('imagen'), async (req, res) => {
             stockActual: 0
         });
     }
-    insumo = await insumoModel.create({
+    bebida = await bebidaModel.create({
         id: articulo.id,
+        precio : req.body.precio,
         articulo_id: articulo.id
     })
-    res.json({message: 'Nuevo Insumo creado con Exito'});
+    res.json({message: 'Nueva bebida creado con Exito'});
 
 });
 
-//Trae todos los insumos
+//Trae todos las bebidas
 router.get('/', async (req, res) => {
-    const insumos = await insumoModel.findAll({
-        attributes: ['id'],
+    const bebida = await bebidaModel.findAll({
+        attributes: ['id','precio'],
         include: {
             model: articuloModel,
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
@@ -55,17 +56,17 @@ router.get('/', async (req, res) => {
         }
     })
 
-    res.json(insumos)
+    res.json(bebida)
 });
 
-//Traer un solo insumo
+//Traer una sola bebida
 router.get('/:id', async (req, res) => {
 
-    const insumo = await insumoModel.findOne({
+    const bebida = await bebidaModel.findOne({
         where: {
             id: req.params.id
         },
-        attributes: ['id'],
+        attributes: ['id','precio'],
         include: {
             model: articuloModel,
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
@@ -75,15 +76,15 @@ router.get('/:id', async (req, res) => {
             }
         }
     })
-    res.json(insumo)
+    res.json(bebida)
 })
-//Eliminar insumo
+//Eliminar bebida
 router.delete('/:id', async (req, res) => {
-    const insumo = await insumoModel.findOne(
+    const bebida = await bebidaModel.findOne(
         { where: { id: req.params.id } }
     );
     const articuloRelacionado = await articuloModel.findOne(
-        { where: { id: insumo.articulo_id } }
+        { where: { id: bebida.articulo_id } }
     )
     if (articuloRelacionado) {
         if (articuloRelacionado.nombreImg !== 'Sin imagen') {
@@ -91,24 +92,24 @@ router.delete('/:id', async (req, res) => {
         }
     }
     await articuloModel.destroy(
-        { where: { id: insumo.articulo_id } }
+        { where: { id: bebida.articulo_id } }
     );
-    const insEliminado = await insumoModel.destroy(
-        { where: { id: insumo.id } }
+    const bebidaEliminado = await bebidaModel.destroy(
+        { where: { id: bebida.id } }
     );
-    if (insEliminado === 0) {
-        res.json("Insumo no encontrado");
+    if (bebidaEliminado === 0) {
+        res.json("bebida no encontrada");
     } else {
         res.json({ message: "Eliminado con Exito" })
     }
 })
-//Modificar un Insumo
+//Modificar una bebida
 router.put('/:id', upload.single('imagen'), async (req, res) => {
-    const insumo = await insumoModel.findOne(
+    const bebida = await bebidaModel.findOne(
         { where: { id: req.params.id } }
     );
     const articuloRelacionado = await articuloModel.findOne(
-        { where: { id: insumo.articulo_id } }
+        { where: { id: bebida.articulo_id } }
     )
     if (articuloRelacionado) {
         if (articuloRelacionado.nombreImg !== 'Sin imagen') {
@@ -136,6 +137,10 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
                 stockActual: req.body.stockActual
             });
         }
+        await bebida.update({
+            precio: req.body.precio
+        })
+
         res.json({message: 'Modificado con Exito'});
     } else {
         res.json("Producto no encontrado");
