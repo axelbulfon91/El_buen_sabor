@@ -3,33 +3,120 @@ const router = Router();
 const userModel = require('../models/usuario');
 const domicilio = require('../models/Ubicacion/domicilio');
 const jwt = require("jsonwebtoken");
-const { encriptarPassword } = require('../lib/encriptador');
+const { encriptarPassword, compararPassword } = require('../lib/encriptador');
 const passport = require('passport');
 const localidadModel = require('../models/Ubicacion/localidad');
 const provinciaModel = require('../models/Ubicacion/provincia');
 const rolModel = require('../models/rol');
+const { secret } = require('../keys')
+const { comprobarToken } = require('../lib/service_jwt')
+
+//REGISTRO LOCAL
+router.post('/registro', async (req, res) => {
+    const nuevoUsuario = await userModel.findOne({ where: { email: req.body.username } });
+    try {
+        if (nuevoUsuario === null) {
+
+            const passwordHash = await encriptarPassword(req.body.password);
+            const nuevoUsuario = await userModel.create({
+                nombre: req.body.nombre,
+                email: req.body.username,
+                password: passwordHash,
+                telefono: req.body.telefono
+            });
+
+            switch (req.body.rol) {
+                case 1: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "COCINERO"
+                })
+                    break;
+                case 2: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "CAJERO"
+                })
+                    break;
+                case 3: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "ADMINISTRADOR"
+                })
+                    break;
+                default: null
+                    break;
+            }
+
+            res.json({ message: 'Usuario creado correctamente', usuario: nuevoUsuario.dataValues });
+        } else {
+            res.status(401).json({ message: 'Usuario ya registrado' });
+        }
+    } catch{ (err) => res.json({ message: 'Error en registro de usuario: ' + err }) };
+
+});
+
+//Login
+router.post('/login', async (req, res) => {
+
+    const user = await userModel.findOne({ where: { email: req.body.email } })
+
+    if (user) {
+        const passOk = await compararPassword(req.body.password, user.password)
+        if (passOk) {
+
+            const token = jwt.sign({ 'id': user.id }, secret)
+            res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
+
+        } else {
+            res.json({ message: "Contraseña incorrecta" })
+        }
+    } else {
+        res.json({ message: "Usuario no registrado" })
+    }
+})
 
 //Trae todos los usuarios del sistema
-router.get('/', async (req, res) => {
+router.get('/', comprobarToken, async (req, res) => {
 
-    const users = await userModel.findAll({
-        include: [{
-            model: domicilio,
-            attributes: { exclude: ['id_usuario', 'id_localidad'] },
-            include: [{
-                model: localidadModel,
-                attributes: { exclude: ['id_provincia'] },
+    jwt.verify(req.token, secret, async (err, data) => {
+
+        if (err) {
+            res.json({ message: 'Usuario no logueado' })
+        } else {
+            const user = await userModel.findOne({
+                where: { id: data.id },
                 include: [{
-                    model: provinciaModel,
+                    model: rolModel,
+                    attributes: ['rol']
                 }]
-            }]
-        },{
-            model: rolModel,
-            attributes: ['rol', 'created_at'], 
-        }]
+            })
+            const ultimoRol = user.dataValues.rols.length
+
+            if (user.dataValues.rols[ultimoRol - 1].rol === "ADMINISTRADOR") {
+                const users = await userModel.findAll({
+                    include: [{
+                        model: domicilio,
+                        attributes: { exclude: ['id_usuario', 'id_localidad'] },
+                        include: [{
+                            model: localidadModel,
+                            attributes: { exclude: ['id_provincia'] },
+                            include: [{
+                                model: provinciaModel,
+                            }]
+                        }]
+                    },{
+                        model: rolModel,
+                        attributes: ['rol', 'created_at'],
+                    }]
+                })
+                res.json(users)
+                
+            } else {
+                res.json("NO ES ADMINISTRADOR, su rol es: " + user.dataValues.rols[ultimoRol - 1].rol)
+            }
+        }
     })
 
-    res.json(users)
+
+
 
 })
 
@@ -48,9 +135,9 @@ router.get('/:id', async (req, res) => {
                     model: provinciaModel,
                 }]
             }]
-        },{
+        }, {
             model: rolModel,
-            attributes: ['rol', 'created_at'], 
+            attributes: ['rol', 'created_at'],
         }]
     })
 
@@ -98,27 +185,27 @@ router.put('/:id', async (req, res) => {
             nombre: req.body.nombre,
             email: req.body.username,
             telefono: req.body.telefono
-        })        
+        })
         console.log(user.dataValues.id)
 
-        switch (req.body.rol) {                
-            case 1: await rolModel.create({                    
-                usuario_id : user.dataValues.id,
-                rol: "COCINERO" 
+        switch (req.body.rol) {
+            case 1: await rolModel.create({
+                usuario_id: user.dataValues.id,
+                rol: "COCINERO"
             })
-            break;
+                break;
             case 2: await rolModel.create({
-                usuario_id : user.dataValues.id,  
-                rol: "CAJERO"                       
+                usuario_id: user.dataValues.id,
+                rol: "CAJERO"
             })
-            break;
+                break;
             case 3: await rolModel.create({
-                usuario_id : user.dataValues.id,
-                rol: "ADMINISTRADOR" 
+                usuario_id: user.dataValues.id,
+                rol: "ADMINISTRADOR"
             })
-            break;
+                break;
             default: null
-            break;
+                break;
         }
 
 
@@ -148,64 +235,6 @@ router.put('/password/:id', async (req, res) => {
 
 })
 
-//REGISTRO LOCAL
-router.post('/registro', async (req, res) => {
-    const nuevoUsuario = await userModel.findOne({ where: { email: req.body.username } });
-
-    try {
-        if (nuevoUsuario === null) {            
-
-            const passwordHash = await encriptarPassword(req.body.password);
-            const nuevoUsuario = await userModel.create({
-                nombre: req.body.nombre,
-                email: req.body.username,
-                password: passwordHash,
-                telefono: req.body.telefono
-            });
-
-            switch (req.body.rol) {                
-                case 1: await rolModel.create({                    
-                    usuario_id : nuevoUsuario.dataValues.id,
-                    rol: "COCINERO" 
-                })
-                break;
-                case 2: await rolModel.create({
-                    usuario_id : nuevoUsuario.dataValues.id,  
-                    rol: "CAJERO"                       
-                })
-                break;
-                case 3: await rolModel.create({
-                    usuario_id : nuevoUsuario.dataValues.id,
-                    rol: "ADMINISTRADOR" 
-                })
-                break;
-                default: null
-                break;
-            }
-
-            res.json({message: 'Usuario creado correctamente', usuario: nuevoUsuario.dataValues });
-        } else {
-            res.status(401).json({ message: 'Usuario ya registrado' });
-        }
-    } catch{ (err) => res.json({ message: 'Error en registro de usuario: ' + err }) };
-
-});
-
-//LOGIN LOCAL
-router.post('/login', passport.authenticate('login.local', {
-}), (req, res) => {
-    res.json(req.user);
-});
-
-//LOGIN LOCAL ADMIN
-router.post('/adminlogin', passport.authenticate('login.local.admin', {
-}), (req, res) => {
-    res.json(req.user);
-});
-
-
-
-
 //PROFILE
 // router.get('/profile', (req, res, next)=>{   
 //     if(req.isAuthenticated()) return next();
@@ -223,4 +252,5 @@ router.post('/adminlogin', passport.authenticate('login.local.admin', {
 //     res.json({message: 'LogOut'});
 // })
 
-module.exports = router;
+
+module.exports = router

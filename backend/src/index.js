@@ -2,38 +2,27 @@ const express = require('express');
 const morgan = require('morgan');
 const path = require('path');
 const passport = require('passport');
-const session = require('express-session');
-
+const app = express();
 const cors = require('cors');
-const flash = require('connect-flash');
 
 //Inicializaciones
-const app = express();
 require('./database');
-require('./lib/passport-local');
+//require('./lib/passport-local'); //Indico los middlewares de autentificacion que voy a usar
 
 //Configuraciones
 app.set('port', process.env.PORT || 4000);
 app.use(
-    cors({
-      origin: 'http://localhost:3000',
-      credentials: true,
-    })
-  );
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
 
 //Middlewares    
 app.use(morgan('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-// app.use(flash());
-app.use(session({
-    secret: 'misecreto',
-    resave: false,
-    saveUninitialized: false
-}));
 app.use(passport.initialize());
-app.use(passport.session());
 
 
 //Rutas
@@ -58,6 +47,6 @@ app.use('/api/facturas', require('./routes/facturas'));
 app.use(express.static(path.join(__dirname, 'public')));
 
 //Inicio de servidor
-app.listen(app.get('port'), ()=> {
-    console.log("Servidor en puerto " + app.get('port'));
+app.listen(app.get('port'), () => {
+  console.log("Servidor en puerto " + app.get('port'));
 });
