@@ -15,9 +15,6 @@ const userModel = sequelize.define('Usuario', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    rol: {
-        type: Sequelize.STRING,
-    },
     password: {
         type: Sequelize.STRING
     },

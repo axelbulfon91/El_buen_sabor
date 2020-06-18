@@ -15,6 +15,7 @@ const domicilioModel = require('./models/Ubicacion/domicilio');
 const localidadModel = require('./models/Ubicacion/localidad');
 const provinciaModel = require('./models/Ubicacion/provincia');
 const paisModel = require('./models/Ubicacion/pais');
+const rolModel = require('./models/rol')
 
 //Asociaciones entre Modelos
 //Categoria
@@ -74,4 +75,5 @@ domicilioModel.belongsTo(localidadModel, { foreignKey: 'id_localidad' })
 userModel.hasMany(domicilioModel, { foreignKey: 'id_usuario' })
 domicilioModel.belongsTo(userModel, { foreignKey: 'id_usuario' })
 
-
+rolModel.belongsTo(userModel, { foreignKey: 'usuario_id' })
+userModel.hasMany(rolModel, { foreignKey: 'usuario_id' })

@@ -7,6 +7,7 @@ const { encriptarPassword } = require('../lib/encriptador');
 const passport = require('passport');
 const localidadModel = require('../models/Ubicacion/localidad');
 const provinciaModel = require('../models/Ubicacion/provincia');
+const rolModel = require('../models/rol');
 
 //Trae todos los usuarios del sistema
 router.get('/', async (req, res) => {
@@ -22,6 +23,9 @@ router.get('/', async (req, res) => {
                     model: provinciaModel,
                 }]
             }]
+        },{
+            model: rolModel,
+            attributes: ['rol', 'created_at'], 
         }]
     })
 
@@ -44,6 +48,9 @@ router.get('/:id', async (req, res) => {
                     model: provinciaModel,
                 }]
             }]
+        },{
+            model: rolModel,
+            attributes: ['rol', 'created_at'], 
         }]
     })
 
@@ -66,12 +73,12 @@ router.delete('/:id', async (req, res) => {
     if (user) {
         const eliminado = await user.destroy()
 
-        if(eliminado === 0){
-            res.json({ message: 'Error al eliminar el usuario'})
-        }else{
-            res.status(200).json({ message: 'Usuario eliminado correctamente'})
+        if (eliminado === 0) {
+            res.json({ message: 'Error al eliminar el usuario' })
+        } else {
+            res.status(200).json({ message: 'Usuario eliminado correctamente' })
         }
-        
+
 
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
@@ -91,7 +98,30 @@ router.put('/:id', async (req, res) => {
             nombre: req.body.nombre,
             email: req.body.username,
             telefono: req.body.telefono
-        })
+        })        
+        console.log(user.dataValues.id)
+
+        switch (req.body.rol) {                
+            case 1: await rolModel.create({                    
+                usuario_id : user.dataValues.id,
+                rol: "COCINERO" 
+            })
+            break;
+            case 2: await rolModel.create({
+                usuario_id : user.dataValues.id,  
+                rol: "CAJERO"                       
+            })
+            break;
+            case 3: await rolModel.create({
+                usuario_id : user.dataValues.id,
+                rol: "ADMINISTRADOR" 
+            })
+            break;
+            default: null
+            break;
+        }
+
+
         res.status(200).json({ message: 'Usuario actualizado correctamente', 'newUser': user })
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
@@ -108,10 +138,10 @@ router.put('/password/:id', async (req, res) => {
 
     if (user) {
         const passwordHash = await encriptarPassword(req.body.password);
-        await user.update({            
+        await user.update({
             password: passwordHash
         })
-        res.status(200).json({ message: 'Password actualizada correctamente'})
+        res.status(200).json({ message: 'Password actualizada correctamente' })
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
     }
@@ -123,17 +153,37 @@ router.post('/registro', async (req, res) => {
     const nuevoUsuario = await userModel.findOne({ where: { email: req.body.username } });
 
     try {
-        if (nuevoUsuario === null) {
+        if (nuevoUsuario === null) {            
+
             const passwordHash = await encriptarPassword(req.body.password);
             const nuevoUsuario = await userModel.create({
                 nombre: req.body.nombre,
                 email: req.body.username,
                 password: passwordHash,
-                telefono: req.body.telefono,
-                rol: 'CLIENTE'
+                telefono: req.body.telefono
             });
 
-            res.json({ usuario: nuevoUsuario.dataValues });
+            switch (req.body.rol) {                
+                case 1: await rolModel.create({                    
+                    usuario_id : nuevoUsuario.dataValues.id,
+                    rol: "COCINERO" 
+                })
+                break;
+                case 2: await rolModel.create({
+                    usuario_id : nuevoUsuario.dataValues.id,  
+                    rol: "CAJERO"                       
+                })
+                break;
+                case 3: await rolModel.create({
+                    usuario_id : nuevoUsuario.dataValues.id,
+                    rol: "ADMINISTRADOR" 
+                })
+                break;
+                default: null
+                break;
+            }
+
+            res.json({message: 'Usuario creado correctamente', usuario: nuevoUsuario.dataValues });
         } else {
             res.status(401).json({ message: 'Usuario ya registrado' });
         }
