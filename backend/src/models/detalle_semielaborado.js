@@ -1,7 +1,7 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
-const detalle_semielaboradoModel = sequelize.define('detalle_semielaborado', {
+const detalleSemielaboradoModel = sequelize.define('detalle_semielaborado', {
 
     cantidad: {
         type: Sequelize.DOUBLE,
@@ -15,4 +15,4 @@ const detalle_semielaboradoModel = sequelize.define('detalle_semielaborado', {
 
 
 
-module.exports = detalle_semielaboradoModel;
+module.exports = detalleSemielaboradoModel;

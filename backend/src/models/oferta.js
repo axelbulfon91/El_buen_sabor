@@ -1,12 +1,13 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
-const detalleElaboradoModel = sequelize.define('detalle_elaborado', {
+const ofertaModel = sequelize.define('oferta', {
 
-    cantidad: {
+    porcentajeDescuento: {
         type: Sequelize.DOUBLE,
         allowNull: false
     }
+
 },
     {
         timestamps: true,
@@ -14,5 +15,4 @@ const detalleElaboradoModel = sequelize.define('detalle_elaborado', {
     });
 
 
-
-module.exports = detalleElaboradoModel;
+module.exports = ofertaModel;
