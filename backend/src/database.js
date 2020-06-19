@@ -27,5 +27,5 @@ module.exports = sequelize;
 require('./associations')
     
 ///////////////Sincronicacion de modelos en bd
-// sequelize.sync({ force: false })
-//     .then(() => console.log('Tablas sincronizadas'));
+ sequelize.sync({ force: false })
+     .then(() => console.log('Tablas sincronizadas'));
