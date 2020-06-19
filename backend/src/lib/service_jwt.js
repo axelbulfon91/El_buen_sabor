@@ -1,18 +1,20 @@
+const jwt = require("jsonwebtoken")
+const { secret } = require("../keys")
 
 module.exports = {
 
     comprobarToken : function(req, res, next){
 
-        const bearerHeader = req.headers['authorization']
-        console.log(bearerHeader)
-        if(typeof(bearerHeader) !== 'undefined'){
-            const bearer = bearerHeader.split(" ");
-            const bearerToken = bearer[1];
-            req.token = bearerToken
-            next();
-        }else{
-            res.sendStatus(403)
+        const token = req.headers['authorization']
+
+        console.log(req.headers)
+        if(!token){
+            return res.status(403).json({message: 'Token no generado' })
         }
+
+        const decoded = jwt.verify(token, secret);
+        req.id_user = decoded.id
+        next();
     }
 
 

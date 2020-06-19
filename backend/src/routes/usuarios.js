@@ -4,7 +4,6 @@ const userModel = require('../models/usuario');
 const domicilio = require('../models/Ubicacion/domicilio');
 const jwt = require("jsonwebtoken");
 const { encriptarPassword, compararPassword } = require('../lib/encriptador');
-const passport = require('passport');
 const localidadModel = require('../models/Ubicacion/localidad');
 const provinciaModel = require('../models/Ubicacion/provincia');
 const rolModel = require('../models/rol');
@@ -44,8 +43,10 @@ router.post('/registro', async (req, res) => {
                 default: null
                     break;
             }
-
-            res.json({ message: 'Usuario creado correctamente', usuario: nuevoUsuario.dataValues });
+            const token = jwt.sign({ id: nuevoUsuario.dataValues.id }, secret, {
+                expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
+            })
+            res.json({ message: 'Usuario creado correctamente', token: token });
         } else {
             res.status(401).json({ message: 'Usuario ya registrado' });
         }
@@ -76,47 +77,40 @@ router.post('/login', async (req, res) => {
 //Trae todos los usuarios del sistema
 router.get('/', comprobarToken, async (req, res) => {
 
-    jwt.verify(req.token, secret, async (err, data) => {
-
-        if (err) {
-            res.json({ message: 'Usuario no logueado' })
-        } else {
-            const user = await userModel.findOne({
-                where: { id: data.id },
-                include: [{
-                    model: rolModel,
-                    attributes: ['rol']
-                }]
-            })
-            const ultimoRol = user.dataValues.rols.length
-
-            if (user.dataValues.rols[ultimoRol - 1].rol === "ADMINISTRADOR") {
-                const users = await userModel.findAll({
-                    include: [{
-                        model: domicilio,
-                        attributes: { exclude: ['id_usuario', 'id_localidad'] },
-                        include: [{
-                            model: localidadModel,
-                            attributes: { exclude: ['id_provincia'] },
-                            include: [{
-                                model: provinciaModel,
-                            }]
-                        }]
-                    },{
-                        model: rolModel,
-                        attributes: ['rol', 'created_at'],
-                    }]
-                })
-                res.json(users)
-                
-            } else {
-                res.json("NO ES ADMINISTRADOR, su rol es: " + user.dataValues.rols[ultimoRol - 1].rol)
-            }
-        }
+    const user = await userModel.findOne({
+        where: { id: req.id_user }, //Verifica con el id dentro del JWT
+        include: [{
+            model: rolModel,
+            attributes: ['rol']
+        }]
     })
 
+    if (user) {
 
+        const ultimoRol = user.dataValues.rols.length
+        if (user.dataValues.rols[ultimoRol - 1].rol === "ADMINISTRADOR") {
+            const users = await userModel.findAll({
+                include: [{
+                    model: domicilio,
+                    attributes: { exclude: ['id_usuario', 'id_localidad'] },
+                    include: [{
+                        model: localidadModel,
+                        attributes: { exclude: ['id_provincia'] },
+                        include: [{
+                            model: provinciaModel,
+                        }]
+                    }]
+                }, {
+                    model: rolModel,
+                    attributes: ['rol', 'created_at'],
+                }]
+            })
+            res.json(users)
+        }
 
+    }else{
+        res.json({message: 'Usuario no encontrado'})
+    }
 
 })
 
@@ -234,23 +228,6 @@ router.put('/password/:id', async (req, res) => {
     }
 
 })
-
-//PROFILE
-// router.get('/profile', (req, res, next)=>{   
-//     if(req.isAuthenticated()) return next();
-//     res.json({message: 'Usuario no logeado'});
-// }, (req, res)=>{
-//     res.json({message: 'Profile', userID: req.user, token: decode});
-// })
-
-// //LOGOUT
-// router.get('/logout',(req, res, next)=>{
-//     if(req.isAuthenticated()) return next();
-//     res.json({message: 'Usuario no logeado'});    
-// }, (req, res)=>{
-//     req.logOut();    
-//     res.json({message: 'LogOut'});
-// })
 
 
 module.exports = router
