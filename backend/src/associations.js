@@ -18,6 +18,7 @@ const localidadModel = require('./models/Ubicacion/localidad');
 const provinciaModel = require('./models/Ubicacion/provincia');
 const paisModel = require('./models/Ubicacion/pais');
 const precioModel = require('./models/precio');
+const rolModel = require('./models/rol')
 
 
 //Asociaciones entre Modelos
@@ -100,4 +101,6 @@ localidadModel.hasMany(domicilioModel, { foreignKey: 'id_localidad' })
 domicilioModel.belongsTo(localidadModel, { foreignKey: 'id_localidad' })
 userModel.hasMany(domicilioModel, { foreignKey: 'id_usuario' })
 domicilioModel.belongsTo(userModel, { foreignKey: 'id_usuario' })
-//>>>>>>> dev-branch
+
+rolModel.belongsTo(userModel, { foreignKey: 'usuario_id' })
+userModel.hasMany(rolModel, { foreignKey: 'usuario_id' })
