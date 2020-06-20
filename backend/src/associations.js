@@ -30,6 +30,7 @@ elaboradoModel.belongsTo(categorieModel, { foreignKey: 'categoria_id' });
 elaboradoModel.hasMany(detalleElaboradoModel, { foreignKey: 'elaborado_id' });
 elaboradoModel.hasOne(ofertaModel, { foreignKey: 'elaborado_id' });
 elaboradoModel.hasMany(precioModel, { foreignKey: 'elaborado_id' });
+elaboradoModel.hasMany(detalle_pedido_model, { foreignKey: 'elaborado_id' });
 
 
 //------------------

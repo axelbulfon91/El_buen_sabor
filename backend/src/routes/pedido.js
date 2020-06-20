@@ -56,11 +56,9 @@ router.get('/:id', async (req, res) => {
 
     var total = 0
     const pedido = await pedidoModel.findOne({ // Busca ultima venta para el id del usuario solicitado
-
         where: {
             id_cliente: req.params.id
         }
-
     });
 
     if (pedido) {
@@ -79,7 +77,7 @@ router.get('/:id', async (req, res) => {
             total += (detalle.elaborado.dataValues.precio * detalle.cantidad) // Calcula El total de la compra para dicha venta
         });
 
-        res.json({ "Pedido": pedido, "Productos": productos, "Precio Final": total });
+        res.json({ "Pedido": pedido, "Productos": productos, "PrecioFinal": total });
 
     } else {
         res.status(403).json({ "mensaje": "Venta de usuario no encontrada" })
