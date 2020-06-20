@@ -7,10 +7,6 @@ const elaboradoModel = sequelize.define('elaborado', {
         type: Sequelize.STRING,
         allowNull: false
     },
-    precio: {
-        type: Sequelize.DOUBLE,
-        allowNull: false
-    },
 
     nombreImg: {
         type: Sequelize.STRING
