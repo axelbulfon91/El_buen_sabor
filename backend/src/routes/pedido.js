@@ -25,23 +25,23 @@ router.post('/', async (req, res) => {
         const estado = req.body.estado // Estado del registro (Creado, Aceptado, En preparacion, Demorado, Listo, Entregado, En Delivery)
         const user = await userModel.findOne({ where: { id: userID } })
 
-        const venta = await pedidoModel.create({ //Creo venta a con id_usuario
+        const pedido = await pedidoModel.create({ //Creo pedido a con id_usuario
             id_cliente: user.id,
-            estado: estado
+            estado: estado,
+            tipoRetiro: req.body.tipoRetiro
         })
         productosPedidos.forEach(async (item, index) => {
             if (item.idBebida) {
-                await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
-                    id_pedido: venta.id,
-                    tipoRetiro: req.body.tipoRetiro,
+                await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_pedido              
+                    id_pedido: pedido.id,
                     bebida_id: item.idBebida,
                     cantidad: item.cantidad,
                     precioDetalle: validacion.precios[index] * item.cantidad
                 });
             }
             if (item.idElaborado) {
-                await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
-                    id_pedido: venta.id,
+                await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_pedido              
+                    id_pedido: pedido.id,
                     elaborado_id: item.idElaborado,
                     cantidad: item.cantidad,
                     precioDetalle: validacion.precios[index] * item.cantidad
@@ -188,17 +188,16 @@ router.put('/:id', async (req, res) => {
             //Nueva asignacion de los detallesSemielaborados
             productosPedidos.forEach(async (item, index) => {
                 if (item.idBebida) {
-                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
-                        id_pedido: venta.id,
-                        tipoRetiro: req.body.tipoRetiro,
+                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_pedido              
+                        id_pedido: pedido.id,
                         bebida_id: item.idBebida,
                         cantidad: item.cantidad,
                         precioDetalle: validacion.precios[index] * item.cantidad
                     });
                 }
                 if (item.idElaborado) {
-                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
-                        id_pedido: venta.id,
+                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_pedido              
+                        id_pedido: pedido.id,
                         elaborado_id: item.idElaborado,
                         cantidad: item.cantidad,
                         precioDetalle: validacion.precios[index] * item.cantidad
@@ -268,6 +267,4 @@ validarStock = async (productosPedidos) => {
     };
     return { 'hayStock': hayStock, 'precios': precios }
 }
-
-
 module.exports = router;
