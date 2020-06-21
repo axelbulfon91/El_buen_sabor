@@ -19,7 +19,6 @@ router.post('/', async (req, res) => {
     const productosPedidos = req.body.productosPedidos // Array de productos
     ////////////Comprobacion de existencia de Stock en los insumos//////////////
     const validacion = await validarStock(productosPedidos)
-    console.log('HayStock: ', validacion.hayStock);
     /////////////Si hay Stock, Genero el Pedido ////////////////////
     if (validacion.hayStock) {
         const userID = req.body.id_usuario // Token ---> id_user
@@ -34,6 +33,7 @@ router.post('/', async (req, res) => {
             if (item.idBebida) {
                 await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
                     id_pedido: venta.id,
+                    tipoRetiro: req.body.tipoRetiro,
                     bebida_id: item.idBebida,
                     cantidad: item.cantidad,
                     precioDetalle: validacion.precios[index] * item.cantidad
@@ -47,7 +47,6 @@ router.post('/', async (req, res) => {
                     precioDetalle: validacion.precios[index] * item.cantidad
                 });
             }
-
         })
 
         res.status(200).json({ "respuesta": "OK" })
@@ -63,10 +62,18 @@ router.get('/', async (req, res) => {
         attributes: { exclude: ['id_cliente'] },
         include: [{
             model: detalle_pedido_model,
-            attributes: ['cantidad', 'precioDetalle'],
+            attributes: ['id', 'cantidad', 'precioDetalle'],
             include: [{
                 model: elaboradoModel,
                 attributes: ['id', 'nombre']
+            },
+            {
+                model: bebidaModel,
+                attributes: ['id'],
+                include: {
+                    model: articuloModel,
+                    attributes: ['nombre']
+                }
             }]
         }, {
             model: userModel,
@@ -91,6 +98,14 @@ router.get('/usuario/:id', async (req, res) => {
             include: [{
                 model: elaboradoModel,
                 attributes: ['id', 'nombre']
+            },
+            {
+                model: bebidaModel,
+                attributes: ['id'],
+                include: {
+                    model: articuloModel,
+                    attributes: ['nombre']
+                }
             }]
         }, {
             model: userModel,
@@ -112,6 +127,14 @@ router.get('/:id', async (req, res) => {
             include: [{
                 model: elaboradoModel,
                 attributes: ['id', 'nombre']
+            },
+            {
+                model: bebidaModel,
+                attributes: ['id'],
+                include: {
+                    model: articuloModel,
+                    attributes: ['nombre']
+                }
             }]
         }, {
             model: userModel,
@@ -132,8 +155,6 @@ router.put('/estado/:id', async (req, res) => {
             id: req.params.id
         }
     });
-    console.log(pedido)
-
     if (pedido) {
         await pedido.update({
             estado: req.body.estado
@@ -150,21 +171,54 @@ router.put('/:id', async (req, res) => {
         }
     });
     console.log(pedido)
-
-    if (pedido) {
+    if (pedido) { //Datos de pedido en si
         await pedido.update({
-            estado: req.body.estado
+            estado: req.body.estado,
+            tipoRetiro: req.body.tipoRetiro
         })
+        const productosPedidos = req.body.productosPedidos // Array de productos
+        ////////////Comprobacion de existencia de Stock en los insumos del pedido//////////////
+        const validacion = await validarStock(productosPedidos)
+        /////////////Si hay Stock, Genero el Pedido ///////////////////
+        if (validacion.hayStock) {
+            //Eliminacion de los detalles relacionados al pedido
+            await detalle_pedido_model.destroy({
+                where: { id_pedido: pedido.id }
+            })
+            //Nueva asignacion de los detallesSemielaborados
+            productosPedidos.forEach(async (item, index) => {
+                if (item.idBebida) {
+                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
+                        id_pedido: venta.id,
+                        tipoRetiro: req.body.tipoRetiro,
+                        bebida_id: item.idBebida,
+                        cantidad: item.cantidad,
+                        precioDetalle: validacion.precios[index] * item.cantidad
+                    });
+                }
+                if (item.idElaborado) {
+                    await detalle_pedido_model.create({ //Creo un detalle por cada producto con su cantidad y lo asigno al id_venta              
+                        id_pedido: venta.id,
+                        elaborado_id: item.idElaborado,
+                        cantidad: item.cantidad,
+                        precioDetalle: validacion.precios[index] * item.cantidad
+                    });
+                }
+            })
+        }
+
+
+
 
     }
     res.json({ "Actualizado": "OK" })
 });
 
 ///////Validacion de Stock
-validarStock = async(productosPedidos) => {
+validarStock = async (productosPedidos) => {
     let hayStock = true;
     const precios = [] //almaceno los precios de los elaborados y bebidas en el pedido
-     for (item of productosPedidos) {
+    for (item of productosPedidos) {
         if (item.idBebida) {//Si es bebida
             const bebida = await bebidaModel.findOne({
                 where: { id: item.idBebida },
@@ -195,25 +249,24 @@ validarStock = async(productosPedidos) => {
             const longitudPrecios = elaborado.dataValues.precios.length;
             const ultimoPrecio = elaborado.dataValues.precios[longitudPrecios - 1].dataValues.monto;
             precios.push(ultimoPrecio);
-            console.log('Elaborado', elaborado.dataValues.nombre);
+            //console.log('Elaborado', elaborado.dataValues.nombre);
             const detallesElaborados = elaborado.dataValues.detalle_elaborados;//Detalles de cada Elaborado
-            const algo = await detallesElaborados.forEach(detalle => {//Recorro los detalles para revisar el stock de cada articulo
-                console.log('Nombre', detalle.dataValues.Articulo.dataValues.nombre);
-                console.log('cantidad necesaria para el Elaborado', detalle.dataValues.cantidad);
-                console.log('Cantidad del Pedido', item.cantidad);
+            await detallesElaborados.forEach(detalle => {//Recorro los detalles para revisar el stock de cada articulo
+                //console.log('Nombre', detalle.dataValues.Articulo.dataValues.nombre);
+                //console.log('cantidad necesaria para el Elaborado', detalle.dataValues.cantidad);
+                //console.log('Cantidad del Pedido', item.cantidad);
                 const cantidadNecesaria = item.cantidad * detalle.dataValues.cantidad;
-                console.log('cantidadNecesaria: ', cantidadNecesaria);
+                //console.log('cantidadNecesaria: ', cantidadNecesaria);
                 const stockActual = detalle.dataValues.Articulo.dataValues.stockActual;
-                console.log('Stock Actual: ', stockActual);
+                //console.log('Stock Actual: ', stockActual);
                 if (stockActual < cantidadNecesaria) {
                     hayStock = false;
-                    console.log('SEgundo');
                 }
             })
         }
-        
+
     };
-    return {'hayStock': hayStock, 'precios': precios}
+    return { 'hayStock': hayStock, 'precios': precios }
 }
 
 
