@@ -10,6 +10,10 @@ const detalle_pedido_model = sequelize.define('Detalle_Pedido', {
     cantidad: {
         type: Sequelize.DOUBLE,
         allowNull: false
+    },
+    precioDetalle: {
+        type: Sequelize.DOUBLE,
+        allowNull: false
     }
 
 }, {

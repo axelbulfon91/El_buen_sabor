@@ -54,6 +54,7 @@ pedidoModel.belongsTo(userModel, { foreignKey: 'id_cliente' });
 
 //Detalle_pedido
 detalle_pedido_model.belongsTo(elaboradoModel, { foreignKey: 'elaborado_id' });
+detalle_pedido_model.belongsTo(bebidaModel, { foreignKey: 'bebida_id' });
 detalle_pedido_model.belongsTo(pedidoModel, { foreignKey: 'id_pedido' });
 
 //Factura
@@ -87,6 +88,7 @@ detalle_semielaboradoModel.belongsTo(insumoModel, { foreignKey: 'insumo_id' })
 bebidaModel.belongsTo(articuloModel, { foreignKey: 'articulo_id' })
 bebidaModel.hasOne(ofertaModel, { foreignKey: 'bebida_id' })
 bebidaModel.hasMany(precioModel, { foreignKey: 'bebida_id' })
+bebidaModel.hasMany(detalle_pedido_model, { foreignKey: 'bebida_id' })
 
 //Precio
 precioModel.belongsTo(elaboradoModel, {foreignKey: 'elaborado_id'})
