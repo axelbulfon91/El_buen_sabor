@@ -5,11 +5,7 @@ const detalle_pedido_model = require('../models/detalle_pedido');
 const elaboradoModel = require('../models/elaborado');
 const userModel = require('../models/usuario');
 const articuloModel = require('../models/articulo');
-const categorieModel = require('../models/categorie');
 const detalleElaboradoModel = require('../models/detalle_elaborado');
-const semielaboradoModel = require('../models/semielaborado');
-const detalleSemielaboradoModel = require('../models/detalle_semielaborado');
-const insumoModel = require('../models/insumo');
 const precioModel = require('../models/precio');
 const bebidaModel = require('../models/bebida');
 
@@ -145,7 +141,15 @@ router.get('/:id', async (req, res) => {
 });
 
 router.delete('/:id', async (req, res) => {
-    console.log(req.params);
+    try {
+        await pedidoModel.destroy({
+            where: { id: req.params.id }
+        })
+        res.json({ 'message': "Pedido Eliminado" })
+    } catch (error) {
+        console.log(error);
+        res.json({ 'message': 'no se pudo elimnar' })
+    }
 });
 
 //Edicion del Estado de un Pedido
@@ -153,13 +157,23 @@ router.put('/estado/:id', async (req, res) => {
     const pedido = await pedidoModel.findOne({
         where: {
             id: req.params.id
-        }
+        },
+        include: detalle_pedido_model
     });
     if (pedido) {
-        await pedido.update({
-            estado: req.body.estado
-        })
 
+    //Actualizacion de stock correspondiente
+    if (req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
+        await actualizarStockPedido(pedido, 'restar');
+    }
+    //Si el estado era Confirmado pero se Cancela, vuelvo a sumar el stock
+    if (pedido.dataValues.estado === "confirmado" && req.body.estado === "cancelado"){
+        await actualizarStockPedido(pedido, 'sumar');
+    }
+    //Finalmente se actualiza el estado del pedido
+    await pedido.update({
+        estado: req.body.estado
+    })
     }
     res.json({ "Actualizado": "OK" })
 });
@@ -214,7 +228,7 @@ router.put('/:id', async (req, res) => {
 });
 
 ///////Validacion de Stock
-validarStock = async (productosPedidos) => {
+const validarStock = async (productosPedidos) => {
     let hayStock = true;
     const precios = [] //almaceno los precios de los elaborados y bebidas en el pedido
     for (item of productosPedidos) {
@@ -267,4 +281,52 @@ validarStock = async (productosPedidos) => {
     };
     return { 'hayStock': hayStock, 'precios': precios }
 }
+const actualizarStockPedido = async (pedido, operacion) => {
+            //Primero obtengo los elaborados y bebidas correspondientes del pedido  
+            const detallesPedido = pedido.dataValues.Detalle_Pedidos;
+            //Recorro el arreglo de detalles y Verifico si es una bebida
+            for (const detalle of detallesPedido) {
+                const cantidadDeDetalle = detalle.dataValues.cantidad;
+                if (detalle.dataValues.bebida_id) {//Si es una bebida
+                    
+                    await actualizarStockArticulo(detalle.dataValues.bebida_id, cantidadDeDetalle,operacion);
+    
+                } else {//Entonces es un elaborado
+                    const elaborado = await elaboradoModel.findOne({
+                        where: { id: detalle.dataValues.elaborado_id },
+                        include: detalleElaboradoModel
+                    })
+                    const detallesElaborado = elaborado.dataValues.detalle_elaborados;
+                    for (const detalleElab of detallesElaborado) {
+                        const cantidadPorElaborado = detalleElab.dataValues.cantidad;
+                        const cantidadARestar = cantidadDeDetalle * cantidadPorElaborado;
+    
+                        await actualizarStockArticulo(detalleElab.dataValues.articulo_id, cantidadARestar, operacion);
+    
+                    }
+                }
+            }
+
+}
+const actualizarStockArticulo = async (id, cantidad, operacion) => {
+    
+    const articulo = await articuloModel.findOne({
+        where: { id: id }
+    });
+    //console.log('Articulo: ',articulo.dataValues.nombre);
+    //console.log('cantidadARestar: ',cantidad);
+    const stockActualArt = articulo.dataValues.stockActual;
+    let nuevoStockActualizado = 0;
+    if (operacion === 'restar') {
+        nuevoStockActualizado = stockActualArt - cantidad;
+
+    }
+    if (operacion === 'sumar') {
+        nuevoStockActualizado = stockActualArt + cantidad;
+    }
+    await articulo.update({
+        stockActual: nuevoStockActualizado
+    })
+}
+
 module.exports = router;

@@ -26,12 +26,12 @@ app.use(passport.initialize());
 
 
 //Rutas
-
+  //Usuarios
 app.use('/api/usuarios', require('./routes/usuarios'));
 app.use('/api/usuarios/domicilios', require('./routes/domicilio'));
-
+  //Pedidos
 app.use('/api/pedidos', require('./routes/pedido'));
-
+  //Productos
 app.use('/api/productos/insumos', require('./routes/insumos'));
 app.use('/api/productos/semielaborados', require('./routes/semielaborados'));
 app.use('/api/productos/elaborados', require('./routes/elaborados'));
@@ -39,8 +39,7 @@ app.use('/api/productos/categorias', require('./routes/categories'));
 app.use('/api/productos/ofertas', require('./routes/ofertas'));
 app.use('/api/productos/bebidas', require('./routes/bebidas'));
 app.use('/api/productos/existencias', require('./routes/existencias'));
-
-
+  //Facturas
 app.use('/api/facturas', require('./routes/facturas'));
 
 //Archivos estaticos
