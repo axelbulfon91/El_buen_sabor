@@ -7,6 +7,37 @@ const categorieModel = require('../models/categorie');
 const detalleSemielaboradoModel = require('../models/detalle_semielaborado');
 
 const router = Router();
+//Trae todas las existencias
+router.get('/', async (req, res) => {
+    try {
+        const existencias = await existenciaModel.findAll({
+            include: {
+                model: articuloModel,
+                attributes: ['id','nombre', 'stockActual']
+            }
+        })
+
+        res.json(existencias)
+    } catch (error) {
+        res.json(error)
+    }
+})
+//Trae todas las existencias de un articulo especifico
+router.get('/:id', async (req, res) => {
+    try {
+        const existencias = await existenciaModel.findAll({
+            where: { articulo_id: req.params.id},
+            include: {
+                model: articuloModel,
+                attributes: ['id','nombre', 'stockActual']
+            }
+        })
+
+        res.json(existencias)
+    } catch (error) {
+        res.json(error)
+    }
+})
 
 //Existencias para Insumos
 router.post('/insumos', async (req, res) => {
@@ -20,6 +51,7 @@ router.post('/insumos', async (req, res) => {
         res.json(error)
     }
 })
+
 router.delete('/insumos/:id', async (req, res) => {
     try {
         let existencia = await obtenerExistencia(req.params.id)

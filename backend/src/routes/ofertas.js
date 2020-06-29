@@ -28,14 +28,14 @@ router.get('/', async (req, res) => {
         attributes: ['id','porcentajeDescuento'],
         include: [{
             model: bebidaModel,
-            attributes:['id', 'precio'],
+            attributes:['id'],
             include: {
                 model: articuloModel,
                 attributes: ['id', 'nombre']
             }
         },{
             model: elaboradoModel,
-            attributes: ['id', 'nombre', 'precio']
+            attributes: ['id', 'nombre']
         }]
     })
 

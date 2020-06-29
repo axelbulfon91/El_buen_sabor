@@ -204,9 +204,9 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         const precios = elaboradoAux.dataValues.precios
         const longitudPrecios = precios.length;
         const montoUltimoPrecio = elaboradoAux.dataValues.precios[longitudPrecios-1].dataValues.monto;
-        console.log(montoUltimoPrecio);
-        console.log(req.body.precio);
-        console.log(montoUltimoPrecio != req.body.precio);
+        //console.log(montoUltimoPrecio);
+        //console.log(req.body.precio);
+        //console.log(montoUltimoPrecio != req.body.precio);
         if(montoUltimoPrecio != req.body.precio){
             await precioModel.create({
                 monto: req.body.precio,
