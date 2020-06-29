@@ -3,6 +3,7 @@ const ofertaModel = require('../models/oferta');
 const bebidaModel = require('../models/bebida');
 const elaboradoModel = require('../models/elaborado');
 const articuloModel = require('../models/articulo');
+const precioModel = require('../models/precio');
 
 const router = Router();
 
@@ -29,16 +30,36 @@ router.get('/', async (req, res) => {
         include: [{
             model: bebidaModel,
             attributes:['id'],
-            include: {
+            include: [{
                 model: articuloModel,
                 attributes: ['id', 'nombre']
-            }
+            },
+            {
+                model: precioModel,
+                attributes: ['id', 'monto', 'tipoMoneda']
+            }]
         },{
             model: elaboradoModel,
-            attributes: ['id', 'nombre']
+            attributes: ['id', 'nombre'],
+            include: {
+                model: precioModel,
+                attributes: ['id', 'monto', 'tipoMoneda']
+            }
         }]
     })
-
+    for (const oferta of ofertas) {
+        if(oferta.dataValues.bebida){//Es una bebida
+            const longitudPrecios = oferta.dataValues.bebida.dataValues.precios.length;
+            const ultimoPrecio = oferta.dataValues.bebida.dataValues.precios[longitudPrecios-1].dataValues.monto;
+            delete oferta.dataValues.bebida.dataValues.precios;
+            oferta.dataValues.bebida.dataValues.precio = ultimoPrecio;
+        }else{//Es una oferta de un elaborado
+            const longitudPrecios = oferta.dataValues.elaborado.dataValues.precios.length;
+            const ultimoPrecio = oferta.dataValues.elaborado.dataValues.precios[longitudPrecios-1].dataValues.monto;
+            delete oferta.dataValues.elaborado.dataValues.precios;
+            oferta.dataValues.elaborado.dataValues.precio = ultimoPrecio;
+        }
+    }
     res.json(ofertas)
 })
 
