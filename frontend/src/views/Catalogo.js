@@ -4,24 +4,22 @@ import React from "react";
 // reactstrap components
 
 // core components
-import Footer from "components/Footers/Footer.js";
-import IndexNavbar from "components/Navbars/IndexNavbar.js";
-import SectionAbout from "views/sections/SectionAbout.js";
+import SectionAbout from "components/sections/generales/SectionAbout.js";
 
 // index sections
 
-import SectionCatalogo from "views/sections/SectionCatalogo.js";
+import SectionCatalogo from "components/sections/catalogo/SectionCatalogo.js";
 
 
 function Catalogo() {
 
   return (
     <>
-        <IndexNavbar />
+
       <div className="main">
         <SectionCatalogo/>
         <SectionAbout />
-        <Footer />
+   
       </div>
     </>
   );

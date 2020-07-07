@@ -4,15 +4,14 @@ import React from "react";
 // reactstrap components
 
 // core components
-import IndexNavbar from "components/Navbars/IndexNavbar.js";
+
 import IndexHeader from "components/Headers/IndexHeader.js";
-import Footer from "components/Footers/Footer.js";
 
 // index sections
 
-import SectionDestacados from "views/sections/SectionDestacados.js";
+import SectionDestacados from "components/sections/principal/SectionDestacados.js";
 
-import SectionAbout from "views/sections/SectionAbout.js";
+import SectionAbout from "components/sections/generales/SectionAbout.js";
 
 
 
@@ -26,12 +25,10 @@ function Index() {
   });
   return (
     <>
-      <IndexNavbar />
       <IndexHeader />
       <div className="main">
         <SectionDestacados/>
         <SectionAbout />
-        <Footer />
       </div>
     </>
   );

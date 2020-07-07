@@ -2,11 +2,6 @@
 import React from "react";
 
 // reactstrap components
-
-// core components
-import Footer from "components/Footers/Footer.js";
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -20,11 +15,11 @@ import {
   Col,
 } from "reactstrap";
 
-function Register() {
+// core components
 
+function SectionRegister() {
   return (
     <>
-      <div className="main">
       <div
         className="section section-image section-login"
         style={{
@@ -121,9 +116,8 @@ function Register() {
           </Row>
         </Container>
       </div>{" "}
-      </div>
     </>
   );
 }
 
-export default Register;
+export default SectionRegister;

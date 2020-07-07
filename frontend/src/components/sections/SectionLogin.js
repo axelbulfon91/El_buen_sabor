@@ -2,11 +2,6 @@
 import React from "react";
 
 // reactstrap components
-
-// core components
-import Footer from "components/Footers/Footer.js";
-
-// reactstrap components
 import {
   Button,
   Card,
@@ -20,11 +15,11 @@ import {
   Col,
 } from "reactstrap";
 
-function Register() {
+// core components
 
+function SectionLogin() {
   return (
     <>
-      <div className="main">
       <div
         className="section section-image section-login"
         style={{
@@ -34,8 +29,8 @@ function Register() {
         <Container>
           <Row>
             <Col className="mx-auto" lg="4" md="6">
-              <Card className="card-register ">
-                <h3 className=" mx-auto text-dark">REGISTRO</h3>
+              <Card className="card-register">
+                <h3 className=" mx-auto text-dark">LOGIN</h3>
                 <div className="social-line text-center">
                 
                   <Button
@@ -49,34 +44,6 @@ function Register() {
              
                 </div>
                 <Form className="register-form mt-5 ">
-
-                <InputGroup className="form-group-no-border mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                      <i class="fa fa-pencil"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="Nombre Completo" type="text" />
-                  </InputGroup>
-
-                  <InputGroup className="form-group-no-border mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                      <i class="fa fa-phone"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="Telefono" type="tel" />
-                  </InputGroup>
-
-                  <InputGroup className="form-group-no-border mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                      <i className="fa fa-map"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="Direccion" type="text" />
-                  </InputGroup>
-
                   <InputGroup className="form-group-no-border mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
@@ -86,7 +53,7 @@ function Register() {
                     <Input placeholder="Email" type="email" />
                   </InputGroup>
 
-                  <InputGroup className="form-group-no-border mb-3">
+                  <InputGroup className="form-group-no-border">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="nc-icon nc-key-25" />
@@ -94,36 +61,45 @@ function Register() {
                     </InputGroupAddon>
                     <Input placeholder="Password" type="password" />
                   </InputGroup>
-
                   <Button
                     block
                     className="btn-round"
                     color="info"
                     type="button"
                   >
-                    Registrar
+                    INICIAR
                   </Button>
                 </Form>
+                <div className="register">
+                  
+                  <Button
+                    className="btn-link"
+                    color="dark"
+                    href="#"
+                    onClick={(e) => e.preventDefault()}
+                  >
+                    Recordar contraseña
+                  </Button>
+                </div>
               </Card>
               <div className="col text-center">
                 <Button
                   className="btn-round"
                   outline
                   color="info"
-                  href="/LoginPage"
+                  href="/RegisterPage"
                   size="lg"
                   target=""
                 >
-                  Logearme
+                  Registrarme
                 </Button>
               </div>
             </Col>
           </Row>
         </Container>
       </div>{" "}
-      </div>
     </>
   );
 }
 
-export default Register;
+export default SectionLogin;

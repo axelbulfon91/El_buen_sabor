@@ -8,6 +8,8 @@ import "assets/css/bootstrap.min.css";
 import "assets/scss/paper-kit.scss?v=1.2.0";
 import "assets/demo/demo.css?v=1.2.0";
 // pages
+import IndexNavbar from "components/Navbars/IndexNavbar.js";
+import Footer from "components/Footers/Footer.js";
 import Index from "views/Index.js";
 import LoginPage from "views/LoginPage.js";
 import RegisterPage from "views/RegisterPage.js";
@@ -17,6 +19,7 @@ import Detalle from "views/Detalle.js";
 
 ReactDOM.render(
   <BrowserRouter>
+      <IndexNavbar />
     <Switch>
       <Route exact path="/" render={(props) => <Index {...props} />} />
       <Route
@@ -37,6 +40,8 @@ ReactDOM.render(
       />
       <Redirect to="/" />
     </Switch>
+    
+    <Footer />
   </BrowserRouter>,
   document.getElementById("root")
 );
