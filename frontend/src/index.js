@@ -15,6 +15,7 @@ import LoginPage from "views/LoginPage.js";
 import RegisterPage from "views/RegisterPage.js";
 import Catalogo from "views/Catalogo.js";
 import Detalle from "views/Detalle.js";
+import Carrito from "views/Carrito";
 // others
 
 ReactDOM.render(
@@ -29,6 +30,10 @@ ReactDOM.render(
       <Route
          exact path="/RegisterPage"
         render={(props) => <RegisterPage {...props} />}
+      />
+      <Route
+         exact path="/carrito"
+        render={(props) => <Carrito {...props} />}
       />
       <Route
          exact path="/Catalogo"

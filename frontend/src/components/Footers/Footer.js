@@ -24,8 +24,7 @@ function Footer() {
           </nav>
           <div className="credits ml-auto">
             <span className="copyright">
-              © {new Date().getFullYear()}, hecho con {" "}
-              <i className="fa fa-heart heart" /> creado por GRUPO BDG
+              © {new Date().getFullYear()}, QATRO Soft
             </span>
           </div>
         </Row>

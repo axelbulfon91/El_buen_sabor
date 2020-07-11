@@ -3,10 +3,6 @@ import React from "react";
 
 // reactstrap components
 
-// core components
-import Footer from "components/Footers/Footer.js";
-
-// reactstrap components
 import {
   Button,
   Card,

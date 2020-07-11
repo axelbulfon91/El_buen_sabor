@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import { Button, Badge } from 'react-bootstrap';
-import store from '../store';
+
 
 class Navigation extends PureComponent {
 
