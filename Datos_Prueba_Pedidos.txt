@@ -1,0 +1,60 @@
+/*
+SQLyog Ultimate v9.02 
+MySQL - 5.5.5-10.4.8-MariaDB : Database - db_buen_sabor_lab4
+*********************************************************************
+*/
+
+/*!40101 SET NAMES utf8 */;
+
+/*!40101 SET SQL_MODE=''*/;
+
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`db_buen_sabor_lab4` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+
+USE `db_buen_sabor_lab4`;
+
+/*Data for the table `articulos` */
+
+/*Data for the table `categoria` */
+
+insert  into `categoria`(`id`,`nombre`,`tipo`,`created_at`,`updated_at`) values (1,'Pizas',NULL,'2020-06-04 03:35:32','2020-06-04 03:35:32'),(2,'Lomos',NULL,'2020-06-04 03:35:39','2020-06-04 03:35:39'),(3,'Bebidas',NULL,'2020-06-04 03:35:48','2020-06-04 03:35:48');
+
+/*Data for the table `detalle__pedidos` */
+
+insert  into `detalle__pedidos`(`id`,`id_pedido`,`cantidad`,`created_at`,`updated_at`,`elaborado_id`) values (1,1,1,'2020-06-08 04:03:07','2020-06-08 04:03:07',4),(2,1,7,'2020-06-08 04:03:07','2020-06-08 04:03:07',2),(3,1,2,'2020-06-08 04:03:07','2020-06-08 04:03:07',5),(10,4,3,'2020-06-08 04:44:55','2020-06-08 04:44:55',6),(11,4,1,'2020-06-08 04:44:55','2020-06-08 04:44:55',5),(12,4,4,'2020-06-08 04:44:55','2020-06-08 04:44:55',4),(13,6,1,'2020-06-09 00:29:50','2020-06-09 00:29:50',1),(14,6,2,'2020-06-09 00:29:50','2020-06-09 00:29:50',2),(15,7,4,'2020-06-09 00:34:49','2020-06-09 00:34:49',4);
+
+/*Data for the table `detalle_elaborados` */
+
+/*Data for the table `detalle_semielaborados` */
+
+/*Data for the table `domicilios` */
+
+insert  into `domicilios`(`id`,`calle`,`numeracion`,`detalle_adicional`,`id_localidad`,`id_usuario`) values (5,'Berutti',1948,'Depto 2',14,1),(6,'Nueva calle',1900,'Nuevo detalle',1500,2);
+
+/*Data for the table `elaborados` */
+
+insert  into `elaborados`(`id`,`nombre`,`precio`,`nombre_img`,`detalle`,`tiempo_elaboracion`,`es_catalogo`,`created_at`,`updated_at`,`categoria_id`) values (1,'Piza Mozzarella',170,'1591241771660.jpg','Piza mozzarella',NULL,NULL,'2020-06-04 03:36:11','2020-06-04 03:36:11',1),(2,'Piza Especial',220,'1591241807232.jpg','piza con morron y aceituna',NULL,NULL,'2020-06-04 03:36:47','2020-06-04 03:36:47',1),(3,'Lomo completo',240,'1591241828255.jpg','Lomito completo',NULL,NULL,'2020-06-04 03:37:08','2020-06-04 03:37:08',2),(4,'Lomo chico',170,'1591241857560.jpg','lomo para uno',NULL,NULL,'2020-06-04 03:37:37','2020-06-04 03:37:37',2),(5,'Quilmes',90,'1591241891653.jpg','500 cc',NULL,NULL,'2020-06-04 03:38:11','2020-06-04 03:38:11',3),(6,'Coca-Cola',85,'1591242017737.jpg','500 cc',NULL,NULL,'2020-06-04 03:40:17','2020-06-04 03:40:17',3);
+
+/*Data for the table `existencia` */
+
+/*Data for the table `facturas` */
+
+/*Data for the table `insumos` */
+
+/*Data for the table `pedidos` */
+
+insert  into `pedidos`(`id`,`id_cliente`,`estado`,`tipo_retiro`,`created_at`,`updated_at`) values (1,1,'En Produccion',1,'2020-06-08 04:03:07','2020-06-09 17:20:28'),(4,2,'En Produccion',2,'2020-06-08 04:44:55','2020-06-09 18:13:11'),(6,1,'En Produccion',1,'2020-06-09 00:29:50','2020-06-09 18:24:35'),(7,1,'Creado',1,'2020-06-09 00:34:49','2020-06-09 17:08:05');
+
+/*Data for the table `semielaborados` */
+
+/*Data for the table `usuarios` */
+
+insert  into `usuarios`(`id`,`nombre`,`email`,`telefono`,`rol`,`password`,`provider`,`provider_id`,`created_at`,`updated_at`) values (1,'Carlos','Carlos@gmail.com','','Cliente','$2a$10$tbW38w2KdKUZ25IQyYRIce607D49Rzid1YpQ.FvnFPlbccSGlEpum',NULL,NULL,'2020-06-08 04:01:34','2020-06-08 04:01:34'),(2,'Axel','axel@gmail.com','','Cliente','$2a$10$Ldt.vOaOWjDCoYNq1ziC3eqvXFmqCBo.OwjrR6bdT4okuFYu/HmHO',NULL,NULL,'2020-06-08 04:39:00','2020-06-08 04:39:00');
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

@@ -1,9 +1,5 @@
 const Sequelize = require('sequelize');
 const keys = require('./keys');
-const ProductModel = require('./models/producto');
-const UsuarioModel = require('./models/usuario');
-const CategorieModel = require('./models/categorie');
-const CarritoModel = require('./models/carrito');
 
 //Configuro conexion de base de datos
 const sequelize = new Sequelize(
@@ -25,29 +21,11 @@ sequelize.authenticate()
         console.error('Error de conexion:', err.name);
     });
 
-//Generacion de modelos   
-const productModel = ProductModel(sequelize, Sequelize);
-const userModel = UsuarioModel(sequelize, Sequelize);
-const categorieModel = CategorieModel(sequelize, Sequelize);
-const carritoModel = CarritoModel(sequelize, Sequelize);
+module.exports = sequelize;
 
-//Asociaciones
-//Producto - Categoria
-categorieModel.hasMany(productModel, { foreignKey: 'categoria_id'});
-productModel.belongsTo(categorieModel, { foreignKey: 'categoria_id'});
-
-//Asociaciones
-//Carrito - Usuario
-carritoModel.belongsTo(userModel, {foreignKey: 'id_usuario'})
-userModel.hasMany(carritoModel, {foreignKey: 'id_usuario'})
-
-//Sincronicacion de modelos en bd
-sequelize.sync({force: false})
-    .then(()=> console.log('Tablas sincronizadas'));
-
-
-module.exports = {
-    productModel,
-    categorieModel,
-    userModel
-}
+//Generacion de Modelos y sus Asociaciones
+require('./associations')
+    
+///////////////Sincronicacion de modelos en bd
+ sequelize.sync({ force: false })
+     .then(() => console.log('Tablas sincronizadas'));

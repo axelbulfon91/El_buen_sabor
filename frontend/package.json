@@ -1,6 +1,6 @@
 {
-  "name": "Only",
-  "version": "1.0.0",
+  "name": "El_Buen_Sabor",
+  "version": "0.1.0",
   "private": true,
   "dependencies": {
     "axios": "^0.19.2",

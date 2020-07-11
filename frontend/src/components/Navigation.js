@@ -14,8 +14,8 @@ class Navigation extends PureComponent {
                 estado: false,
                 url: location.pathname                
             },
-            //carrito: store.getState().carrito
-            carrito: JSON.parse(window.sessionStorage.getItem('carrito'))
+            carrito: JSON.parse(window.sessionStorage.getItem('carrito')) || store.getState().carrito
+            
         }
         
         

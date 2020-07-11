@@ -1,30 +1,25 @@
 const Sequelize = require('sequelize')
 const sequelize = require('../database');
 
-
-const userModel = sequelize.define('Usuario', {
+const elaboradoModel = sequelize.define('elaborado', {
 
     nombre: {
         type: Sequelize.STRING,
-    },
-    email: {
-        type: Sequelize.STRING,
-        allowNull: true
-    },
-    telefono: {
-        type: Sequelize.STRING,
         allowNull: false
     },
-    password: {
+
+    nombreImg: {
         type: Sequelize.STRING
     },
 
-    provider: {
+    detalle: {
         type: Sequelize.STRING
     },
-
-    providerId: {
-        type: Sequelize.STRING
+    tiempoElaboracion: {
+        type: Sequelize.INTEGER
+    },
+    esCatalogo: {
+        type: Sequelize.BOOLEAN
     },
 
 }, {
@@ -32,6 +27,6 @@ const userModel = sequelize.define('Usuario', {
     underscored: true
 });
 
-module.exports = userModel;
 
+module.exports = elaboradoModel;
 

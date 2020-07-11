@@ -1,15 +1,19 @@
-module.exports = (sequelize, type) => {
+const Sequelize = require('sequelize')
+const sequelize = require('../database');
 
-    return sequelize.define('Categoria', {
+const categorieModel = sequelize.define('Categoria', {
 
-        nombre: {
-            type: type.STRING,
-            allowNull: false
-        },       
+    nombre: {
+        type: Sequelize.STRING,
+        allowNull: false
+    },
+    tipo: {
+        type: Sequelize.STRING
+    }
 
-    }, {
-        timestamps: true,
-        underscored: true
-    });
+}, {
+    timestamps: true,
+    underscored: true
+});
 
-}
+module.exports = categorieModel;
