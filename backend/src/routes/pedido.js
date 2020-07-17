@@ -75,8 +75,7 @@ router.get('/', async (req, res) => {
             model: userModel,
             attributes: ['id', 'nombre']
         }]
-    });
-
+    });    
     res.json({ "pedidos": pedidos });
 });
 
@@ -108,7 +107,16 @@ router.get('/usuario/:id', async (req, res) => {
             attributes: ['id', 'nombre']
         }]
     });
-    res.json(pedidos)
+    var totales = []    
+    pedidos.forEach(ped => {
+        var total = 0
+        ped.dataValues.Detalle_Pedidos.forEach(d =>{
+            total += (d.cantidad * d.precioDetalle)
+        })
+        totales.push(total)
+    });
+    console.log(totales)
+    res.json({'pedidos': pedidos, 'totales': totales})
 });
 //Trae los datos de un solo pedido segun su id (PARA EL CLIENTE O ADMINISTRADOR) 
 router.get('/:id', async (req, res) => {

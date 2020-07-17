@@ -11,7 +11,7 @@ const pedidoModel = sequelize.define('Pedido', {
         type: Sequelize.STRING
     },
     tipoRetiro: {
-        type: Sequelize.INTEGER  // 1- Delivery , 2- Retiro por local
+        type: Sequelize.INTEGER  // 0- Delivery , 1- Retiro por local
     }
 },
     {
