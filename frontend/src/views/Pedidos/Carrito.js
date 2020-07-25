@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Container, Row, Table, Button } from 'reactstrap'
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
+import axiosAutorizado from 'utils/axiosAutorizado';
 
 function Carrito() {
 
@@ -16,8 +17,13 @@ function Carrito() {
     }, [])
 
     const obtenerDatos = async () => {
+
+
+       
+
+
         var aux = 0
-        const dato = await Axios.get("http://localhost:4000/api/pedidos/" + 1)  // Id de pedido solicitado
+        const dato = await axiosAutorizado().get("http://localhost:4000/api/pedidos/" + 1)  // Id de pedido solicitado
         var pedido = dato.data
         if (pedido !== null) {
             var productosDeCarrito = pedido.Detalle_Pedidos

@@ -1,5 +1,5 @@
 
-import React from "react";
+import React, from "react";
 
 // reactstrap components
 import {
@@ -14,10 +14,15 @@ import {
   Row,
   Col,
 } from "reactstrap";
+import Login from "views/LoginPage";
+
 
 // core components
 
 function SectionLogin() {
+
+  
+
   return (
     <>
       <div
@@ -32,25 +37,25 @@ function SectionLogin() {
               <Card className="card-register">
                 <h3 className=" mx-auto text-dark">LOGIN</h3>
                 <div className="social-line text-center">
-                
+
                   <Button
                     className="btn-neutral  btn-danger text-light mt-0 ml-1 d-block text-center"
                     color="google"
                     href="#pablo"
                     onClick={(e) => e.preventDefault()}
                   >
-                  <i className="fa fa-google-plus" />
+                    <i className="fa fa-google-plus" />
                   </Button>
-             
+
                 </div>
-                <Form className="register-form mt-5 ">
+                <Form className="register-form mt-5">
                   <InputGroup className="form-group-no-border mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                         <i className="nc-icon nc-email-85" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Email" type="email" />
+                    <Input name="username" placeholder="Email" type="email"  />
                   </InputGroup>
 
                   <InputGroup className="form-group-no-border">
@@ -59,19 +64,20 @@ function SectionLogin() {
                         <i className="nc-icon nc-key-25" />
                       </InputGroupText>
                     </InputGroupAddon>
-                    <Input placeholder="Password" type="password" />
+                    <Input name="password" placeholder="Password" type="password"  />
                   </InputGroup>
                   <Button
                     block
                     className="btn-round"
                     color="info"
                     type="button"
+
                   >
                     INICIAR
                   </Button>
                 </Form>
                 <div className="register">
-                  
+
                   <Button
                     className="btn-link"
                     color="dark"
