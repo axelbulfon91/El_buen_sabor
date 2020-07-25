@@ -15,6 +15,7 @@ import LoginPage from "views/LoginPage.js";
 import RegisterPage from "views/RegisterPage.js";
 import Catalogo from "views/Catalogo.js";
 import Detalle from "views/Detalle.js";
+import Perfil from "views/Perfil.js";
 // others
 
 ReactDOM.render(
@@ -37,6 +38,10 @@ ReactDOM.render(
       <Route
          exact path="/Detalle/:valor"
         render={(props) => <Detalle {...props} />}
+      />
+      <Route
+         exact path="/Perfil"
+        render={(props) => <Perfil {...props} />}
       />
       <Redirect to="/" />
     </Switch>

@@ -3,9 +3,6 @@ import React from "react";
 
 // reactstrap components
 
-// core components
-import Footer from "components/Footers/Footer.js";
-
 // reactstrap components
 import {
   Button,
@@ -50,7 +47,7 @@ function Register() {
                 </div>
                 <Form className="register-form mt-5 ">
 
-                <InputGroup className="form-group-no-border mb-3">
+                  <InputGroup className="form-group-no-border mb-3">
                     <InputGroupAddon addonType="prepend">
                       <InputGroupText>
                       <i class="fa fa-pencil"></i>
@@ -66,15 +63,6 @@ function Register() {
                       </InputGroupText>
                     </InputGroupAddon>
                     <Input placeholder="Telefono" type="tel" />
-                  </InputGroup>
-
-                  <InputGroup className="form-group-no-border mb-3">
-                    <InputGroupAddon addonType="prepend">
-                      <InputGroupText>
-                      <i className="fa fa-map"></i>
-                      </InputGroupText>
-                    </InputGroupAddon>
-                    <Input placeholder="Direccion" type="text" />
                   </InputGroup>
 
                   <InputGroup className="form-group-no-border mb-3">
