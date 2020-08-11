@@ -1,3 +1,4 @@
+
 const { Router } = require('express');
 const router = Router();
 const elaboradoModel = require('../models/elaborado')
@@ -224,5 +225,6 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
     }
 
 });
+
 
 module.exports = router;

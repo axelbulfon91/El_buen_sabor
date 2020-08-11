@@ -1,3 +1,4 @@
+
 const { Router } = require('express');
 const bebidaModel = require('../models/bebida');
 const articuloModel = require('../models/articulo');
@@ -192,5 +193,6 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         res.json("Producto no encontrado");
     }
 });
+
 
 module.exports = router;

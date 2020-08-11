@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Table, PopoverBody, Button, UncontrolledPopover } from 'reactstrap'
-import Axios from 'axios';
+import { Container, Table, PopoverBody, Button, UncontrolledPopover } from 'reactstrap';
 import { format, register } from 'timeago.js';
 import { Link } from 'react-router-dom';
+import jwtDecode from 'jwt-decode';
+import axiosAutorizado from '../../utils/axiosAutorizado';
 
-function HistorialPedidos(props) {
+function HistorialPedidos() {
 
-    const idUsuario = props.match.params.idUsuario
+    const userData = jwtDecode(localStorage.getItem('token'));
+    const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
     const [totales, setTotales] = useState([])
 
@@ -17,7 +19,7 @@ function HistorialPedidos(props) {
     
     async function obtenerDatos() {
 
-        const resp = await Axios.get("http://localhost:4000/api/pedidos/usuario/" + idUsuario) // ID de usuario 
+        const resp = await axiosAutorizado().get("http://localhost:4000/api/pedidos/usuario/" + idUsuario) // ID de usuario 
         const pedidos = resp.data.pedidos
         const totales = resp.data.totales
         if (pedidos !== null) {

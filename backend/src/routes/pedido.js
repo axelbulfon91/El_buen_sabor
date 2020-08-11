@@ -8,6 +8,7 @@ const articuloModel = require('../models/articulo');
 const detalleElaboradoModel = require('../models/detalle_elaborado');
 const precioModel = require('../models/precio');
 const bebidaModel = require('../models/bebida');
+const { comprobarToken } = require('../lib/service_jwt')
 
 
 
@@ -80,7 +81,7 @@ router.get('/', async (req, res) => {
 });
 
 //Trae todos los pedidos de un usuario especifico (PARA EL CLIENTE) 
-router.get('/usuario/:id', async (req, res) => {
+router.get('/usuario/:id', comprobarToken ,async (req, res) => {
 
     const pedidos = await pedidoModel.findAll({
         where: {
@@ -118,8 +119,9 @@ router.get('/usuario/:id', async (req, res) => {
     console.log(totales)
     res.json({'pedidos': pedidos, 'totales': totales})
 });
+
 //Trae los datos de un solo pedido segun su id (PARA EL CLIENTE O ADMINISTRADOR) 
-router.get('/:id', async (req, res) => {
+router.get('/:id', comprobarToken ,async (req, res) => {
     const pedido = await pedidoModel.findOne({
         where: {
             id: req.params.id

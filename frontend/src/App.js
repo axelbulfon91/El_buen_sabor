@@ -1,49 +1,77 @@
-import React from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Navigation from './components/Navigation';
-import LandingPage from './components/Componentes-Cliente/LandingPage';
-import Carrito from './components/Componentes-Cliente/Carrito';
-import ProductList from './components/Componentes-Admin/ProductList';
-import CrearProducto from './components/Componentes-Admin/CrearProducto';
-import CrearCategoria from './components/Componentes-Admin/CrearCategoria';
-import UserProfile from './components/Componentes-Cliente/UserProfile';
-import UserLogin from './components/Componentes-Cliente/UserLogin';
-import LoginAdmin from './components/Componentes-Admin/LoginAdmin';
-import UserRegister from './components/Componentes-Cliente/UserRegister';
-import InfoNegocio from './components/Componentes-Admin/InfoNegocio';
-import MainCajero from './components/Componentes-Cajero/MainCajero';
+import React, { useState } from "react";
+import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+
+// styles
+import "assets/css/bootstrap.min.css";
+import "assets/scss/paper-kit.scss?v=1.2.0";
+import "assets/demo/demo.css?v=1.2.0";
+// pages
+import IndexNavbar from "components/Navbars/IndexNavbar.js";
+import Footer from "components/Footers/Footer.js";
+import Index from "views/Index.js";
+import LoginPage from "views/LoginPage.js";
+import RegisterPage from "views/RegisterPage.js";
+import Catalogo from "views/Catalogo.js";
+import Detalle from "views/Detalle.js";
+import Carrito from "views/Pedidos/Carrito";
+import HistorialPedidos from 'views/Pedidos/HistorialPedidos';
+import { UserContext } from './UserContext';
+
+//utils
+import RutaPrivada from './utils/RutaPrivada';
 
 
 function App() {
 
+  const [usuario, setUsuario] = useState(null);
+  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") ? true : false);
+
   return (
 
-      <Router>
-          <Navigation/>
 
-            <div className="container p-4">
+    <BrowserRouter>
+      <UserContext.Provider value={{ usuario, setUsuario, loggedIn, setLoggedIn }}>
 
-              <Route exact path="/" component={LandingPage}></Route>
+        <IndexNavbar />
+        <Switch>
+          <Route exact path="/" render={(props) => <Index {...props} />} />
+          <Route
+            exact path="/LoginPage"
+            render={(props) => <LoginPage {...props} />}
+          />
+          <Route
+            exact path="/RegisterPage"
+            render={(props) => <RegisterPage {...props} />}
+          />
+          <RutaPrivada
+            exact path="/carrito"
+            // render={(props) => <Carrito {...props} />}
+            component={Carrito}
+          />
+          <RutaPrivada
+            exact path="/historialPedidos"
+            // render={(props) => <HistorialPedidos {...props} />}
+            component={HistorialPedidos}
+          />
+          <Route
+            exact path="/Catalogo"
+            render={(props) => <Catalogo {...props} />}
+          />
+          <Route
+            exact path="/Detalle/:valor"
+            render={(props) => <Detalle {...props} />}
+          />
+          <Redirect to="/" />
+        </Switch>
 
-              <Route exact path="/registro" component={UserRegister}></Route>
-              <Route exact path="/login" component={UserLogin}></Route>
-              <Route exact path="/profile" component={UserProfile}></Route>
-              <Route exact path="/carrito" component={Carrito}></Route>
+        <Footer />
+      </UserContext.Provider>
+    </BrowserRouter>
 
-              <Route exact path="/admin" component={LoginAdmin}></Route>
-              <Route exact path="/admin/gestionarProducts" component={ProductList}></Route>
-              <Route exact path="/admin/editarNegocio" component={InfoNegocio}></Route>
-              <Route exact path="/admin/crearProducto" component={CrearProducto}></Route>              
-              <Route exact path="/admin/editarProducto/:id" component={CrearProducto}></Route>
-              <Route exact path="/admin/crearCategoria" component={CrearCategoria}></Route>
-            
-              <Route exact path="/cajero" component={MainCajero}></Route>
-              <Route exact path="/cajero/:id" component={MainCajero}></Route>
-                        
-            </div>      
-       
-      </Router>
+
+
+
+
 
   );
 }
