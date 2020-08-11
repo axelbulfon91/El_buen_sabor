@@ -13,7 +13,11 @@ router.get('/', async (req, res) => {
         const existencias = await existenciaModel.findAll({
             include: {
                 model: articuloModel,
-                attributes: ['id','nombre', 'stockActual']
+                attributes: ['id','nombre', 'stockActual', 'unidadMedida'],
+                include: {
+                    model: categorieModel,
+                    attributes: ["tipo"]
+                }
             }
         })
 
@@ -29,7 +33,7 @@ router.get('/:id', async (req, res) => {
             where: { articulo_id: req.params.id},
             include: {
                 model: articuloModel,
-                attributes: ['id','nombre', 'stockActual']
+                attributes: ['id','nombre', 'stockActual', 'unidadMedida']
             }
         })
 
@@ -241,12 +245,12 @@ actualizarStock = async (operacion, articulo, cantidad) => {
     let stockNuevo = 0
     let actualizado = null;
     if (operacion === 'sumar') {
-        stockNuevo = articulo.dataValues.stockActual + cantidad
+        stockNuevo = Number(articulo.dataValues.stockActual) + Number(cantidad)
         actualizado = await articulo.update({
             stockActual: stockNuevo
         })
     } else if (operacion === 'restar') {
-        stockNuevo = articulo.dataValues.stockActual - cantidad
+        stockNuevo = Number(articulo.dataValues.stockActual) - Number(cantidad)
         actualizado = await articulo.update({
             stockActual: stockNuevo
         })

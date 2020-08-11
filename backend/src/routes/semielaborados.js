@@ -43,7 +43,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
         articulo_id: articulo.id,
         costoFabricacion: req.body.costoFabricacion
     })
-    req.body.insumos.forEach(async (insumo) => {
+    JSON.parse(req.body.insumos).forEach(async (insumo) => {//Parsear a Json el arreglo de insumos recibido
         await detalleSemielaboradoModel.create({
             cantidad: insumo.cantidad,
             semielaborado_id: semielaborado.id,
@@ -57,7 +57,7 @@ router.post('/', upload.single('imagen'), async (req, res) => {
 //Trae todos los semielaborados
 router.get('/', async (req, res) => {
     const semielaborados = await semielaboradoModel.findAll({
-        attributes: ['id'],
+        attributes: ['id', 'costoFabricacion'],
         include: [{
             model: articuloModel,
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
@@ -90,7 +90,7 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     const semielaborado = await semielaboradoModel.findOne({
         where: { id: req.params.id },
-        attributes: ['id'],
+        attributes: ['id', 'costoFabricacion'],
         include: [{
             model: articuloModel,
             attributes: ['id','nombre', 'nombreImg', 'unidadMedida', 'stockMaximo', 'stockMinimo', 'stockActual'],
@@ -159,11 +159,11 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         { where: { id: semielaborado.articulo_id } }
     )
     if (articuloRelacionado) {
-        if (articuloRelacionado.nombreImg !== 'Sin imagen') {
-            await fs.unlink('src/public/imgs/' + articuloRelacionado.nombreImg, () => null);
-        }
         //Modificacion de los atributos del Articulo
         if (req.file) {
+            if (articuloRelacionado.nombreImg !== 'Sin imagen') {
+                await fs.unlink('src/public/imgs/' + articuloRelacionado.nombreImg, () => null);
+            }
             const { filename } = req.file;
             articulo = await articuloRelacionado.update({
                 nombre: req.body.nombre,
@@ -177,7 +177,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         } else {
             articulo = await articuloRelacionado.update({
                 nombre: req.body.nombre,
-                nombreImg: 'Sin imagen',
+                nombreImg: req.body.imagen,
                 categoria_id: req.body.categoria,
                 unidadMedida: req.body.unidadMedida,
                 stockMaximo: req.body.stockMaximo,
@@ -194,7 +194,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
             where: { semielaborado_id: semielaborado.id }
         })
         //Nueva asignacion de los detallesSemielaborados
-        req.body.insumos.forEach(async (insumo) => {
+        JSON.parse(req.body.insumos).forEach(async (insumo) => {
             await detalleSemielaboradoModel.create({
                 cantidad: insumo.cantidad,
                 semielaborado_id: semielaborado.id,
