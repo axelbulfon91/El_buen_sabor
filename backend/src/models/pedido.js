@@ -10,6 +10,9 @@ const pedidoModel = sequelize.define('Pedido', {
     estado: {
         type: Sequelize.STRING
     },
+    tiempoElaboracion: {
+        type: Sequelize.INTEGER
+    },
     tipoRetiro: {
         type: Sequelize.INTEGER  // 0- Delivery , 1- Retiro por local
     }

@@ -1,10 +1,24 @@
 const { Router } = require('express');
+const { Op } = require("sequelize");
 const router = Router();
 const  categorieModel  = require('../models/categorie');
 
 router.get('/', async (req, res) => {
     const categories = await categorieModel.findAll(
         {attributes:['id', 'nombre', 'tipo']}
+    );
+    res.json(categories);
+});
+
+router.get('/catalogo', async (req, res) => {
+    const categories = await categorieModel.findAll(
+        { where: {
+            [Op.or]: [
+                { 'tipo': 'elaborados' },
+                { 'tipo': 'bebidas' }
+              ]
+        },
+            attributes:['id', 'nombre', 'tipo']}
     );
     res.json(categories);
 });

@@ -1,246 +1,134 @@
 
-import React from "react";
+import React, { useEffect, useState, useContext } from "react";
+
+import TarjetaProducto from './TarjetaProducto';
+import { UserContext } from '../../../UserContext';
 
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
+import Axios from "axios";
 
 // core components
 
 function SectionCatalogo() {
-  return (
-    <>
-     <section className="hero-wrap hero-wrap-2" style={{backgroundImage:"url(" + require("assets/img/images/bg_2.jpg") + ")"}} data-stellar-background-ratio="0.5">
-        <Container >
-            <Row className="no-gutters slider-text align-items-end justify-content-center">
-            <div className="col-md-9 ftco-animate text-center mb-4">
-                <h1 className="mb-2 bread text-center">Menú</h1>            
-            </div>
-            <div
-          className="moving-clouds"
-          style={{
-            backgroundImage: "url(" + require("assets/img/clouds.png") + ")",
-            backgroundColor: "rgba(0,0,0,0.5)"
-          }}
-        />
-            </Row>
-        </Container>
-    </section> 
 
-    <section className="ftco-section">
-		<Container>
-			<div className="ftco-search">
-				<Row>
-					<Col md="12" className="nav-link-wrap">
-						<div className="nav nav-pills d-flex text-center" id="v-pills-tab" role="tablist"
-							aria-orientation="vertical">
-							<a className="nav-link ftco-animate active" id="v-pills-1-tab" data-toggle="pill"
-								href="#v-pills-1" role="tab" aria-controls="v-pills-1"
-								aria-selected="true">Breakfast</a>
+	const [productos, setProductos] = useState([]);
+	const [productosFiltrados, setProductosFiltrados] = useState([]);
+	const [categorias, setCategorias] = useState([]);
+	const [categoriasBebidas, setCategoriasBebidas] = useState([]);
+	const { carrito, setCarrito } = useContext(UserContext)
+	const [textoFiltrado, setTextoFiltrado] = useState("")
 
-							<a className="nav-link ftco-animate" id="v-pills-2-tab" data-toggle="pill" href="#v-pills-2"
-								role="tab" aria-controls="v-pills-2" aria-selected="false">Lunch</a>
 
-							<a className="nav-link ftco-animate" id="v-pills-3-tab" data-toggle="pill" href="#v-pills-3"
-								role="tab" aria-controls="v-pills-3" aria-selected="false">Dinner</a>
+	useEffect(() => {
+		obtenerProductos()
+		setCarrito(JSON.parse(window.localStorage.getItem('carrito')) || [])
+	}, [])
 
-							<a className="nav-link ftco-animate" id="v-pills-4-tab" data-toggle="pill" href="#v-pills-4"
-								role="tab" aria-controls="v-pills-4" aria-selected="false">Drinks</a>
 
-							<a className="nav-link ftco-animate" id="v-pills-5-tab" data-toggle="pill" href="#v-pills-5"
-								role="tab" aria-controls="v-pills-5" aria-selected="false">Desserts</a>
+	async function obtenerProductos() {
 
-							<a className="nav-link ftco-animate" id="v-pills-6-tab" data-toggle="pill" href="#v-pills-6"
-								role="tab" aria-controls="v-pills-6" aria-selected="false">Wine</a>
+		const resp = await Axios.get("http://localhost:4000/api/productos/elaborados")
+		setProductos(resp.data)
+		setProductosFiltrados(resp.data)
 
+		const respCat = await Axios.get("http://localhost:4000/api/productos/categorias/catalogo")
+		setCategorias(respCat.data.filter(c => c.tipo !== 'bebidas'))
+		setCategoriasBebidas(respCat.data.filter(c => c.tipo === 'bebidas'))
+
+	}
+
+	function filtrar(val) {
+		if (val === "Todo") {
+			setProductosFiltrados(productos)
+		} else {
+			setProductosFiltrados(productos.filter(p => p.Categorium.nombre === val))
+		}
+
+	}
+
+	function buscarPorNombre(val){
+		setTextoFiltrado(val)
+		setProductosFiltrados(productos.filter(p => p.nombre.toLowerCase().includes(val.toLowerCase())))
+	}
+
+
+	return (
+		<>
+			<section className="hero-wrap hero-wrap-2"
+				style={{ backgroundImage: "url(" + require("assets/img/images/bg_2.jpg") + ")" }}
+				data-stellar-background-ratio="0.5">
+				<Container >
+					<Row className="no-gutters slider-text align-items-end justify-content-center">
+						<div className="col-md-9 ftco-animate text-center">
+							<h1 className="mb-2 bread text-center">Menú</h1>
 						</div>
-					</Col>
-                    
-                    <Col md="12" className="tab-wrap">                        
-                        <div className="tab-content" id="v-pills-tabContent">
-                            <div className="tab-pane fade show active" id="v-pills-1" role="tabpanel"
-								aria-labelledby="day-1-tab">
-								<div className="row no-gutters d-flex align-items-stretch">
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-1.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="Detalle/104" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-2.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
+						<div
+							className="moving-clouds"
+							style={{
+								backgroundImage: "url(" + require("assets/img/clouds.png") + ")",
+								backgroundColor: "rgba(0,0,0,0.5)"
+							}}
+						/>
+					</Row>
+				</Container>
+			</section>
 
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img order-md-last"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-3.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img order-md-last"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-4.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
+			<section className="ftco-section">
+				<Container>
+					<div className="ftco-search">
+						<Row>
+							
+						</Row>
+						<Row>
+						<input value={textoFiltrado} onChange={(e)=> buscarPorNombre(e.target.value)} className="form-control mb-3" type="text" placeholder="Buscar por nombre"/>
+							<Col md="12" className="nav-link-wrap">
+								<div className="d-flex text-center">
+									<button onClick={(e) => filtrar(e.target.value)} value={'Todo'} className="btn btn-primary ftco-animate mr-2">Todo</button>
+									{categorias.map(cat => {
+										return <button key={cat.id} onClick={(e) => filtrar(e.target.value)} value={cat.nombre} className="mx-2 btn btn-primary ftco-animate">{cat.nombre}</button>
+									})}
 
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-5.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-6.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img order-md-last"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-7.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div className="col-md-12 col-lg-6 d-flex align-self-stretch">
-										<div className="menus d-sm-flex ftco-animate align-items-stretch">
-											<div className="menu-img img order-md-last"
-												style={{backgroundImage:"url(" + require("assets/img/images/breakfast-8.jpg") + ")"}}></div>
-											<div className="text d-flex align-items-center">
-												<div>
-													<div className="d-flex">
-														<div className="one-half">
-															<h3>Grilled Beef with potatoes</h3>
-														</div>
-														<div className="one-forth">
-															<span className="price">$29</span>
-														</div>
-													</div>
-													<p><span>Meat</span>, <span>Potatoes</span>, <span>Rice</span>,
-														<span>Tomatoe</span></p>
-													<p><a href="#" className="btn btn-primary mt-2">AÑADIR</a><a href="#" className="btn btn-primary mt-2 ml-3">VER</a></p>
-												</div>
-											</div>
-										</div>
-									</div>
+									<select id="SelectBebidas" onChange={(e) => filtrar(e.target.value)} className="btn btn-primary ml-2 ftco-animate">
+										<option hidden defaultValue="" className="mx-2 btn btn-primary">Bebidas</option>
+										{categoriasBebidas.map(catB => {
+											return <option key={catB.id} className="mx-2 btn btn-primary ftco-animate" value={catB.nombre}>{catB.nombre}</option>
+										})}
+									</select>
 								</div>
-							</div>
-                        </div>
-                    </Col>
-                </Row>
-            </div> 
-        </Container>
-    </section>
-    </>
-    );
+							</Col>
+						</Row>
+						<Row>
+							{productosFiltrados.length !== 0 ?
+
+								<div className="card-columns">
+
+									{productosFiltrados.map(producto => {
+
+										return <TarjetaProducto
+
+											key={producto.id}
+											id={producto.id}
+											nombre={producto.nombre}
+											detalle={producto.detalle}
+											nombreImg={producto.nombreImg}
+											precio={producto.precio}
+											tiempoElaboracion={producto.tiempoElaboracion}
+
+										/>
+									})}
+
+								</div>
+
+								:
+								<h1>Sin productos que mostrar</h1>
+							}
+						</Row>
+					</div>
+				</Container>
+			</section>
+		</>
+	);
 }
 
 export default SectionCatalogo;

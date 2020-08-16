@@ -1,124 +1,131 @@
-import React from "react";
+import React, { useState, useEffect, useContext } from "react";
+import Axios from 'axios';
+import { UserContext } from '../../../UserContext';
+import { toast } from 'react-toastify';
 
 // reactstrap components
 import { Container, Row, Col } from "reactstrap";
 
 
-function sectionDetalle(){
+function SectionDetalle() {
 
-    function goBacHandle(){
-     
+
+
+    function goBacHandle() {
         window.history.back()
-  
+    }
+
+    const id = window.location.pathname.split('Detalle/')[1]
+    const [producto, setProducto] = useState({})
+    const { carrito, setCarrito } = useContext(UserContext)
+    const [cant, setCant] = useState(1)
+    var carritoAux = carrito
+
+    useEffect(() => {
+        obtenerProducto()
+        setCarrito(JSON.parse(window.localStorage.getItem('carrito')) || [])
+    }, [])
+
+
+    async function obtenerProducto() {
+
+        const resp = await Axios.get("http://localhost:4000/api/productos/elaborados/" + id)
+        console.log(resp.data)
+        resp.data.precio = resp.data.precio.toFixed(2)
+        setProducto(resp.data)
+
+    }
+
+    function agregarProducto(){
+        const productoAgregado = {
+            producto: producto,
+            cantidad: cant
+        }
+        carritoAux.push(productoAgregado)
+        setCarrito(carritoAux)        
+        window.localStorage.setItem('carrito', JSON.stringify(carrito));
+        mensaje();
+    }
+
+    const cambiarCantidad = valor => {
         
+        setCant(parseInt(valor))
+        
+    }
+
+    function mensaje() {
+        toast.success('Producto agregado al carrito', {
+            position: "bottom-right",
+            autoClose: 3000,
+            hideProgressBar: true,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
+
     }
 
     return (
         <>
-        <section className="hero-wrap hero-wrap-2" style={{backgroundImage:"url(" + require("assets/img/images/bg_2.jpg") + ")"}} data-stellar-background-ratio="0.5">
-            <Container >
-                <Row className="no-gutters slider-text align-items-end justify-content-center">
-                <div className="col-md-9 ftco-animate text-center mb-4">
-                    <h1 className="mb-2 bread text-center">Menú</h1>            
-                </div>
-                <div
-            className="moving-clouds"
-            style={{
-                backgroundImage: "url(" + require("assets/img/clouds.png") + ")",
-                backgroundColor: "rgba(0,0,0,0.5)"
-            }}
-            />
-                </Row>
-            </Container>
-        </section> 
-         <section className="ftco-section">
-             <Container>
-                <nav aria-label="Page breadcrumb">
-                    <ul className="breadcrumb fondoBreadcrumb lead text-uppercase">
-                        <li className="breadcrumb-item active" aria-current="page"><a href="../">Inicio / Detalle</a></li>
-                        <li className="breadcrumb-item active pagActiva">Nombre del producto</li>
-                    </ul>
-                </nav>
-                <div className="ftco-search">
-                    <Row>
-                        <Col md="6">
-                            <img className="img-thumbnail" src={require("assets/img/images/breakfast-1.jpg")}></img>
-                        </Col>
-                        <Col md="6">
-                        
-                            <div className="col-6">
-					
-                                <h6>
-                                    
-                                    <a href="#" onClick={goBacHandle}  className="text-muted">
-                                        
-                                        <i className="fa fa-reply"></i> Continuar Buscando
-
-                                    </a>
-
-                                </h6>
-
-                            </div>
-
-
-                            <div className="clearfix"></div>
-
-                            <h1 className="text-muted text-uppercase">NOMBRE DEL PRODUCTO</h1>
-
-                            <h2 className="text-muted"> $230</h2>
-
-                            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum</p>
-                        
-                            <hr/>
-
-                            <div className="form-group row">
-
-                                <h4 class="col-lg-0 col-md-0 col-xs-12">
-
-                                <hr/>
-
-                                <small>
-
-                                    <i className="fa fa-clock-o mr-2"></i>
-                                    En Stock  |
-                                    <i className="fa fa-shopping-cart mt-0 mr-2" style={{margin:+"0px 5px"}}></i>
-                                    320 compras |
-                                    <i className="fa fa-eye mt-0 mr-2"></i>
-                                    Visto por <span class="vistas">100</span> personas
-
-                                </small>
-
-                                </h4>
-
-                                <div className="clearfix"></div>
-
-                                <button class="btn btn-primary btn-block btn-lg mt-4">
-							
-							        AÑADIR
-
-								<i class="fa fa-shopping-cart ml-2"></i>
-
-								</button>
-
-							
-
-                            </div>
-
-                        </Col>
-
-                        <Col md="12">
-
-                        </Col>
-
+            <section className="hero-wrap hero-wrap-2" style={{ backgroundImage: "url(" + require("assets/img/images/bg_2.jpg") + ")" }} data-stellar-background-ratio="0.5">
+                <Container >
+                    <Row className="no-gutters slider-text align-items-end justify-content-center">
+                        <div className="col-md-9 ftco-animate text-center mb-4">
+                            <h1 className="mb-2 bread text-center">Menú</h1>
+                        </div>
+                        <div
+                            className="moving-clouds"
+                            style={{
+                                backgroundImage: "url(" + require("assets/img/clouds.png") + ")",
+                                backgroundColor: "rgba(0,0,0,0.5)"
+                            }}
+                        />
                     </Row>
+                </Container>
+            </section>
+            <section className="ftco-section">
+                <Container>
+                    <div className="ftco-search">
+                        <Row>
+                            <Col md="6">
+                                <img className="img-thumbnail" src={require("assets/img/images/breakfast-1.jpg")}></img>
+                            </Col>
+                            <Col md="6">
 
-                </div>
+                                <h1 className="text-muted text-uppercase">{producto.nombre}</h1>
 
-             </Container>
+                                <p><b>Ingredientes: </b>{producto.detalle}</p>
+                                <h2 className="text-muted"> $ {producto.precio}</h2>
+                                <hr />
 
-         </section>
+                                <div className="form-group row">
+
+                                    {/* <h4 class="col-lg-0 col-md-0 col-xs-12">
+                                        <hr />
+                                        <small>
+                                            <i className="fa fa-clock-o mr-2"></i>
+                                            En Stock  |
+                                            <i className="fa fa-shopping-cart mt-0 mr-2" style={{ margin: +"0px 5px" }}></i>
+                                            320 compras |
+                                            <i className="fa fa-eye mt-0 mr-2"></i>
+                                            Visto por <span class="vistas">100</span> personas
+                                        </small>
+                                    </h4> */}
+                                    Cantidad: <input value={cant} onChange={e => cambiarCantidad(e.target.value)} className="ml-2" type="number" placeholder="1"/>
+
+                                    <button onClick={agregarProducto} className="btn btn-primary btn-block btn-lg mt-4">AÑADIR<i className="fa fa-shopping-cart ml-2"></i></button>
+                                    <button onClick={goBacHandle} className="btn btn-secondary btn-block btn-lg text-light mt-4"><i className="fa fa-reply mr-2"></i> Continuar Buscando</button>
+                                    
+                                </div>
+
+                            </Col>
+                        </Row>
+                    </div>
+                </Container>
+            </section>
         </>
     )
 }
 
-export default sectionDetalle;
+export default SectionDetalle;

@@ -3,6 +3,7 @@ import { Container, Row, Table, Button } from 'reactstrap'
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import axiosAutorizado from 'utils/axiosAutorizado';
+import jwtDecode from 'jwt-decode';
 
 function Carrito() {
 
@@ -10,19 +11,46 @@ function Carrito() {
     const [total, setTotal] = useState(0);
     const [costoFinal, setCostoFinal] = useState(0);
     const [tipoRetiro, setTipoRetiro] = useState("0"); // 0 Delivery, 1 Retiro por local
-    
+    const [cambio, setCambio] = useState(false)
+    const [tiempoElab, setTiempoElab] = useState(0)
+
     useEffect(() => {
-        obtenerDatos()
-        calcularTotal()        
-    }, [])
+
+        obtenerCarritoDeLocal()
+
+    }, [cambio])
+
+    function obtenerCarritoDeLocal() {
+        var carritoAux = []
+
+        if (window.localStorage.getItem('carrito')) {
+            carritoAux = JSON.parse(window.localStorage.getItem('carrito'))
+        }
+
+        setCarrito(carritoAux);
+        var aux = 0
+        var auxTiempo = 0
+        carritoAux.forEach(p => {
+            aux += (parseFloat(p.producto.precio) * p.cantidad)
+            auxTiempo += p.producto.tiempoElaboracion * p.cantidad
+        });
+        setTiempoElab(auxTiempo)
+        var valor = aux.toFixed(2)
+        setTotal(valor)
+        if (tipoRetiro === "0") {
+            setCostoFinal(valor)
+        } else if (tipoRetiro === "1") {
+            setCostoFinal((valor - (valor * 0.1)))
+        }
+        setCambio(true)
+
+    }
 
     const obtenerDatos = async () => {
 
 
-       
-
-
         var aux = 0
+        var auxTiempo = 0
         const dato = await axiosAutorizado().get("http://localhost:4000/api/pedidos/" + 1)  // Id de pedido solicitado
         var pedido = dato.data
         if (pedido !== null) {
@@ -30,18 +58,20 @@ function Carrito() {
             setCarrito(productosDeCarrito)
             productosDeCarrito.forEach(p => {
                 aux += (p.precioDetalle.toFixed(2) * p.cantidad)
+                auxTiempo += p.producto.tiempoElaboracion * p.cantidad
             });
+            setTiempoElab(auxTiempo)
             setTotal(aux.toFixed(2))
             setCostoFinal(aux.toFixed(2))
         }
 
     }
 
-    function decrementarUnidad (prod){
+    function decrementarUnidad(prod, i) {
 
-        const nuevoCarrito = carrito.filter(p => {
-            if (p.elaborado.id === prod.elaborado.id) {
-                if (p.cantidad !== 0) {
+        const nuevoCarrito = carrito.filter((p, idx) => {
+            if (p.producto.id === prod.producto.id && i === idx) {
+                if (p.cantidad > 1) {
                     p.cantidad = p.cantidad - 1
                 }
             }
@@ -51,10 +81,10 @@ function Carrito() {
         calcularTotal()
     }
 
-    function incrementarUnidad (prod){
+    function incrementarUnidad(prod, i) {
 
-        const nuevoCarrito = carrito.filter(p => {
-            if (p.elaborado.id === prod.elaborado.id) {
+        const nuevoCarrito = carrito.filter((p, idx) => {
+            if (p.producto.id === prod.producto.id && i === idx) {
                 p.cantidad = p.cantidad + 1
             }
             return p
@@ -64,69 +94,92 @@ function Carrito() {
 
     }
 
-    function calcularTotal (){
+    function calcularTotal() {
         var aux = 0
+        var auxTiempo = 0
         carrito.forEach(p => {
-            aux += (p.precioDetalle.toFixed(2) * p.cantidad)
+            aux += (parseFloat(p.producto.precio) * p.cantidad)
+            auxTiempo += p.producto.tiempoElaboracion * p.cantidad
         });
-        var totalAux = aux.toFixed(2)
-        setTotal(totalAux)    
+        var valor = aux.toFixed(2)
+        setTotal(valor)
+        setTiempoElab(auxTiempo)
         if (tipoRetiro === "0") {
-            setCostoFinal(totalAux)
+            setCostoFinal(valor)
         } else if (tipoRetiro === "1") {
-            setCostoFinal((totalAux - (totalAux * 0.1)).toFixed(2))
-        }  
-
+            setCostoFinal((valor - (valor * 0.1)))
+        }
     }
 
-    function vaciarCarrito (){
+    function vaciarCarrito() {
         if (window.confirm("Seguro desea vaciar el carrito?")) {
+            window.localStorage.removeItem('carrito')
             setCarrito([])
         }
 
+
     }
 
-    function cambiarTipoRetiro (val){
-        
+    function cambiarTipoRetiro(val) {
+
         if (val === "0") {
             setCostoFinal(total)
         } else if (val === "1") {
             setCostoFinal((total - (total * 0.1)).toFixed(2))
-        }               
+        }
         setTipoRetiro(val)
+
     }
 
-    function eliminar(prod) {
+    function eliminar(idx) {
 
-        const nuevoCarrito = carrito.filter(p => {
-            if (p.elaborado.id !== prod.elaborado.id) {
+        const nuevoCarrito = carrito.filter((p, i) => {
+            if (i !== idx) {
                 return p
             }
-
         })
-        setCarrito(nuevoCarrito)
-        calcularTotal()
+        window.localStorage.setItem('carrito', JSON.stringify(nuevoCarrito))
+        setCambio(!cambio)
     }
 
-    async function realizarPedido(){
-        var pedido = {
-            productosPedidos: carrito,
-            id_usuario: 1, // Id del usuario
-            estado: "Creado",
-            tipoRetiro: tipoRetiro
-        }
-        console.log(pedido)
-        const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
-        console.log(resp.data)
-        if(resp.data.respuesta === "OK"){
-            alert("Pedido realizado correctamente, volvera al catalogo")
-            window.location.href = "/"
+    async function realizarPedido() {
+
+        //Falta validar que haya token de usuario para poder hacer pedido sino redirigir a pantalla de login      
+        
+        if(localStorage.getItem('token')){
+            const userData = jwtDecode(localStorage.getItem('token'));
+            const idUsuario = userData.id
+            var pedido = {
+                productosPedidos: carrito,
+                id_usuario: idUsuario, 
+                estado: "Creado",
+                tipoRetiro: tipoRetiro,
+                tiempoElaboracion: tiempoElab
+            }
+            const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
+            console.log(resp.data)
+
+            if (resp.data.message === "OK") {
+                alert("Pedido realizado correctamente, volvera al inicio")
+                window.localStorage.removeItem('carrito')
+                window.location.href = "/"
+
+            }else if (resp.data.message == "No hay stock"){
+                alert("No hay stock suficiente para generar el pedidos")
+                window.localStorage.removeItem('carrito')
+                window.location.href = "/Catalogo"
+            }
+
         }else{
-            alert("Error al enviar el pedido: " +  resp.data)
+            alert('Debe estar logueado para poder realizar un pedido, redirigiendo a la pantalla de login')
+            window.location.href = "/LoginPage"
         }
+        
+
+        
 
     }
-    
+
     return (
 
         <>
@@ -149,31 +202,31 @@ function Carrito() {
                             </thead>
                             <tbody className="text-light">
                                 {(carrito.length !== 0) ?
-                                    carrito.map((producto, i) =>
-                                    <tr key={i} className="text-center">
+                                    carrito.map((p, i) =>
+                                        <tr key={i} className="text-center">
                                             <td>
                                                 <Row>
-                                                    <img src={"http://localhost:4000/imgs/" + producto.elaborado.nombre}
+                                                    <img src={"http://localhost:4000/imgs/" + p.producto.nombre}
                                                         width="100"
                                                         alt="..." />
-                                                    <h5 className="card-title" >{producto.elaborado.nombre}</h5>
+                                                    <h5 className="card-title" >{p.producto.nombre}</h5>
                                                 </Row>
                                             </td>
                                             <td>
-                                                <h5 className="card-title" >$ {producto.precioDetalle.toFixed(2)}</h5>
+                                                <h5 className="card-title" >$ {(parseFloat(p.producto.precio)).toFixed(2)}</h5>
                                             </td>
                                             <td>
-                                                <Button onClick={() => decrementarUnidad(producto)} className="btn btn-info">-</Button>
-                                                <span className="mx-3"><b>{producto.cantidad}</b></span>
-                                                <Button onClick={() => incrementarUnidad(producto)} className="btn btn-info">+</Button>
+                                                <Button onClick={() => decrementarUnidad(p, i)} className="btn btn-info">-</Button>
+                                                <span className="mx-3"><b>{p.cantidad}</b></span>
+                                                <Button onClick={() => incrementarUnidad(p, i)} className="btn btn-info">+</Button>
                                             </td>
                                             <td>
-                                                <h5>$ {(producto.precioDetalle.toFixed(2) * producto.cantidad).toFixed(2)}</h5>
+                                                <h5>$ {((parseFloat(p.producto.precio)).toFixed(2) * p.cantidad).toFixed(2)}</h5>
                                             </td>
                                             <td>
-                                                <Button onClick={() => eliminar(producto)} className="btn btn-danger" size="sm"><i className="fa fa-times"></i></Button>
+                                                <Button onClick={() => eliminar(i)} className="btn btn-danger" size="sm"><i className="fa fa-times"></i></Button>
                                             </td>
-                                        </tr>   
+                                        </tr>
                                     )
                                     :
                                     <React.Fragment>
@@ -191,6 +244,7 @@ function Carrito() {
                                         <tr>
                                             <td colSpan={5} className="text-center">
                                                 <h4 className="text-light">Total: $ {total}</h4>
+                                                <h4 className="text-dark">Tiempo de elaboracion aproximada: {tiempoElab} min</h4>
                                             </td>
                                         </tr>
                                         <tr>
@@ -203,12 +257,12 @@ function Carrito() {
                                                 </h5>
                                             </td>
                                             <td className="text-left">
-                                                <h4 className="text-danger" value={costoFinal}>Precio final: $ {costoFinal}</h4>
+                                                <h4 className="text-danger">Precio final: $ {costoFinal}</h4>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td colSpan={5} className="text-center mt-5">
-                                                <button onClick={() => realizarPedido()}  className="btn btn-lg btn-success">PEDIR</button>
+                                                <button onClick={() => realizarPedido()} className="btn btn-lg btn-success">PEDIR</button>
                                             </td>
                                         </tr>
                                     </React.Fragment>
@@ -216,7 +270,7 @@ function Carrito() {
                                     <React.Fragment>
                                         <tr>
                                             <th colSpan={5} className="text-center">
-                                                <Link to="/" className="btn btn-success">Ir al catalogo</Link>
+                                                <Link to="/Catalogo" className="btn btn-success">Ir al catalogo</Link>
                                             </th>
                                         </tr>
                                     </React.Fragment>

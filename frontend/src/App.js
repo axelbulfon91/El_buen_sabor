@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // styles
 import "assets/css/bootstrap.min.css";
@@ -20,17 +22,17 @@ import { UserContext } from './UserContext';
 //utils
 import RutaPrivada from './utils/RutaPrivada';
 
-
 function App() {
 
   const [usuario, setUsuario] = useState(null);
+  const [carrito, setCarrito] = useState([]);
   const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") ? true : false);
 
   return (
 
-
     <BrowserRouter>
-      <UserContext.Provider value={{ usuario, setUsuario, loggedIn, setLoggedIn }}>
+    <ToastContainer />
+      <UserContext.Provider value={{ usuario, setUsuario, loggedIn, setLoggedIn, carrito, setCarrito }}>
 
         <IndexNavbar />
         <Switch>
@@ -43,7 +45,7 @@ function App() {
             exact path="/RegisterPage"
             render={(props) => <RegisterPage {...props} />}
           />
-          <RutaPrivada
+          <Route
             exact path="/carrito"
             // render={(props) => <Carrito {...props} />}
             component={Carrito}
@@ -58,7 +60,7 @@ function App() {
             render={(props) => <Catalogo {...props} />}
           />
           <Route
-            exact path="/Detalle/:valor"
+            exact path="/Detalle/:id"
             render={(props) => <Detalle {...props} />}
           />
           <Redirect to="/" />
@@ -67,7 +69,6 @@ function App() {
         <Footer />
       </UserContext.Provider>
     </BrowserRouter>
-
 
 
 
