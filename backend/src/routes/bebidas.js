@@ -1,3 +1,4 @@
+
 const { Router } = require('express');
 const bebidaModel = require('../models/bebida');
 const articuloModel = require('../models/articulo');
@@ -143,10 +144,11 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         { where: { id: bebida.articulo_id } }
     )
     if (articuloRelacionado) {
-        if (articuloRelacionado.nombreImg !== 'Sin imagen') {
-            await fs.unlink('src/public/imgs/' + articuloRelacionado.nombreImg, () => null);
-        }
+
         if (req.file) {
+            if (articuloRelacionado.nombreImg !== 'Sin imagen') {
+                await fs.unlink('src/public/imgs/' + articuloRelacionado.nombreImg, () => null);
+            }
             const { filename } = req.file;
             await articuloRelacionado.update({
                 nombre: req.body.nombre,
@@ -160,7 +162,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         } else {
             await articuloRelacionado.update({
                 nombre: req.body.nombre,
-                nombreImg: 'Sin imagen',
+                nombreImg: req.body.imagen,
                 categoria_id: req.body.categoria,
                 unidadMedida: req.body.unidadMedida,
                 stockMaximo: req.body.stockMaximo,
@@ -191,5 +193,6 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         res.json("Producto no encontrado");
     }
 });
+
 
 module.exports = router;

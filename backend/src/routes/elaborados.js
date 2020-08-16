@@ -1,3 +1,4 @@
+
 const { Router } = require('express');
 const router = Router();
 const elaboradoModel = require('../models/elaborado')
@@ -32,7 +33,8 @@ router.post('/', upload.single('imagen'), async (req, res) => {
                 nombreImg: 'Sin imagen'
             });
         }
-        req.body.detalles.forEach(async (articulo) => {//Creacion de los detalles
+        console.log(JSON.parse(req.body.detalles));
+        JSON.parse(req.body.detalles).forEach(async (articulo) => {//Creacion de los detalles
             await detalleElaboradoModel.create({
                 cantidad: articulo.cantidad,
                 elaborado_id: elaborado.id,
@@ -159,11 +161,12 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
         let elaborado = await elaboradoModel.findOne(
             { where: { id: req.params.id } }
         );
-        if (elaborado.nombreImg !== 'Sin imagen') {
-            await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
-        }
+
         //Modificacion de los atributos del elaborado
         if (req.file) {
+            if (elaborado.nombreImg !== 'Sin imagen') {
+                await fs.unlink('src/public/imgs/' + elaborado.nombreImg, () => null);
+            }
             const { filename } = req.file;
             elaborado = await elaborado.update({
                 nombre: req.body.nombre,
@@ -180,7 +183,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
                 tiempoElaboracion: req.body.tiempoElaboracion,
                 detalle: req.body.detalle,
                 esCatalogo: req.body.esCatalogo,
-                nombreImg: 'Sin imagen'
+                nombreImg: req.body.imagen
             });
         }
         //Eliminacion de los detalleRelaborado relacionados
@@ -188,7 +191,7 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
             where: { elaborado_id: elaborado.id }
         })
         //Nueva asignacion de los detallesSemielaborados
-        req.body.detalles.forEach(async (articulo) => {//Creacion de los detalles
+        JSON.parse(req.body.detalles).forEach(async (articulo) => {//Creacion de los detalles
             await detalleElaboradoModel.create({
                 cantidad: articulo.cantidad,
                 elaborado_id: elaborado.id,
@@ -222,5 +225,6 @@ router.put('/:id', upload.single('imagen'), async (req, res) => {
     }
 
 });
+
 
 module.exports = router;
