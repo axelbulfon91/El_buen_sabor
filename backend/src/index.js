@@ -10,13 +10,9 @@ require('./database');
 //require('./lib/passport-local'); //Indico los middlewares de autentificacion que voy a usar
 
 //Configuraciones
+
+app.use(cors());
 app.set('port', process.env.PORT || 4000);
-app.use(
-  cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-  })
-);
 
 //Middlewares    
 app.use(morgan('dev'));

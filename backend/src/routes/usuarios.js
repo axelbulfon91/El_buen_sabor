@@ -10,7 +10,7 @@ const rolModel = require('../models/rol');
 const { secret } = require('../keys')
 const { comprobarToken } = require('../lib/service_jwt')
 
-//REGISTRO LOCAL
+//Registro Local
 router.post('/registro', async (req, res) => {
     const nuevoUsuario = await userModel.findOne({ where: { email: req.body.username } });
     try {
@@ -54,7 +54,7 @@ router.post('/registro', async (req, res) => {
 
 });
 
-//Login
+//Login Local
 router.post('/login', async (req, res) => {
 
     const user = await userModel.findOne({ where: { email: req.body.email } })
@@ -72,6 +72,40 @@ router.post('/login', async (req, res) => {
     } else {
         res.json({ message: "Usuario no registrado" })
     }
+})
+
+//Registro/Login con Google
+router.post("/login/google", async (req, res) => {
+
+    const user = await userModel.findOne({ where: { email: req.body.email } })
+
+    if (user) {
+
+        const token = jwt.sign({ 'id': user.id }, secret)
+        res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
+
+    } else {
+        console.log(req.body)
+        try {
+            const nuevoUsuario = await userModel.create({
+                nombre: req.body.nombre,
+                email: req.body.email,
+                providerId: req.body.googleId,
+                telefono: "Sin numero",
+                provider: "Google"
+
+            });
+
+            const token = jwt.sign({ id: nuevoUsuario.dataValues.id }, secret, {
+                expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
+            })
+            res.json({ message: 'Usuario creado correctamente', token: token });
+        }catch (err){
+            res.json({ message: 'Error al registrar el usuario', err });
+        }
+    }
+
+
 })
 
 //Trae todos los usuarios del sistema
@@ -108,8 +142,8 @@ router.get('/', comprobarToken, async (req, res) => {
             res.json(users)
         }
 
-    }else{
-        res.json({message: 'Usuario no encontrado'})
+    } else {
+        res.json({ message: 'Usuario no encontrado' })
     }
 
 })
@@ -229,5 +263,14 @@ router.put('/password/:id', async (req, res) => {
 
 })
 
+
+
+// //Login Google
+// router.get('/login/Google', passport.authenticate('google', {
+//     scope: ['email']
+// }));
+// router.get('/auth/google/redirect', (req, res)=>{
+//     res.send('Ok')
+// })
 
 module.exports = router
