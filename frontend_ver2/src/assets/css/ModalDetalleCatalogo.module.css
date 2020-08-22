@@ -1,0 +1,13 @@
+.botonCerrar {
+    background-color: transparent;
+    border: 0px solid black;
+    border-radius: 15%;
+    color: rgba(22, 22, 22, 0.4);
+    font-size: 1.5rem;
+    margin-right: 5px
+}
+
+.botonCerrar:hover {
+    -webkit-text-stroke: 0.5px black;
+    color: rgb(170, 5, 5);
+}

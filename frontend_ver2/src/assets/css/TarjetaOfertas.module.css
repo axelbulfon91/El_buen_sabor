@@ -1,0 +1,16 @@
+.tarjeta{
+    position: relative;
+    height: 25vh;
+    max-height: 230px;
+    width: 47%;
+    background-color: rgb(255, 247, 234);
+    margin-right: 1%;
+    margin-bottom: 2%;
+    border-radius: 15px;
+}
+.tarjeta:hover{
+    /* border: 1px solid rgb(46,46,46); */
+    -webkit-box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+    -moz-box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+    box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+}

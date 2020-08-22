@@ -76,12 +76,12 @@ router.get('/', async (req, res) => {
             model: userModel,
             attributes: ['id', 'nombre']
         }]
-    });    
+    });
     res.json({ "pedidos": pedidos });
 });
 
 //Trae todos los pedidos de un usuario especifico (PARA EL CLIENTE) 
-router.get('/usuario/:id', comprobarToken ,async (req, res) => {
+router.get('/usuario/:id', comprobarToken, async (req, res) => {
 
     const pedidos = await pedidoModel.findAll({
         where: {
@@ -108,20 +108,20 @@ router.get('/usuario/:id', comprobarToken ,async (req, res) => {
             attributes: ['id', 'nombre']
         }]
     });
-    var totales = []    
+    var totales = []
     pedidos.forEach(ped => {
         var total = 0
-        ped.dataValues.Detalle_Pedidos.forEach(d =>{
+        ped.dataValues.Detalle_Pedidos.forEach(d => {
             total += (d.cantidad * d.precioDetalle)
         })
         totales.push(total)
     });
     console.log(totales)
-    res.json({'pedidos': pedidos, 'totales': totales})
+    res.json({ 'pedidos': pedidos, 'totales': totales })
 });
 
 //Trae los datos de un solo pedido segun su id (PARA EL CLIENTE O ADMINISTRADOR) 
-router.get('/:id', comprobarToken ,async (req, res) => {
+router.get('/:id', comprobarToken, async (req, res) => {
     const pedido = await pedidoModel.findOne({
         where: {
             id: req.params.id
@@ -172,18 +172,18 @@ router.put('/estado/:id', async (req, res) => {
     });
     if (pedido) {
 
-    //Actualizacion de stock correspondiente
-    if (req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
-        await actualizarStockPedido(pedido, 'restar');
-    }
-    //Si el estado era Confirmado pero se Cancela, vuelvo a sumar el stock
-    if (pedido.dataValues.estado === "confirmado" && req.body.estado === "cancelado"){
-        await actualizarStockPedido(pedido, 'sumar');
-    }
-    //Finalmente se actualiza el estado del pedido
-    await pedido.update({
-        estado: req.body.estado
-    })
+        //Actualizacion de stock correspondiente
+        if (req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
+            await actualizarStockPedido(pedido, 'restar');
+        }
+        //Si el estado era Confirmado pero se Cancela, vuelvo a sumar el stock
+        if (pedido.dataValues.estado === "confirmado" && req.body.estado === "cancelado") {
+            await actualizarStockPedido(pedido, 'sumar');
+        }
+        //Finalmente se actualiza el estado del pedido
+        await pedido.update({
+            estado: req.body.estado
+        })
     }
     res.json({ "Actualizado": "OK" })
 });
@@ -248,6 +248,7 @@ const validarStock = async (productosPedidos) => {
                 include: [articuloModel, precioModel]
             })
             const longitudPrecios = bebida.dataValues.precios.length;
+            //TODO: Verificar si existe una oferta asociada y modificar el precio correspondiente
             const ultimoPrecio = bebida.dataValues.precios[longitudPrecios - 1].dataValues.monto;
             precios.push(ultimoPrecio);//Guardo el precio de la bebebia
             const cantidadNecesaria = item.cantidad;
@@ -292,34 +293,34 @@ const validarStock = async (productosPedidos) => {
     return { 'hayStock': hayStock, 'precios': precios }
 }
 const actualizarStockPedido = async (pedido, operacion) => {
-            //Primero obtengo los elaborados y bebidas correspondientes del pedido  
-            const detallesPedido = pedido.dataValues.Detalle_Pedidos;
-            //Recorro el arreglo de detalles y Verifico si es una bebida
-            for (const detalle of detallesPedido) {
-                const cantidadDeDetalle = detalle.dataValues.cantidad;
-                if (detalle.dataValues.bebida_id) {//Si es una bebida
-                    
-                    await actualizarStockArticulo(detalle.dataValues.bebida_id, cantidadDeDetalle,operacion);
-    
-                } else {//Entonces es un elaborado
-                    const elaborado = await elaboradoModel.findOne({
-                        where: { id: detalle.dataValues.elaborado_id },
-                        include: detalleElaboradoModel
-                    })
-                    const detallesElaborado = elaborado.dataValues.detalle_elaborados;
-                    for (const detalleElab of detallesElaborado) {
-                        const cantidadPorElaborado = detalleElab.dataValues.cantidad;
-                        const cantidadARestar = cantidadDeDetalle * cantidadPorElaborado;
-    
-                        await actualizarStockArticulo(detalleElab.dataValues.articulo_id, cantidadARestar, operacion);
-    
-                    }
-                }
+    //Primero obtengo los elaborados y bebidas correspondientes del pedido  
+    const detallesPedido = pedido.dataValues.Detalle_Pedidos;
+    //Recorro el arreglo de detalles y Verifico si es una bebida
+    for (const detalle of detallesPedido) {
+        const cantidadDeDetalle = detalle.dataValues.cantidad;
+        if (detalle.dataValues.bebida_id) {//Si es una bebida
+
+            await actualizarStockArticulo(detalle.dataValues.bebida_id, cantidadDeDetalle, operacion);
+
+        } else {//Entonces es un elaborado
+            const elaborado = await elaboradoModel.findOne({
+                where: { id: detalle.dataValues.elaborado_id },
+                include: detalleElaboradoModel
+            })
+            const detallesElaborado = elaborado.dataValues.detalle_elaborados;
+            for (const detalleElab of detallesElaborado) {
+                const cantidadPorElaborado = detalleElab.dataValues.cantidad;
+                const cantidadARestar = cantidadDeDetalle * cantidadPorElaborado;
+
+                await actualizarStockArticulo(detalleElab.dataValues.articulo_id, cantidadARestar, operacion);
+
             }
+        }
+    }
 
 }
 const actualizarStockArticulo = async (id, cantidad, operacion) => {
-    
+
     const articulo = await articuloModel.findOne({
         where: { id: id }
     });

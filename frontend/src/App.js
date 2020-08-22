@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter, Route, Redirect, Switch } from "react-router-dom";
+import VistaStock from "./administracion/views/VistaStock";
+import './App.css';
 
 // styles
 import "assets/css/bootstrap.min.css";
@@ -38,6 +40,10 @@ function App() {
           <Route
             exact path="/LoginPage"
             render={(props) => <LoginPage {...props} />}
+          />
+          <Route
+            exact path="/admin"
+            render={(props) => <VistaStock {...props} />}
           />
           <Route
             exact path="/RegisterPage"

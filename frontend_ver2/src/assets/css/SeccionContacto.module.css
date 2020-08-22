@@ -1,0 +1,47 @@
+.fondo {
+    background-color: rgb(26, 25, 25, 0.9);
+    color: whitesmoke;
+    padding-top: 35px;
+}
+
+.titulos {
+    font-size: 25px;
+    margin-bottom: 15px;
+}
+
+.facebookLook {
+    margin: 5px 0px;
+    display: inline-block;
+    padding: 5px 0px;
+    color: white;
+    font-size: 20px;
+    width: 80%;
+
+    border-radius: 15px;
+    background: #3b5998
+}
+.twitterLook {
+    margin: 5px 0px;
+    display: inline-block;
+    padding: 5px 0px;
+    color: white;
+    font-size: 20px;
+    width: 80%;
+    border-radius: 15px;
+    background: #00acee
+}
+.instagramLook {
+    margin: 5px 0px;
+    display: inline-block;
+    padding: 5px 0px;
+    color: white;
+    font-size: 20px;
+    width: 80%;
+    border-radius: 15px;
+    background: #833ab4;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #fcb045, #fd1d1d, #833ab4);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #fcb045, #fd1d1d, #833ab4);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}

@@ -1,0 +1,12 @@
+.fondo{
+    position: fixed;
+    filter: blur(4px);
+    -webkit-filter: blur(4px);
+    background: url("../images/bg8.jpg") center;
+    background-size: cover;
+    height: 90vh;
+    width: 100vw;
+    z-index: -2;
+    color: white;
+}
+

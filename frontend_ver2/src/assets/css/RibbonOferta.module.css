@@ -1,0 +1,45 @@
+.ribbon {
+    width: 188px;
+    height: 188px;
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    overflow: hidden;
+    text-transform: uppercase;
+    color: #fff;
+    font-size: 22px;
+  }
+  .ribbon:before,
+  .ribbon:after {
+    content: "";
+    position: absolute;
+  }
+  .ribbon:before {
+    width: 40px;
+    height: 6px;
+    right: 100px;
+    background: #033c4a;
+    border-radius: 6px 6px 0 0;
+  }
+  .ribbon:after {
+    width: 6px;
+    height: 40px;
+    right: 0;
+    top: 100px;
+    background: #033c4a;
+    border-radius: 0 6px 6px 0;
+  }
+  .ribbon span {
+    width: 200px;
+    height: 40px;
+    line-height: 40px;
+    position: absolute;
+    top: 30px;
+    right: -50px;
+    z-index: 2;
+    overflow: hidden;
+    -webkit-transform: rotate(45deg);
+    transform: rotate(45deg);
+    background: linear-gradient(#eb4808 0%, #5c2500 100%);
+    text-align: center;
+  }

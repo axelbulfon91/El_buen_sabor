@@ -1,0 +1,44 @@
+.fondo {
+    background: #D1913C;
+    /* fallback for old browsers */
+    background: -webkit-linear-gradient(to right, #FFD194, #D1913C);
+    /* Chrome 10-25, Safari 5.1-6 */
+    background: linear-gradient(to right, #FFD194, #D1913C);
+    /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+    padding-top: 15px;
+    padding-left: 0%;
+    padding-right: 0%;
+    border-top: 1px solid rgb(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgb(255, 255, 255, 0.2)
+}
+.titulo {
+    -webkit-text-stroke: 1px black;
+    font-family: 'Kaushan Script', cursive;
+    font-weight: lighter;
+    color: rgb(46, 46, 46);
+    text-align: left;
+    font-size: 2em;
+    width: 100%;
+    padding: 15px;
+    border-bottom: 1px solid rgb(46, 46, 46,0.4);
+}
+.nav{
+    font-size: 1.5em;
+    margin-bottom: 3%;
+}
+.nav ul{
+    margin-bottom: 5px;
+    padding-left: 15px;
+}
+.nav ul li{
+    display: inline-block;
+    list-style: none;
+    margin-right: 3%;
+    padding-left: 5px;
+    border-left: 2px solid rgb(46, 46, 46);
+}
+.nav ul li a:hover{
+    text-decoration: none;
+    color: rgba(255, 255, 255, 0.616) !important
+}
+

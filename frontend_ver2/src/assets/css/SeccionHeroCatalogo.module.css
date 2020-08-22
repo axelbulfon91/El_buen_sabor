@@ -1,0 +1,33 @@
+@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+
+.jumbo{
+    color: whitesmoke;
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    justify-content: center;
+    height: 90vh;
+    background-color: rgba(0,0,0,0.2) !important;
+    margin-bottom: 0px !important;
+    
+}
+.contenedorTitulo{
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    padding-right: 30px;
+
+}
+.h1{
+    -webkit-text-stroke: 1px white;
+    font-family: 'Kaushan Script', cursive;
+    font-size: 20vh;
+    color: rgb(10, 10, 10);
+}
+@media (max-width: 380px) {
+
+    .h1 { 
+       font-size: 20vw; 
+    }
+ 
+ }

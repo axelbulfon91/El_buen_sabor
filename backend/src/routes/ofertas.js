@@ -32,7 +32,7 @@ router.get('/', async (req, res) => {
             attributes:['id'],
             include: [{
                 model: articuloModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre', "nombreImg"]
             },
             {
                 model: precioModel,
@@ -40,7 +40,7 @@ router.get('/', async (req, res) => {
             }]
         },{
             model: elaboradoModel,
-            attributes: ['id', 'nombre'],
+            attributes: ['id', 'nombre', "nombreImg"],
             include: {
                 model: precioModel,
                 attributes: ['id', 'monto', 'tipoMoneda']
