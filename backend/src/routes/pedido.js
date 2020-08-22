@@ -15,7 +15,8 @@ const { comprobarToken } = require('../lib/service_jwt')
 router.post('/', async (req, res) => {
     const productosPedidos = req.body.productosPedidos // Array de productos
     ////////////Comprobacion de existencia de Stock en los insumos//////////////
-    const validacion = await validarStock(productosPedidos)
+    const validacion = validarStock(productosPedidos)
+    console.log(validacion)
     /////////////Si hay Stock, Genero el Pedido ////////////////////
     if (validacion.hayStock) {
         const userID = req.body.id_usuario // Token ---> id_user
@@ -25,7 +26,10 @@ router.post('/', async (req, res) => {
         const pedido = await pedidoModel.create({ //Creo pedido a con id_usuario
             id_cliente: user.id,
             estado: estado,
-            tipoRetiro: req.body.tipoRetiro
+            tipoRetiro: req.body.tipoRetiro,
+            //TIEMPO DE ELABORACION DESDE EL FRONT
+            tiempoElaboracion: req.body.tiempoElaboracion
+
         })
         productosPedidos.forEach(async (item, index) => {
             if (item.idBebida) {
@@ -46,7 +50,7 @@ router.post('/', async (req, res) => {
             }
         })
 
-        res.status(200).json({ "respuesta": "OK" })
+        res.status(200).json({ message: "OK" })
     } else {
         res.json({ message: 'No hay stock' })
     }

@@ -2,6 +2,7 @@
 import React, { useState, useContext } from "react";
 import { UserContext } from "../UserContext";
 import Axios from 'axios';
+import GoogleLogin from 'react-google-login';
 
 
 // reactstrap components
@@ -36,24 +37,44 @@ function Login() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const resp = await Axios.post('http://localhost:4000/api/usuarios/login', datosLogin);       
-    
-    if(resp.data.message === "Login correcto"){
+    const resp = await Axios.post('http://localhost:4000/api/usuarios/login', datosLogin);
+
+    if (resp.data.message === "Login correcto") {
       setLoggedIn(true);
       localStorage.setItem("token", resp.data.token)
       alert('Usuario Logueado correctamente')
 
-    }else if(resp.data.message === "Contraseña incorrecta"){
+    } else if (resp.data.message === "Contraseña incorrecta") {
       alert('Contraseña incorrecta')
 
-    }else if(resp.data.message === "Usuario no registrado"){
+    } else if (resp.data.message === "Usuario no registrado") {
       alert('Usuario no registrado')
-      
+
     }
 
   }
 
+  const loginCorrecto = async (r) => {
+    
+    const user = {
+      googleId: r.googleId,
+      email: r.profileObj.email,
+      nombre: r.profileObj.name
+    }
+    const resp = await Axios.post("http://localhost:4000/api/usuarios/login/google", user)
+    
+    if (resp.data.message === 'Login correcto') {
+      alert(resp.data.message)
+      window.localStorage.setItem('token', resp.data.token)
+      window.location.href = "/"
+    }else {
+      alert(resp.data.message)
+    }
+  }
 
+  const loginIncorrecto = () => {
+    alert('Error al loguearse con Google')
+  }
 
   return (
     <>
@@ -71,14 +92,13 @@ function Login() {
                   <h3 className=" mx-auto text-dark">LOGIN</h3>
                   <div className="social-line text-center">
 
-                    <Button
-                      className="btn-neutral  btn-danger text-light mt-0 ml-1 d-block text-center"
-                      color="google"
-                      href="#pablo"
-                      onClick={(e) => e.preventDefault()}
-                    >
-                      <i className="fa fa-google-plus" />
-                    </Button>
+                    <GoogleLogin
+                      clientId="505222477717-sitpp1mna4vtrih544ugpmorbo669qj9.apps.googleusercontent.com"
+                      buttonText="Ingresar con Google"
+                      onSuccess={loginCorrecto}
+                      onFailure={loginIncorrecto}
+                      cookiePolicy={'single_host_origin'}
+                    />
 
                   </div>
                   <Form className="register-form mt-5 " onSubmit={handleSubmit}>
