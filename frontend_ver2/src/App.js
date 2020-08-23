@@ -12,13 +12,17 @@ import VistaPedidos from './components/administracion/views/VistaPedidos';
 import VistaExistencias from './components/administracion/views/VistaExistencias';
 import LandingPage from './components/comercio/views/LandingPage';
 import Catalogo from './components/comercio/views/VistaCatalogoComercio';
-
+import Login from './components/vistaLogin';
+import Registro from './components/vistaRegistro';
 
 function App() {
 
   return (
 
     <Switch>
+      {/* Login / Registro */}
+      <Route path="/login" component={Login} />
+      <Route path="/registro" component={Registro} />
       {/* Vista Comercio */}
       <Route exact path="/" component={LandingPage} />
       <Route path="/catalogo" component={Catalogo} />

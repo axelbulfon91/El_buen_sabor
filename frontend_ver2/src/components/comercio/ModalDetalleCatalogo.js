@@ -17,6 +17,7 @@ const ModalDetalleCatalogo = (props) => {
     const precioConDescuento = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(precio - ((precio * descuento) / 100))
     const descripcion = tipoProducto === "elaborado" ? producto.detalle : ""
     const subtotal = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((precio - ((precio * descuento) / 100)) * cantidad)
+    
     const aniadirACarrito = () => {
         let detallePedido = {};
         tipoProducto === "bebida"
@@ -25,6 +26,7 @@ const ModalDetalleCatalogo = (props) => {
         console.log(detallePedido);
         //TODO: agregar al carrito el detallePedido
     }
+    
     return (
         <Modal
             {...props}
