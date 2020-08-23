@@ -233,10 +233,6 @@ router.put('/:id', async (req, res) => {
                 }
             })
         }
-
-
-
-
     }
     res.json({ "Actualizado": "OK" })
 });

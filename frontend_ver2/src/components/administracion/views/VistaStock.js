@@ -6,7 +6,6 @@ import FormBebidasContainer from '../abm_stock/FormBebidasContainer';
 import FormSemielaboradosContainer from '../abm_stock/FormSemielaboradosContainer';
 import { Button } from 'react-bootstrap';
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
-import SelectTipoStock from '../abm_stock/SelectTipoStock';
 import NavegacionAdmin from '../uso_compartido/NavegacionAdmin';
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionPestanias from '../abm_stock/NavegacionPestanias';

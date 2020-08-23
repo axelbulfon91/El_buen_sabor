@@ -1,11 +1,9 @@
 import React from 'react'
 import GoogleLogin from 'react-google-login';
 import Axios from 'axios';
-
 import { Container } from "react-bootstrap";
 
 function VistaLogin() {
-
 
     const loginCorrecto = async (r) => {
 
