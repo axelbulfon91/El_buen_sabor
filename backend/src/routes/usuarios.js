@@ -43,7 +43,14 @@ router.post('/registro', async (req, res) => {
                 default: null
                     break;
             }
-            const token = jwt.sign({ id: nuevoUsuario.dataValues.id }, secret, {
+
+            const rol = await rolModel.findOne({
+                where:{
+                    usuario_id : nuevoUsuario.dataValues.id
+                }, 
+                order: [['id', 'DESC']]
+            })
+            const token = jwt.sign({ id: nuevoUsuario.dataValues.id, rol: rol.dataValues.rol}, secret, {
                 expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
@@ -63,7 +70,13 @@ router.post('/login', async (req, res) => {
         const passOk = await compararPassword(req.body.password, user.password)
         if (passOk) {
 
-            const token = jwt.sign({ 'id': user.id }, secret)
+            const rol = await rolModel.findOne({
+                where:{
+                    usuario_id : user.dataValues.id
+                }, 
+                order: [['id', 'DESC']]
+            })
+            const token = jwt.sign({ 'id': user.id, rol: rol.dataValues.rol  }, secret)
             res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
 
         } else {
@@ -81,7 +94,13 @@ router.post("/login/google", async (req, res) => {
 
     if (user) {
 
-        const token = jwt.sign({ 'id': user.id }, secret)
+        const rol = await rolModel.findOne({
+                where:{
+                    usuario_id : user.dataValues.id
+                }, 
+                order: [['id', 'DESC']]
+            })
+        const token = jwt.sign({ 'id': user.id, rol: rol.dataValues.rol }, secret)
         res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
 
     } else {
@@ -91,12 +110,21 @@ router.post("/login/google", async (req, res) => {
                 nombre: req.body.nombre,
                 email: req.body.email,
                 providerId: req.body.googleId,
-                telefono: "Sin numero",
+                telefono: "Sin especificar",
                 provider: "Google"
 
             });
-
-            const token = jwt.sign({ id: nuevoUsuario.dataValues.id }, secret, {
+            await rolModel.create({
+                usuario_id: nuevoUsuario.dataValues.id,
+                rol: "CLIENTE"
+            })
+            const rol = await rolModel.findOne({
+                    where:{
+                        usuario_id : nuevoUsuario.dataValues.id
+                    }, 
+                    order: [['id', 'DESC']]
+                })
+            const token = jwt.sign({ id: nuevoUsuario.dataValues.id, rol: rol.dataValues.rol}, secret, {
                 expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
