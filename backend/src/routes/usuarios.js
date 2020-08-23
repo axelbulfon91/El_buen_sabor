@@ -101,7 +101,7 @@ router.post("/login/google", async (req, res) => {
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
         }catch (err){
-            res.json({ message: 'Error al registrar el usuario', err });
+            res.status(500).json({ message: 'Error al registrar el usuario', err });
         }
     }
 
