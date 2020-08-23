@@ -11,8 +11,10 @@ import axios from 'axios';
 const LandingPage = () => {
     const [ofertas, setOfertas] = useState(null);
     useEffect(() => {
+        document.title = "Goood Taste!"
+
         axios.get("http://localhost:4000/api/productos/ofertas")
-            .then((res)=> setOfertas(res.data))      
+            .then((res) => setOfertas(res.data))
     }, [])
 
     return (
