@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
 // Trae todos los pedidos de la base de datos (PARA EL ADMINISTRADOR)
 router.get('/', async (req, res) => {
     const pedidos = await pedidoModel.findAll({
-        attributes: { exclude: ['id_cliente'] },
+        attributes: { exclude: [] },
         include: [{
             model: detalle_pedido_model,
             attributes: ['id', 'cantidad', 'precioDetalle'],
@@ -91,7 +91,7 @@ router.get('/usuario/:id', comprobarToken, async (req, res) => {
         where: {
             id_cliente: req.params.id
         },
-        attributes: { exclude: ['id_cliente'] },
+        attributes: { exclude: [] },
         include: [{
             model: detalle_pedido_model,
             attributes: ['cantidad', 'precioDetalle'],
@@ -130,7 +130,7 @@ router.get('/:id', comprobarToken, async (req, res) => {
         where: {
             id: req.params.id
         },
-        attributes: { exclude: ['id_cliente'] },
+        attributes: { exclude: [] },
         include: [{
             model: detalle_pedido_model,
             attributes: ['cantidad', 'precioDetalle'],
@@ -202,7 +202,8 @@ router.put('/:id', async (req, res) => {
     if (pedido) { //Datos de pedido en si
         await pedido.update({
             estado: req.body.estado,
-            tipoRetiro: req.body.tipoRetiro
+            tipoRetiro: req.body.tipoRetiro,
+            tiempoElaboracion: req.body.tiempoElaboracion
         })
         const productosPedidos = req.body.productosPedidos // Array de productos
         ////////////Comprobacion de existencia de Stock en los insumos del pedido//////////////

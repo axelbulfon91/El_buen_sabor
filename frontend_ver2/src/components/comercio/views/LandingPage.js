@@ -18,8 +18,6 @@ const LandingPage = () => {
 
         axios.get("http://localhost:4000/api/productos/ofertas")
             .then((res) => setOfertas(res.data))
-
-
     }, [])
 
     return (
