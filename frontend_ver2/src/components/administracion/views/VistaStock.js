@@ -6,7 +6,6 @@ import FormBebidasContainer from '../abm_stock/FormBebidasContainer';
 import FormSemielaboradosContainer from '../abm_stock/FormSemielaboradosContainer';
 import { Button } from 'react-bootstrap';
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
-import SelectTipoStock from '../abm_stock/SelectTipoStock';
 import NavegacionAdmin from '../uso_compartido/NavegacionAdmin';
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionPestanias from '../abm_stock/NavegacionPestanias';
@@ -28,7 +27,8 @@ const VistaStock = () => {
     const [semielaborado, setSemielaborado] = useState(null);
 
     ///////////RENDERIZACION CONDICIONAL POR TIPO DE STOCK ////////////////
-    useEffect(() => {//Cuando se completa la carga de data se actualiza la listaFiltrada que se pasa a la tabla
+    useEffect(() => {
+        document.title = "GT/BackOffice"//Cuando se completa la carga de data se actualiza la listaFiltrada que se pasa a la tabla
         setListaFiltrada(data)
     }, [data])
 
@@ -126,7 +126,7 @@ const VistaStock = () => {
                     <div className='d-flex justify-content-between align-items-center'>
 
                         <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
-                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)", width:"14%", marginBottom: "9px" }} variant="info" onClick={() => abrirFormulario()}>
+                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)", width: "14%", marginBottom: "9px" }} variant="info" onClick={() => abrirFormulario()}>
                             <i className='fa fa-plus'></i> Crear Nuevo</Button>
                     </div>
                     <div className='d-flex justify-content-between align-items-'>

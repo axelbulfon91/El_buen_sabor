@@ -6,7 +6,6 @@ import SeccionContacto from '../SeccionContacto';
 import Footer from '../uso_compartido/Footer';
 import estilos from '../../../assets/css/LandingPage.module.css';
 import axios from 'axios';
-import jwtDecode from 'jwt-decode';
 
 
 const LandingPage = () => {
@@ -15,6 +14,8 @@ const LandingPage = () => {
 
 
     useEffect(() => {
+        document.title = "Goood Taste!"
+
         axios.get("http://localhost:4000/api/productos/ofertas")
             .then((res) => setOfertas(res.data))
 

@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { useState } from 'react'
 import GoogleLogin from 'react-google-login';
 import Axios from 'axios';
-
 import { Container } from "react-bootstrap";
 
 function VistaLogin() {
+    const [usuario, setUsuario] = useState("")
+    const [contrasenia, setContrasenia] = useState("")
 
-
-    const loginCorrecto = async (r) => {
-
+    const loginCorrectoGoogle = async (r) => {
         const user = {
             googleId: r.googleId,
             email: r.profileObj.email,
@@ -26,8 +25,30 @@ function VistaLogin() {
         }
     }
 
-    const loginIncorrecto = () => {
+    const loginIncorrectoGoogle = () => {
         alert('Error al loguearse con Google')
+    }
+    const loginCorrectoLocal = async () => {
+
+        const user = {
+            email: usuario,
+            password: contrasenia
+        }
+        const resp = await Axios.post("http://localhost:4000/api/usuarios/login", user)
+
+        if (resp.data.message == "Login correcto") {
+            alert(resp.data.message)
+            window.localStorage.setItem('token', resp.data.token)
+            window.location.href = "/"
+
+        } else {
+            alert(resp.data.message)
+        }
+    }
+
+    const handleOnSubmit = (e) => {
+        e.preventDefault();
+        loginCorrectoLocal()
     }
 
     return (
@@ -37,22 +58,23 @@ function VistaLogin() {
                 <h2>Login</h2>
                 <div className="row">
                     <div className="col-md-6">
-                        <form>
+                        <form onSubmit={(e) => handleOnSubmit(e)}>
                             <div className="form-group text-left">
-                                <label htmlFor="exampleInputEmail1">Email address</label>
+                                <label>Email address</label>
                                 <input type="email"
+                                    value={usuario}
                                     className="form-control"
-                                    id="email"
-                                    aria-describedby="emailHelp"
                                     placeholder="Enter email"
+                                    onChange={(e) => setUsuario(e.target.value)}
                                 />
                             </div>
                             <div className="form-group text-left">
-                                <label htmlFor="exampleInputPassword1">Password</label>
+                                <label >Password</label>
                                 <input type="password"
                                     className="form-control"
-                                    id="password"
                                     placeholder="Password"
+                                    value={contrasenia}
+                                    onChange={(e) => setContrasenia(e.target.value)}
                                 />
                             </div>
 
@@ -65,8 +87,8 @@ function VistaLogin() {
                             className="ml-4"
                             clientId="505222477717-sitpp1mna4vtrih544ugpmorbo669qj9.apps.googleusercontent.com"
                             buttonText="Ingresar con Google"
-                            onSuccess={loginCorrecto}
-                            onFailure={loginIncorrecto}
+                            onSuccess={loginCorrectoGoogle}
+                            onFailure={loginIncorrectoGoogle}
                             cookiePolicy={'single_host_origin'}
                         />
                     </div>
