@@ -6,7 +6,7 @@ import SeccionContacto from '../SeccionContacto';
 import Footer from '../uso_compartido/Footer';
 import estilos from '../../../assets/css/LandingPage.module.css';
 import axios from 'axios';
-
+import jwtDecode from 'jwt-decode';
 
 const LandingPage = () => {
     const [ofertas, setOfertas] = useState(null);
