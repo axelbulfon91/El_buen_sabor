@@ -22,7 +22,7 @@ function SectionCatalogo() {
 
 	useEffect(() => {
 		obtenerProductos()
-		setCarrito(JSON.parse(window.localStorage.getItem('carrito')) || [])
+		setCarrito(JSON.parse(window.sessionStorage.getItem('carrito')) || [])
 	}, [])
 
 

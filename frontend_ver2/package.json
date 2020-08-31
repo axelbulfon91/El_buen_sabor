@@ -17,7 +17,9 @@
     "react-google-login": "^5.1.21",
     "react-router": "^5.2.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1"
+    "react-scripts": "^3.4.3",
+    "react-toastify": "^6.0.8",
+    "timeago.js": "^4.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

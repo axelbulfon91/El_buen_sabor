@@ -41,7 +41,7 @@ function Login() {
 
     if (resp.data.message === "Login correcto") {
       setLoggedIn(true);
-      localStorage.setItem("token", resp.data.token)
+      sessionStorage.setItem("token", resp.data.token)
       alert('Usuario Logueado correctamente')
 
     } else if (resp.data.message === "Contraseña incorrecta") {
@@ -65,7 +65,7 @@ function Login() {
     
     if (resp.data.message === 'Login correcto') {
       alert(resp.data.message)
-      window.localStorage.setItem('token', resp.data.token)
+      window.sessionStorage.setItem('token', resp.data.token)
       window.location.href = "/"
     }else {
       alert(resp.data.message)

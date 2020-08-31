@@ -1,12 +1,28 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Modal, Button } from 'react-bootstrap'
 import estilos from '../../assets/css/ModalDetalleCatalogo.module.css'
 import { RibbonOferta } from './RibbonOferta';
+import Axios from 'axios';
 
+import { toast } from 'react-toastify';
+
+function mensaje() {
+    toast.success('Producto agregado al carrito', {
+        position: "bottom-right",
+        autoClose: 3000,
+        hideProgressBar: true,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+    });
+
+}
 
 const ModalDetalleCatalogo = (props) => {
+    
     const { producto, tipoProducto, oferta } = props;
-    const [cantidad, setCantidad] = useState(1)
+    const [cantidad, setCantidad] = useState(1)   
 
     const nombre = tipoProducto === "bebida"
         ? <span>{producto.Articulo.nombre}</span>
@@ -18,15 +34,28 @@ const ModalDetalleCatalogo = (props) => {
     const descripcion = tipoProducto === "elaborado" ? producto.detalle : ""
     const subtotal = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((precio - ((precio * descuento) / 100)) * cantidad)
     
-    const aniadirACarrito = () => {
-        let detallePedido = {};
-        tipoProducto === "bebida"
-            ? detallePedido = { idBebida: producto.id, cantidad }
-            : detallePedido = { idElaborado: producto.id, cantidad }
-        console.log(detallePedido);
-        //TODO: agregar al carrito el detallePedido
-    }
     
+
+    const aniadirACarrito = async () => {       
+        var resp = {}
+        var carritoAux = []
+        console.log(producto)
+        if (tipoProducto !== 'bebida') {
+            resp =  await Axios.get("http://localhost:4000/api/productos/elaborados/" + producto.id)
+        } else {
+            resp = await Axios.get("http://localhost:4000/api/productos/bebidas/" + producto.id)                  
+        }
+
+        if (window.sessionStorage.getItem('carrito')) {
+            carritoAux = JSON.parse(window.sessionStorage.getItem('carrito'))
+        }
+        carritoAux.push({producto: resp.data, cant: cantidad})        
+        console.log(carritoAux)
+        window.sessionStorage.setItem('carrito', JSON.stringify(carritoAux));
+        props.onHide()
+        mensaje()
+    }
+
     return (
         <Modal
             {...props}

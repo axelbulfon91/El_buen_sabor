@@ -19,8 +19,8 @@ const LandingPage = () => {
             .then((res) => setOfertas(res.data))
 
         //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol    
-        if (localStorage.getItem('token')) {
-            const userData = jwtDecode(localStorage.getItem('token'));
+        if (sessionStorage.getItem('token')) {
+            const userData = jwtDecode(sessionStorage.getItem('token'));
             console.log({"Usuario logueado " : userData})
         }
     }, [])

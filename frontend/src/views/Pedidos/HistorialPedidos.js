@@ -7,7 +7,7 @@ import axiosAutorizado from '../../utils/axiosAutorizado';
 
 function HistorialPedidos() {
 
-    const userData = jwtDecode(localStorage.getItem('token'));
+    const userData = jwtDecode(sessionStorage.getItem('token'));
     const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
     const [totales, setTotales] = useState([])
