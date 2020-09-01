@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
 // Trae todos los pedidos de la base de datos (PARA EL ADMINISTRADOR)
 router.get('/', async (req, res) => {
     const pedidos = await pedidoModel.findAll({
-        attributes: { exclude: [] },
+        attributes: { exclude: ['id_cliente', 'tiempo_elaboracion'] },
         include: [{
             model: detalle_pedido_model,
             attributes: ['id', 'cantidad', 'precioDetalle'],
@@ -91,7 +91,7 @@ router.get('/usuario/:id', comprobarToken, async (req, res) => {
         where: {
             id_cliente: req.params.id
         },
-        attributes: { exclude: [] },
+        attributes: { exclude: ['id_cliente', 'tiempo_elaboracion'] },
         include: [{
             model: detalle_pedido_model,
             attributes: ['cantidad', 'precioDetalle'],

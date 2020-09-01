@@ -23,7 +23,7 @@ function SectionDetalle() {
 
     useEffect(() => {
         obtenerProducto()
-        setCarrito(JSON.parse(window.localStorage.getItem('carrito')) || [])
+        setCarrito(JSON.parse(window.sessionStorage.getItem('carrito')) || [])
     }, [])
 
 
@@ -43,7 +43,7 @@ function SectionDetalle() {
         }
         carritoAux.push(productoAgregado)
         setCarrito(carritoAux)        
-        window.localStorage.setItem('carrito', JSON.stringify(carrito));
+        window.sessionStorage.setItem('carrito', JSON.stringify(carrito));
         mensaje();
     }
 

@@ -33,8 +33,8 @@ const BarraNavegacion = () => {
         // EFECTO SCROLL DEL NAVBAR
         window.addEventListener("scroll", updateNavbarColor);
         //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol    
-        if (localStorage.getItem('token')) {
-            const userData = jwtDecode(localStorage.getItem('token'));
+        if (sessionStorage.getItem('token')) {
+            const userData = jwtDecode(sessionStorage.getItem('token'));
             console.log(userData);
             switch (userData.rol) {
                 case "ADMINISTRADOR":
@@ -58,7 +58,7 @@ const BarraNavegacion = () => {
         };
     }, []);
     const handleLogout = () => {
-        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "/"
     }
     //Modificacion de Links en base a logeo
@@ -66,6 +66,7 @@ const BarraNavegacion = () => {
     if (isLoggedIn) {
         linkUsuario = <NavDropdown title={<span className={classnames("h6", textColor)}><i className="fa fa-user-circle mr-2"></i>{user.nombre}</span>} className="navbar-dark">
             <NavDropdown.Item><NavLink exact to="/perfil"><i className="fa fa-user-edit mr-2"></i>Mi Perfil</NavLink></NavDropdown.Item>
+            <NavDropdown.Item><NavLink exact to="/historialPedidos"><i className="fa fa-clock mr-2"></i>Historial</NavLink></NavDropdown.Item>
             <NavDropdown.Item onClick={() => handleLogout()}><i className="fa fa-sign-out-alt mr-2"></i>Salir</NavDropdown.Item>
         </NavDropdown>
 

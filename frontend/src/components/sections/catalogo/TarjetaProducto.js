@@ -51,7 +51,7 @@ function TarjetaProducto(props) {
         carritoAux.push(productoAgregado)
         setCarrito(carritoAux)
         toggle()
-        window.localStorage.setItem('carrito', JSON.stringify(carrito));
+        window.sessionStorage.setItem('carrito', JSON.stringify(carrito));
         mensaje();
         
     }

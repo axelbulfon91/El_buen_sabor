@@ -17,7 +17,7 @@ function VistaRegistro() {
 
         if (resp.data.message !== 'Error al registrar el usuario') {
             alert(resp.data.message)
-            window.localStorage.setItem('token', resp.data.token)
+            window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 
         } else {

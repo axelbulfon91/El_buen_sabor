@@ -23,8 +23,8 @@ function Carrito() {
     function obtenerCarritoDeLocal() {
         var carritoAux = []
 
-        if (window.localStorage.getItem('carrito')) {
-            carritoAux = JSON.parse(window.localStorage.getItem('carrito'))
+        if (window.sessionStorage.getItem('carrito')) {
+            carritoAux = JSON.parse(window.sessionStorage.getItem('carrito'))
         }
 
         setCarrito(carritoAux);
@@ -46,26 +46,6 @@ function Carrito() {
 
     }
 
-    const obtenerDatos = async () => {
-
-
-        var aux = 0
-        var auxTiempo = 0
-        const dato = await axiosAutorizado().get("http://localhost:4000/api/pedidos/" + 1)  // Id de pedido solicitado
-        var pedido = dato.data
-        if (pedido !== null) {
-            var productosDeCarrito = pedido.Detalle_Pedidos
-            setCarrito(productosDeCarrito)
-            productosDeCarrito.forEach(p => {
-                aux += (p.precioDetalle.toFixed(2) * p.cantidad)
-                auxTiempo += p.producto.tiempoElaboracion * p.cantidad
-            });
-            setTiempoElab(auxTiempo)
-            setTotal(aux.toFixed(2))
-            setCostoFinal(aux.toFixed(2))
-        }
-
-    }
 
     function decrementarUnidad(prod, i) {
 
@@ -113,7 +93,7 @@ function Carrito() {
 
     function vaciarCarrito() {
         if (window.confirm("Seguro desea vaciar el carrito?")) {
-            window.localStorage.removeItem('carrito')
+            window.sessionStorage.removeItem('carrito')
             setCarrito([])
         }
 
@@ -138,7 +118,7 @@ function Carrito() {
                 return p
             }
         })
-        window.localStorage.setItem('carrito', JSON.stringify(nuevoCarrito))
+        window.sessionStorage.setItem('carrito', JSON.stringify(nuevoCarrito))
         setCambio(!cambio)
     }
 
@@ -146,8 +126,8 @@ function Carrito() {
 
         //Falta validar que haya token de usuario para poder hacer pedido sino redirigir a pantalla de login      
         
-        if(localStorage.getItem('token')){
-            const userData = jwtDecode(localStorage.getItem('token'));
+        if(sessionStorage.getItem('token')){
+            const userData = jwtDecode(sessionStorage.getItem('token'));
             const idUsuario = userData.id
             var pedido = {
                 productosPedidos: carrito,
@@ -161,12 +141,12 @@ function Carrito() {
 
             if (resp.data.message === "OK") {
                 alert("Pedido realizado correctamente, volvera al inicio")
-                window.localStorage.removeItem('carrito')
+                window.sessionStorage.removeItem('carrito')
                 window.location.href = "/"
 
             }else if (resp.data.message == "No hay stock"){
                 alert("No hay stock suficiente para generar el pedidos")
-                window.localStorage.removeItem('carrito')
+                window.sessionStorage.removeItem('carrito')
                 window.location.href = "/Catalogo"
             }
 

@@ -10,7 +10,7 @@ const RutaPrivada = ({ component: Component, ...rest }) => {
           return <Component {...props} />
         }
         alert('Usuario no logueado')
-        return <Redirect to='/LoginPage' />
+        return <Redirect to='/login' />
       }}
     />
   )

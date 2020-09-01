@@ -17,7 +17,7 @@ function VistaLogin() {
 
         if (resp.data.message !== 'Error al registrar el usuario') {
             alert(resp.data.message)
-            window.localStorage.setItem('token', resp.data.token)
+            window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 
         } else {
@@ -38,7 +38,7 @@ function VistaLogin() {
 
         if (resp.data.message == "Login correcto") {
             alert(resp.data.message)
-            window.localStorage.setItem('token', resp.data.token)
+            window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 
         } else {

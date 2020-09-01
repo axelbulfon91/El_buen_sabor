@@ -32,7 +32,7 @@ function Register() {
 
     if (resp.data.message === 'Usuario creado correctamente') {
       alert(resp.data.message)
-      window.localStorage.setItem('token', resp.data.token)
+      window.sessionStorage.setItem('token', resp.data.token)
       window.location.href = "/"
     }else {
       alert(resp.data.message)

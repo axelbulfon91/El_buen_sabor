@@ -29,7 +29,7 @@ function App() {
 
   const [usuario, setUsuario] = useState(null);
   const [carrito, setCarrito] = useState([]);
-  const [loggedIn, setLoggedIn] = useState(localStorage.getItem("token") ? true : false);
+  const [loggedIn, setLoggedIn] = useState(sessionStorage.getItem("token") ? true : false);
 
   return (
 
