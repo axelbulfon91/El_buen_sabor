@@ -36,6 +36,19 @@ const BarraNavegacion = () => {
         if (localStorage.getItem('token')) {
             const userData = jwtDecode(localStorage.getItem('token'));
             console.log(userData);
+            switch (userData.rol) {
+                case "ADMINISTRADOR":
+                    window.location.href = "/admin"
+                    break;
+                case "CAJERO":
+                    window.location.href = "admin/cajero"
+                    break;
+                case "COCINERO":
+                    window.location.href = "/admin/cocinero"
+                    break;
+                default:
+                    break;
+            }
             setUser(userData)
             setisLoggedIn(true)
         }

@@ -35,9 +35,9 @@ function App() {
       <Route path="/admin/existencias" component={VistaExistencias} />
       <Route path="/admin" component={VistaStock} />
       {/* Vistas Cajero */}
-      <Route path="/cajero" component={VistaCajero} />
+      <Route path="/admin/cajero" component={VistaCajero} />
       {/* Vistas Cocinero */}
-      <Route path="/cocinero" component={VistaCocinero} />
+      <Route path="/admin/cocinero" component={VistaCocinero} />
     </Switch>
   );
 }
