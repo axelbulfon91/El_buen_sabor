@@ -1,7 +1,7 @@
 import React, { useState, Fragment, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin'
-import NavegacionAdmin from '../uso_compartido/NavegacionAdmin'
+import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral'
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
 import TablaElaborados from '../abm_catalogo/TablaElaborados'
 import FormElaboradoContainer from '../abm_catalogo/FormElaboradoContainer'
@@ -54,18 +54,18 @@ const VistaCatalogo = () => {
             setModalShowElaborado(true)
         }
     }
-    
+
     return (
         <Fragment>
             <GridLayoutAdmin>
                 {/* COLUMNA 1 */}
-                <NavegacionAdmin />
+                <NavegacionAdminLateral />
                 {/* COLUMNA 2 */}
                 <div id="columna-2" className="m-5">
-                    <h1 className="display-4 p-3" style={{borderLeft: "8px solid DarkRed"}}>Administración / <strong>Catálogo</strong></h1>
+                    <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Catálogo</strong></h1>
                     <div className='d-flex justify-content-between align-items-center'>
                         <SelectCategorias filtrarPorCategoria={filtrarPorCategoria}></SelectCategorias>
-                        <Button style={{boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)"}} variant="info" onClick={() => abrirFormulario()}>
+                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="info" onClick={() => abrirFormulario()}>
                             <i className='fa fa-plus'></i> Crear Nuevo</Button>
                     </div>
                     <div>
@@ -85,7 +85,7 @@ const VistaCatalogo = () => {
             </GridLayoutAdmin>
             {/* //RENDERIZACION CONDICIONAL DEL MODAL DE STOCK */}
             {
-             <FormElaboradoContainer
+                <FormElaboradoContainer
                     refrescar={setRefreshKey}
                     elaborado={elaborado}
                     modalShow={modalShowElaborado}

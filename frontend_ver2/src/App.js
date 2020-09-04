@@ -34,7 +34,6 @@ function App() {
         <Route exact path="/" component={LandingPage} />
         <Route path="/catalogo" component={Catalogo} />
         <RutaPrivada path="/historialPedidos" component={HistorialPedidos} />
-
         <Route path="/perfil" component={Perfil} />
         <Route path="/carrito" component={VistaCarrito} />
         {/* Vistas Administrador */}
@@ -44,9 +43,9 @@ function App() {
         <Route path="/admin/existencias" component={VistaExistencias} />
         <Route path="/admin" component={VistaStock} />
         {/* Vistas Cajero */}
-        <Route path="/cajero" component={VistaCajero} />
+        <Route path="/admin/cajero" component={VistaCajero} />
         {/* Vistas Cocinero */}
-        <Route path="/cocinero" component={VistaCocinero} />
+        <Route path="/admin/cocinero" component={VistaCocinero} />
       </Switch>
     </Router>
   );

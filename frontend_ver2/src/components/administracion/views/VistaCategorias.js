@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Button } from 'react-bootstrap'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
-import NavegacionAdmin from '../uso_compartido/NavegacionAdmin';
+import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import SelectTipoStock from '../abm_stock/SelectTipoStock'
 import CategoriasAltaContainer from '../abm_stock/CategoriasAltaContainer'
 import TablaCategorias from '../abm_stock/TablaCategorias'
@@ -41,16 +41,16 @@ const VistaCategorias = () => {
     }
     return (
         <GridLayoutAdmin>
-            <NavegacionAdmin></NavegacionAdmin>
+            <NavegacionAdminLateral></NavegacionAdminLateral>
             <div id="columna-2" className="m-5">
-                <h1 className="display-4 p-3" style={{borderLeft: "8px solid DarkRed"}}>Administración / <strong>Categorías</strong></h1>
+                <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Categorías</strong></h1>
                 <div className='d-flex justify-content-between align-items-center'>
                     <SelectTipoStock
                         filtrarTipoStock={filtrarTipoStock}
                         conOpcionTodas={true}
                         conElaborados={true}
                     ></SelectTipoStock>
-                    <Button style={{boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)"}} variant="info" onClick={() => setModalShowAltaCategoria(true)}>
+                    <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="info" onClick={() => setModalShowAltaCategoria(true)}>
                         <i className='fa fa-plus'></i> Crear Nueva Categoría
                     </Button>
                 </div>

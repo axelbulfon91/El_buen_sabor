@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import { Button } from 'react-bootstrap'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
-import NavegacionAdmin from '../uso_compartido/NavegacionAdmin';
+import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import SelectTipoStock from '../abm_stock/SelectTipoStock'
 import ExistenciasAltaContainer from '../abm_stock/ExistenciasAltaContainer'
 import TablaExistencias from '../abm_stock/TablaExistencias'
@@ -23,14 +23,14 @@ const VistaExistencias = () => {
             try {
                 const existenciasResult = await axios.get("http://localhost:4000/api/productos/existencias")
                 const result = existenciasResult.data;
-                const ordenados = result.sort((a,b) => {                
-                        if (a.id < b.id) {
-                          return 1;
-                        }
-                        if (a.id > b.id) {
-                          return -1;
-                        }
-                        return 0;
+                const ordenados = result.sort((a, b) => {
+                    if (a.id < b.id) {
+                        return 1;
+                    }
+                    if (a.id > b.id) {
+                        return -1;
+                    }
+                    return 0;
                 })
                 setExistencias(ordenados)
                 setExistenciasFiltradas(ordenados)
@@ -63,15 +63,15 @@ const VistaExistencias = () => {
     }
     return (
         <GridLayoutAdmin>
-            <NavegacionAdmin></NavegacionAdmin>
+            <NavegacionAdminLateral></NavegacionAdminLateral>
             <div id="columna-2" className="m-5">
-                <h1 className="display-4 p-3" style={{borderLeft: "8px solid DarkRed"}}>Administración / <strong>Existencias</strong></h1>
+                <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Existencias</strong></h1>
                 <div className='d-flex justify-content-between align-items-center'>
                     <SelectTipoStock
                         filtrarTipoStock={filtrarTipoStock}
                         conOpcionTodas={true}
                     ></SelectTipoStock>
-                    <Button style={{boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)"}} variant="info" onClick={() => setModalShowAltaExistencia(true)}>
+                    <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="info" onClick={() => setModalShowAltaExistencia(true)}>
                         <i className='fa fa-plus'></i> Crear Nueva Existencia
                     </Button>
                 </div>
@@ -79,11 +79,11 @@ const VistaExistencias = () => {
                     <FiltroPorNombre filtrarLista={filtrarPorNombre}></FiltroPorNombre>
                 </div>
                 <div className="scrollable">
-                    <TablaExistencias 
-                    existencias={existenciasFiltradas} 
-                    conNombre={true} 
-                    conEliminar={true}
-                    refrescarExistencias={() => setRefreshToken(prevState => prevState = prevState + 1)}
+                    <TablaExistencias
+                        existencias={existenciasFiltradas}
+                        conNombre={true}
+                        conEliminar={true}
+                        refrescarExistencias={() => setRefreshToken(prevState => prevState = prevState + 1)}
                     ></TablaExistencias>
                 </div>
             </div>

@@ -6,7 +6,7 @@ import FormBebidasContainer from '../abm_stock/FormBebidasContainer';
 import FormSemielaboradosContainer from '../abm_stock/FormSemielaboradosContainer';
 import { Button } from 'react-bootstrap';
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
-import NavegacionAdmin from '../uso_compartido/NavegacionAdmin';
+import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionPestanias from '../abm_stock/NavegacionPestanias';
 
@@ -118,7 +118,7 @@ const VistaStock = () => {
         <Fragment>
             <GridLayoutAdmin>
                 {/* COLUMNA 1 */}
-                <NavegacionAdmin />
+                <NavegacionAdminLateral />
                 {/* COLUMNA 2 */}
 
                 <div id="columna-2" className="m-5">
