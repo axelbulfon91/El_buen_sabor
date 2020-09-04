@@ -25,7 +25,7 @@ const VistaCarrito = props => {
     const [carrito, setCarrito] = useState([]);
     const [total, setTotal] = useState(0);
     const [costoFinal, setCostoFinal] = useState(0);
-    const [tipoRetiro, setTipoRetiro] = useState("0"); // 0 Delivery, 1 Retiro por local
+    const [tipoRetiro, setTipoRetiro] = useState("delivery"); 
     const [cambio, setCambio] = useState(false)
     const [tiempoElab, setTiempoElab] = useState(0)
     
@@ -35,12 +35,12 @@ const VistaCarrito = props => {
 
         if (window.sessionStorage.getItem('carrito')) {
             let aux = []
-            aux = JSON.parse(window.sessionStorage.getItem('carrito'))            
+            aux = JSON.parse(window.sessionStorage.getItem('carrito'))           
             
             setCarrito(aux)
             calcularTotal(aux)
-
         }
+
     }, [cambio])
 
     function decrementarUnidad(prod, i) {
@@ -90,13 +90,13 @@ const VistaCarrito = props => {
         var valor = aux.toFixed(2)
         setTotal(valor)
         setTiempoElab(auxTiempo)
-        if (tipoRetiro === "0") {
+        if (tipoRetiro === "delivery") {
             setCostoFinal(valor)
-        } else if (tipoRetiro === "1") {
-            setCostoFinal((valor - (valor * 0.1)))
+        } else if (tipoRetiro === "retiroPorLocal") {
+            setCostoFinal((valor - (valor * 0.1).toFixed(2)))
         }
         //setCambio(!cambio)
-    }
+    }   
 
     function vaciarCarrito() {
         if (window.confirm("Seguro desea vaciar el carrito?")) {
@@ -108,9 +108,9 @@ const VistaCarrito = props => {
 
     function cambiarTipoRetiro(val) {
 
-        if (val === "0") {
+        if (val === "delivery") {
             setCostoFinal(total)
-        } else if (val === "1") {
+        } else if (val === "retiroPorLocal") {
             setCostoFinal((total - (total * 0.1)).toFixed(2))
         }
         setTipoRetiro(val)
@@ -130,10 +130,17 @@ const VistaCarrito = props => {
         if (sessionStorage.getItem('token')) {
             const userData = jwtDecode(sessionStorage.getItem('token'));
             const idUsuario = userData.id
+            var carritoListo = carrito.map(c => {                
+                if(c.producto.Articulo){
+                    return {"idBebida" : c.producto.Articulo.id, "cantidad": c.cant}
+                }else{
+                    return {"idElaborado" : c.producto.id, "cantidad": c.cant}
+                }
+            })
             var pedido = {
-                productosPedidos: carrito,
+                productosPedidos: carritoListo,
                 id_usuario: idUsuario,
-                estado: "Creado",
+                estado: "porConfirmar",
                 tipoRetiro: tipoRetiro,
                 tiempoElaboracion: tiempoElab
             }
@@ -230,8 +237,8 @@ const VistaCarrito = props => {
                                     <td colSpan={2} className="text-left">
                                         <h5>Tipo de retiro:
                                                     <select value={tipoRetiro} className="ml-1" onChange={(e) => cambiarTipoRetiro(e.target.value)}>
-                                                <option value="0">Delivery</option>
-                                                <option value="1">Retiro en local ( -10% )</option>
+                                                <option value="delivery">Delivery</option>
+                                                <option value="retiroPorLocal">Retiro en local ( -10% )</option>
                                             </select>
                                         </h5>
                                     </td>
