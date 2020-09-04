@@ -20,8 +20,13 @@ import 'react-toastify/dist/ReactToastify.css';
 
 import RutaPrivada from './utils/RutaPrivada';
 import HistorialPedidos from './components/comercio/views/HistorialPedidos';
+import RutaPrivadaCajero from './utils/RutaPrivadaCajero';
+import RutaPrivadaCocinero from './utils/RutaPrivadaCocinero';
+import RutaPrivadaAdmin from './utils/RutaPrivadaAdmin';
 
 function App() {
+
+  //Falta privatizar rutas por rol!!!
 
   return (
     <Router>
@@ -37,15 +42,15 @@ function App() {
         <Route path="/perfil" component={Perfil} />
         <Route path="/carrito" component={VistaCarrito} />
         {/* Vistas Administrador */}
-        <Route path="/admin/categorias" component={VistaCategorias} />
-        <Route path="/admin/catalogo" component={VistaCatalogo} />
-        <Route path="/admin/pedidos" component={VistaPedidos} />
-        <Route path="/admin/existencias" component={VistaExistencias} />
-        <Route path="/admin" component={VistaStock} />
+        <RutaPrivadaAdmin exact path="/admin/categorias" component={VistaCategorias} />
+        <RutaPrivadaAdmin exact path="/admin/catalogo" component={VistaCatalogo} />
+        <RutaPrivadaAdmin exact path="/admin/pedidos" component={VistaPedidos} />
+        <RutaPrivadaAdmin exact path="/admin/existencias" component={VistaExistencias} />
+        <RutaPrivadaAdmin exact path="/admin" component={VistaStock} />
         {/* Vistas Cajero */}
-        <Route path="/admin/cajero" component={VistaCajero} />
+        <RutaPrivadaCajero path="/admin/cajero" component={VistaCajero} />
         {/* Vistas Cocinero */}
-        <Route path="/admin/cocinero" component={VistaCocinero} />
+        <RutaPrivadaCocinero path="/admin/cocinero" component={VistaCocinero} />
       </Switch>
     </Router>
   );

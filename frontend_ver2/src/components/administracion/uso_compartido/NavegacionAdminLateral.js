@@ -16,7 +16,7 @@ const NavegacionAdmin = () => {
         }
     }, [])
     const desloguearse = () => {
-        localStorage.clear();
+        sessionStorage.clear();
         window.location.href = "/login"
     }
     return (

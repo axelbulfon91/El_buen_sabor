@@ -41,7 +41,7 @@ const BarraNavegacion = () => {
                     window.location.href = "/admin"
                     break;
                 case "CAJERO":
-                    window.location.href = "admin/cajero"
+                    window.location.href = "/admin/cajero"
                     break;
                 case "COCINERO":
                     window.location.href = "/admin/cocinero"
