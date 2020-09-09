@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import BarraNavegacion from '../uso_compartido/BarraNavegacion'
 import estilos from '../../../assets/css/VistaCarrito.module.css'
 import { Container, Row, Table, Button } from 'react-bootstrap';
@@ -6,6 +6,8 @@ import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import jwtDecode from 'jwt-decode';
 import { toast } from 'react-toastify';
+import datosContext from '../../../datosLocalContext';
+import moment from 'moment';
 
 function mensaje() {
     toast.error('Producto eliminado', {
@@ -22,21 +24,23 @@ function mensaje() {
 
 const VistaCarrito = props => {
 
+    var datos = useContext(datosContext)
+
     const [carrito, setCarrito] = useState([]);
     const [total, setTotal] = useState(0);
     const [costoFinal, setCostoFinal] = useState(0);
-    const [tipoRetiro, setTipoRetiro] = useState("delivery"); 
+    const [tipoRetiro, setTipoRetiro] = useState("delivery");
     const [cambio, setCambio] = useState(false)
     const [tiempoElab, setTiempoElab] = useState(0)
-    
-   
-    useEffect(() => {        
-        
+
+
+    useEffect(() => {
+
 
         if (window.sessionStorage.getItem('carrito')) {
             let aux = []
-            aux = JSON.parse(window.sessionStorage.getItem('carrito'))           
-            
+            aux = JSON.parse(window.sessionStorage.getItem('carrito'))
+
             setCarrito(aux)
             calcularTotal(aux)
         }
@@ -77,15 +81,15 @@ const VistaCarrito = props => {
         var aux = 0
         var auxTiempo = 0
         c ? carritoAux = c : carritoAux = carrito // Compruebo si la llamada a la funcion viene con parametro (useEffect) o no
-        
+
         carritoAux.forEach(p => {
             aux += (parseFloat(p.producto.precio) * p.cant)
-            if(p.producto.Articulo){
+            if (p.producto.Articulo) {
                 auxTiempo += 0
-            }else{
+            } else {
                 auxTiempo += p.producto.tiempoElaboracion * p.cant
             }
-            
+
         });
         var valor = aux.toFixed(2)
         setTotal(valor)
@@ -96,7 +100,7 @@ const VistaCarrito = props => {
             setCostoFinal((valor - (valor * 0.1).toFixed(2)))
         }
         //setCambio(!cambio)
-    }   
+    }
 
     function vaciarCarrito() {
         if (window.confirm("Seguro desea vaciar el carrito?")) {
@@ -125,39 +129,78 @@ const VistaCarrito = props => {
         mensaje()
     }
 
+    function dentroDeHorario() {
+        var diaActual = new Date(Date.now())
+        const diaAbierto = datos.horarios.find((d) => {
+            if (d.dia === diaActual.getDay()) { // d.dia devuelve el numero de dia pj 0-Domingo, 1-Lunes, etc  
+
+                return d.dia
+
+            }
+        })
+        if (diaAbierto) {
+            var horarioApertura = Date.parse(diaActual.getDate() + "-" + diaActual.getMonth() + "-" + diaActual.getFullYear() + " " + diaAbierto.horarioApertura)
+            var horarioCierre = Date.parse(diaActual.getDate() + "-" + diaActual.getMonth() + "-" + diaActual.getFullYear() + " " + diaAbierto.horarioCierre)
+            const abre = moment(horarioApertura).format("DD HH:mm")
+            const act = moment(diaActual).format("DD HH:mm")
+            var cierre = null
+            diaAbierto.horarioApertura > diaAbierto.horarioCierre 
+                ? cierre = moment(horarioCierre).add(1, "day").format("DD HH:mm") // Si el horario de cierre es despues de las 00, incrementa un dia
+                : cierre = moment(horarioCierre).format("DD HH:mm")
+
+            if (moment(act).isBetween(abre, cierre)) { 
+                console.log("Permitido")
+                return true
+            } else {
+                alert("Los horarios de atencion son de " + diaAbierto.horarioApertura + " a " + diaAbierto.horarioCierre)
+                console.log("Fuera de horario")
+                return false
+            }
+
+        }else{
+            alert("Hoy no abrimos, sepa disculpar")
+            return false
+        }
+
+    }
+
     async function realizarPedido() {
 
         if (sessionStorage.getItem('token')) {
-            const userData = jwtDecode(sessionStorage.getItem('token'));
-            const idUsuario = userData.id
-            var carritoListo = carrito.map(c => {                
-                if(c.producto.Articulo){
-                    return {"idBebida" : c.producto.Articulo.id, "cantidad": c.cant}
-                }else{
-                    return {"idElaborado" : c.producto.id, "cantidad": c.cant}
+            if (dentroDeHorario()) {
+                const userData = jwtDecode(sessionStorage.getItem('token'));
+                const idUsuario = userData.id
+                var carritoListo = carrito.map(c => {
+                    if (c.producto.Articulo) {
+                        return { "idBebida": c.producto.Articulo.id, "cantidad": c.cant }
+                    } else {
+                        return { "idElaborado": c.producto.id, "cantidad": c.cant }
+                    }
+                })
+                var pedido = {
+                    productosPedidos: carritoListo,
+                    id_usuario: idUsuario,
+                    estado: "porConfirmar",
+                    tipoRetiro: tipoRetiro,
+                    tiempoElaboracion: tiempoElab
                 }
-            })
-            var pedido = {
-                productosPedidos: carritoListo,
-                id_usuario: idUsuario,
-                estado: "porConfirmar",
-                tipoRetiro: tipoRetiro,
-                tiempoElaboracion: tiempoElab
-            }
-            const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
-            console.log(resp.data)
+                const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
+                console.log(resp.data)
 
-            if (resp.data.message === "OK") {
-                alert("Pedido realizado correctamente, volvera al inicio")
-                window.sessionStorage.removeItem('carrito')
+                if (resp.data.message === "OK") {
+                    alert("Pedido realizado correctamente, volvera al inicio")
+                    window.sessionStorage.removeItem('carrito')
+                    window.location.href = "/"
+
+                } else if (resp.data.message == "No hay stock") {
+                    alert("No hay stock suficiente para generar el pedidos")
+                    //window.sessionStorage.removeItem('carrito')
+                    window.location.href = "/Catalogo"
+                }
+
+            } else {
                 window.location.href = "/"
-
-            } else if (resp.data.message == "No hay stock") {
-                alert("No hay stock suficiente para generar el pedidos")
-                //window.sessionStorage.removeItem('carrito')
-                window.location.href = "/Catalogo"
             }
-
         } else {
             alert('Debe estar logueado para poder realizar un pedido, redirigiendo a la pantalla de login')
             window.location.href = "/LoginPage"
@@ -192,7 +235,7 @@ const VistaCarrito = props => {
                                 <tr key={i} className="text-center">
                                     <td>
                                         <Row>
-                                            <img src= {`http://localhost:4000/imgs/${p.producto.Articulo ? p.producto.Articulo.nombreImg : p.producto.nombreImg}`}
+                                            <img src={`http://localhost:4000/imgs/${p.producto.Articulo ? p.producto.Articulo.nombreImg : p.producto.nombreImg}`}
                                                 width="100"
                                                 alt={p.producto.Articulo ? p.producto.Articulo.nombreImg : p.producto.nombreImg} />
                                             <h5 className="card-title" >{p.producto.Articulo ? p.producto.Articulo.nombre : p.producto.nombre}</h5>

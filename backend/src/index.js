@@ -38,6 +38,8 @@ app.use('/api/productos/existencias', require('./routes/existencias'));
   //Facturas
 app.use('/api/facturas', require('./routes/facturas'));
 
+app.use('/api/datosGenerales', require('./routes/datosGenerales'));
+
 //Archivos estaticos
 app.use(express.static(path.join(__dirname, 'public')));
 

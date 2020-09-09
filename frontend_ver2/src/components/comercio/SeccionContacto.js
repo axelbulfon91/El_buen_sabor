@@ -1,8 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
 import classnames from "classnames";
 import estilos from "../../assets/css/SeccionContacto.module.css";
+import datosContext from '../../datosLocalContext';
+
 
 function SeccionContacto() {
+
+    var datos = useContext(datosContext)
+
+    function conocerDia(cod){
+        switch (cod) {
+            case 1 : return "Lunes";
+            case 2 : return "Martes";
+            case 3 : return "Miercoles";
+            case 4 : return "Jueves";
+            case 5 : return "Viernes";
+            case 6 : return "Sabado";
+            case 0 : return "Domingo";
+        }
+    }
+    if (datos === null) {
+        return <p>Cargando...</p>;
+    }
     return (
         <>
             <div className={classnames(estilos.fondo)}>
@@ -19,28 +38,19 @@ function SeccionContacto() {
                                     <div className="row" style={{ paddingRight: "10%" }}>
                                         <div className="col">
                                             <ul className="list-unstyled">
-                                                <li><span>Martes</span></li>
-                                                <li><span>Miércoles</span></li>
-                                                <li><span>Lunes</span></li>
-                                                <li><span>Jueves</span></li>
-                                                <li><span>Viernes</span></li>
-                                                <li><span>Sábado</span></li>
-                                                <li><span>Domingo</span></li>
+                                                {datos.horarios.map((d, i) => (
+                                                    <li key={i}><span>{conocerDia(d.dia)}</span></li>
+                                                ))}
                                             </ul>
                                         </div>
                                         <div className="col">
                                             <ul className="list-unstyled">
-                                                <li><span>9:00 - 23:00</span></li>
-                                                <li><span>9:00 - 23:00</span></li>
-                                                <li><span>9:00 - 23:00</span></li>
-                                                <li><span>9:00 - 23:00</span></li>
-                                                <li><span>9:00 - 23:00</span></li>
-                                                <li><span>17:00 - 23:00</span></li>
-                                                <li><span>17:00 - 23:00</span></li>
+                                                {datos.horarios.map((d, i) => (
+                                                    <li key={i}><span>{d.horarioApertura}</span> - <span>{d.horarioCierre}</span></li>
+                                                ))}
                                             </ul>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                             <div className="col-lg-4">
@@ -53,13 +63,19 @@ function SeccionContacto() {
                             </div>
                         </div>
                         <div className="row d-flex justify-content-center">
-                            <p>{"Teléfonos de Contacto: +54-2616665532 / 2616665533 / 2616665534"}</p>
+                            <p>{"Teléfonos de Contacto: " + datos.telefono +
+                                " - Direccion: " + datos.Domicilio.calle + " " +
+                                datos.Domicilio.numeracion + ", " +
+                                datos.Domicilio.Localidad.nombre + ", " +
+                                datos.Domicilio.Localidad.Provincium.nombre}</p>
                         </div>
                     </div>
                 </footer>
             </div>
+
         </>
     );
+
 }
 
 export default SeccionContacto;

@@ -18,7 +18,8 @@ const localidadModel = require('./models/Ubicacion/localidad');
 const provinciaModel = require('./models/Ubicacion/provincia');
 const paisModel = require('./models/Ubicacion/pais');
 const precioModel = require('./models/precio');
-const rolModel = require('./models/rol')
+const rolModel = require('./models/rol');
+const datosGeneralesModel = require('./models/datosGenerales')
 
 
 //Asociaciones entre Modelos
@@ -32,8 +33,6 @@ elaboradoModel.hasMany(detalleElaboradoModel, { foreignKey: 'elaborado_id' });
 elaboradoModel.hasOne(ofertaModel, { foreignKey: 'elaborado_id' });
 elaboradoModel.hasMany(precioModel, { foreignKey: 'elaborado_id' });
 elaboradoModel.hasMany(detalle_pedido_model, { foreignKey: 'elaborado_id' });
-
-
 //------------------
 //>>>>>>> dev-branch
 
@@ -106,3 +105,5 @@ domicilioModel.belongsTo(userModel, { foreignKey: 'id_usuario' })
 
 rolModel.belongsTo(userModel, { foreignKey: 'usuario_id' })
 userModel.hasMany(rolModel, { foreignKey: 'usuario_id' })
+
+datosGeneralesModel.hasOne(domicilioModel, { foreignKey: 'id_local' })
