@@ -14,7 +14,7 @@ function VistaLogin() {
             nombre: r.profileObj.name
         }
         const resp = await Axios.post("http://localhost:4000/api/usuarios/login/google", user)
-
+        
         if (resp.data.message !== 'Error al registrar el usuario') {
             alert(resp.data.message)
             window.sessionStorage.setItem('token', resp.data.token)
@@ -28,6 +28,7 @@ function VistaLogin() {
     const loginIncorrectoGoogle = () => {
         alert('Error al loguearse con Google')
     }
+
     const loginCorrectoLocal = async () => {
 
         const user = {
@@ -78,8 +79,9 @@ function VistaLogin() {
                                 />
                             </div>
 
-                            <button type="submit" className="btn btn-primary">Ingresar</button>
-                        </form>
+                            <button type="submit" className="btn btn-primary mr-3">Ingresar</button>
+                            Sin cuenta? <a href="/registro" className="text-primary">Registrate</a>
+                        </form>                        
                         <br />
                     o ingresa por Google
 

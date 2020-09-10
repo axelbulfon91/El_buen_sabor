@@ -12,50 +12,57 @@ const { comprobarToken } = require('../lib/service_jwt')
 
 //Registro Local
 router.post('/registro', async (req, res) => {
+
     const nuevoUsuario = await userModel.findOne({ where: { email: req.body.username } });
     try {
         if (nuevoUsuario === null) {
 
             const passwordHash = await encriptarPassword(req.body.password);
             const nuevoUsuario = await userModel.create({
-                nombre: req.body.nombre,
+                nombre: req.body.nombre || req.body.username.split('@')[0], // si hay cambo nombre lo asigna sino usa la primera parte del email
                 email: req.body.username,
                 password: passwordHash,
-                telefono: req.body.telefono
+                telefono: req.body.telefono || ""
             });
-
-            switch (req.body.rol) {
-                case 1: await rolModel.create({
+            if (req.body.rol) {
+                switch (req.body.rol) {
+                    case 1: await rolModel.create({
+                        usuario_id: nuevoUsuario.dataValues.id,
+                        rol: "COCINERO"
+                    })
+                        break;
+                    case 2: await rolModel.create({
+                        usuario_id: nuevoUsuario.dataValues.id,
+                        rol: "CAJERO"
+                    })
+                        break;
+                    case 3: await rolModel.create({
+                        usuario_id: nuevoUsuario.dataValues.id,
+                        rol: "ADMINISTRADOR"
+                    })
+                        break;
+                    default: null
+                        break;
+                }
+            } else {
+                await rolModel.create({
                     usuario_id: nuevoUsuario.dataValues.id,
-                    rol: "COCINERO"
+                    rol: "CLIENTE"
                 })
-                    break;
-                case 2: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
-                    rol: "CAJERO"
-                })
-                    break;
-                case 3: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
-                    rol: "ADMINISTRADOR"
-                })
-                    break;
-                default: null
-                    break;
             }
-
             const rol = await rolModel.findOne({
                 where: {
                     usuario_id: nuevoUsuario.dataValues.id
                 },
                 order: [['id', 'DESC']]
             })
-            const token = jwt.sign({ id: nuevoUsuario.dataValues.id, rol: rol.dataValues.rol, "nombre": user.nombre }, secret, {
+            const token = jwt.sign({ id: nuevoUsuario.dataValues.id, rol: rol.dataValues.rol, "nombre": nuevoUsuario.dataValues.nombre }, secret, {
                 expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
+            
         } else {
-            res.status(401).json({ message: 'Usuario ya registrado' });
+            res.json({ message: 'Usuario ya registrado' });
         }
     } catch{ (err) => res.json({ message: 'Error en registro de usuario: ' + err }) };
 
@@ -76,7 +83,7 @@ router.post('/login', async (req, res) => {
                 },
                 order: [['id', 'DESC']]
             })
-            const token = jwt.sign({ 'id': user.id, rol: rol.dataValues.rol, "nombre": user.nombre }, secret)
+            const token = jwt.sign({ 'id': user.dataValues.id, rol: rol.dataValues.rol, "nombre": user.dataValues.nombre }, secret)
             res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
 
         } else {
@@ -90,8 +97,7 @@ router.post('/login', async (req, res) => {
 //Registro/Login con Google
 router.post("/login/google", async (req, res) => {
 
-    const user = await userModel.findOne({ where: { email: req.body.email } })
-
+    const user = await userModel.findOne({ where: { email: req.body.email } })    
     if (user) {
 
         const rol = await rolModel.findOne({
@@ -100,17 +106,16 @@ router.post("/login/google", async (req, res) => {
             },
             order: [['id', 'DESC']]
         })
-        const token = jwt.sign({ 'id': user.id, rol: rol.dataValues.rol, "nombre": user.nombre }, secret)
+        const token = jwt.sign({ 'id': user.dataValues.id, "rol": rol.dataValues.rol, "nombre": user.dataValues.nombre }, secret)
         res.json({ message: 'Login correcto', 'token': token }) // Regresa token con numero de id de usuario logeado
 
     } else {
-        console.log(req.body)
         try {
             const nuevoUsuario = await userModel.create({
                 nombre: req.body.nombre,
                 email: req.body.email,
                 providerId: req.body.googleId,
-                telefono: "Sin especificar",
+                telefono: "",
                 provider: "Google"
 
             });
@@ -124,7 +129,7 @@ router.post("/login/google", async (req, res) => {
                 },
                 order: [['id', 'DESC']]
             })
-            const token = jwt.sign({ id: nuevoUsuario.dataValues.id, rol: rol.dataValues.rol, "nombre": user.nombre }, secret, {
+            const token = jwt.sign({ "id": nuevoUsuario.dataValues.id, "rol": rol.dataValues.rol, "nombre": nuevoUsuario.dataValues.nombre }, secret, {
                 expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
@@ -291,14 +296,5 @@ router.put('/password/:id', async (req, res) => {
 
 })
 
-
-
-// //Login Google
-// router.get('/login/Google', passport.authenticate('google', {
-//     scope: ['email']
-// }));
-// router.get('/auth/google/redirect', (req, res)=>{
-//     res.send('Ok')
-// })
 
 module.exports = router
