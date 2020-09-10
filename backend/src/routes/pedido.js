@@ -15,7 +15,7 @@ const { comprobarToken } = require('../lib/service_jwt')
 router.post('/', async (req, res) => {
     const productosPedidos = req.body.productosPedidos // Array de productos
     ////////////Comprobacion de existencia de Stock en los insumos//////////////
-    const validacion = validarStock(productosPedidos)
+    const validacion = await validarStock(productosPedidos)
     console.log(validacion)
     /////////////Si hay Stock, Genero el Pedido ////////////////////
     if (validacion.hayStock) {
@@ -177,13 +177,13 @@ router.put('/estado/:id', async (req, res) => {
     if (pedido) {
 
         //Actualizacion de stock correspondiente
-        if (req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
+        if (pedido.dataValues.estado === "pendiente" && req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
             await actualizarStockPedido(pedido, 'restar');
         }
-        //Si el estado era Confirmado pero se Cancela, vuelvo a sumar el stock
-        if (pedido.dataValues.estado === "confirmado" && req.body.estado === "cancelado") {
-            await actualizarStockPedido(pedido, 'sumar');
-        }
+        //Si el estado era distinto de pendiente pero se Cancela, vuelvo a sumar el stock
+        // if (pedido.dataValues.estado !== "pendiente" && req.body.estado === "cancelado") {
+        //     await actualizarStockPedido(pedido, 'sumar');
+        // }
         //Finalmente se actualiza el estado del pedido
         await pedido.update({
             estado: req.body.estado
@@ -254,6 +254,8 @@ const validarStock = async (productosPedidos) => {
             precios.push(ultimoPrecio);//Guardo el precio de la bebebia
             const cantidadNecesaria = item.cantidad;
             const stockActual = bebida.dataValues.Articulo.dataValues.stockActual;
+            // console.log("Cantidad Necesaria: ", cantidadNecesaria);
+            // console.log("StockActual: ", stockActual);
             if (stockActual < cantidadNecesaria) {//Verifico el Stock de la bebida
                 hayStock = false;
                 console.log(hayStock);
@@ -289,7 +291,6 @@ const validarStock = async (productosPedidos) => {
                 }
             })
         }
-
     };
     return { 'hayStock': hayStock, 'precios': precios }
 }

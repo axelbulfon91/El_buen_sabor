@@ -7,6 +7,7 @@ import SelectTipoStock from '../abm_stock/SelectTipoStock'
 import ExistenciasAltaContainer from '../abm_stock/ExistenciasAltaContainer'
 import TablaExistencias from '../abm_stock/TablaExistencias'
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
+import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 
 
 
@@ -62,40 +63,42 @@ const VistaExistencias = () => {
         }
     }
     return (
-        <GridLayoutAdmin>
-            <NavegacionAdminLateral></NavegacionAdminLateral>
-            <div id="columna-2" className="m-5">
-                <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Existencias</strong></h1>
-                <div className='d-flex justify-content-between align-items-center'>
-                    <SelectTipoStock
-                        filtrarTipoStock={filtrarTipoStock}
-                        conOpcionTodas={true}
-                    ></SelectTipoStock>
-                    <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="info" onClick={() => setModalShowAltaExistencia(true)}>
-                        <i className='fa fa-plus'></i> Crear Nueva Existencia
+        <>
+            <BarraNavegacionAdmin />
+            <GridLayoutAdmin>
+                <NavegacionAdminLateral></NavegacionAdminLateral>
+                <div id="columna-2" className="m-5">
+                    <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Existencias</strong></h1>
+                    <div className='d-flex justify-content-between align-items-center'>
+                        <SelectTipoStock
+                            filtrarTipoStock={filtrarTipoStock}
+                            conOpcionTodas={true}
+                        ></SelectTipoStock>
+                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="info" onClick={() => setModalShowAltaExistencia(true)}>
+                            <i className='fa fa-plus'></i> Crear Nueva Existencia
                     </Button>
+                    </div>
+                    <div>
+                        <FiltroPorNombre filtrarLista={filtrarPorNombre}></FiltroPorNombre>
+                    </div>
+                    <div className="scrollable">
+                        <TablaExistencias
+                            existencias={existenciasFiltradas}
+                            conNombre={true}
+                            conEliminar={true}
+                            refrescarExistencias={() => setRefreshToken(prevState => prevState = prevState + 1)}
+                        ></TablaExistencias>
+                    </div>
                 </div>
-                <div>
-                    <FiltroPorNombre filtrarLista={filtrarPorNombre}></FiltroPorNombre>
-                </div>
-                <div className="scrollable">
-                    <TablaExistencias
-                        existencias={existenciasFiltradas}
-                        conNombre={true}
-                        conEliminar={true}
+                { //Renderizado Condicional del Modal
+                    modalShowAltaExistencia && <ExistenciasAltaContainer
                         refrescarExistencias={() => setRefreshToken(prevState => prevState = prevState + 1)}
-                    ></TablaExistencias>
-                </div>
-            </div>
-            { //Renderizado Condicional del Modal
-                modalShowAltaExistencia && <ExistenciasAltaContainer
-                    refrescarExistencias={() => setRefreshToken(prevState => prevState = prevState + 1)}
-                    modalShow={modalShowAltaExistencia}
-                    setModalShow={setModalShowAltaExistencia}
-                ></ExistenciasAltaContainer>
-            }
-
-        </GridLayoutAdmin>
+                        modalShow={modalShowAltaExistencia}
+                        setModalShow={setModalShowAltaExistencia}
+                    ></ExistenciasAltaContainer>
+                }
+            </GridLayoutAdmin>
+        </>
     )
 }
 

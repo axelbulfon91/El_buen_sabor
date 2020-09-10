@@ -7,6 +7,7 @@ import FiltroPorEstado from '../abm_pedidos/FiltroPorEstado';
 import TablaPedidos from '../abm_pedidos/TablaPedidos';
 import FiltroPorFecha from '../uso_compartido/FiltroPorFecha';
 import FiltroPorId from '../abm_pedidos/FiltroPorId';
+import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 
 
 
@@ -58,30 +59,31 @@ const VistaPedidos = () => {
     }
 
     return (
-        <GridLayoutAdmin>
-            <NavegacionAdminLateral></NavegacionAdminLateral>
-
-            <div id="columna-2" className="m-5">
-                <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Pedidos</strong></h1>
-
-                <div className='d-flex justify-content-between align-items-end'>
-                    <div className='d-flex justify-content-end align-items-center'>
-                        <div className="mr-2"><FiltroPorEstado filtrarPorEstado={setEstado} estado={estado}></FiltroPorEstado></div>
-                        <div className="mr-2"><FiltroPorFecha filtrarPorFecha={setFecha} fecha={fecha}></FiltroPorFecha></div>
-                        <FiltroPorId filtrarPorId={setIdPedido} idPedido={idPedido}></FiltroPorId>
+        <>
+            <BarraNavegacionAdmin />
+            <GridLayoutAdmin>
+                <NavegacionAdminLateral></NavegacionAdminLateral>
+                <div id="columna-2" className="m-5">
+                    <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Pedidos</strong></h1>
+                    <div className='d-flex justify-content-between align-items-end'>
+                        <div className='d-flex justify-content-end align-items-center'>
+                            <div className="mr-2"><FiltroPorEstado filtrarPorEstado={setEstado} estado={estado}></FiltroPorEstado></div>
+                            <div className="mr-2"><FiltroPorFecha filtrarPorFecha={setFecha} fecha={fecha}></FiltroPorFecha></div>
+                            <FiltroPorId filtrarPorId={setIdPedido} idPedido={idPedido}></FiltroPorId>
+                        </div>
+                        <div className='d-flex justify-content-end align-items-end'>
+                            <Button style={{ marginBottom: "1rem", boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="secondary" onClick={() => buscar()}><i className='fa fa-search mr-2'></i>Filtrar</Button>
+                            <Button style={{ marginBottom: "1rem", marginLeft: "5px", boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="dark" onClick={() => limpiarFiltros()}>Limpiar Filtros</Button>
+                        </div>
                     </div>
-                    <div className='d-flex justify-content-end align-items-end'>
-                        <Button style={{ marginBottom: "1rem", boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="secondary" onClick={() => buscar()}><i className='fa fa-search mr-2'></i>Filtrar</Button>
-                        <Button style={{ marginBottom: "1rem", marginLeft: "5px", boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} variant="dark" onClick={() => limpiarFiltros()}>Limpiar Filtros</Button>
+                    <div className="scrollable">
+                        <TablaPedidos
+                            pedidos={pedidosFiltrados}
+                        ></TablaPedidos>
                     </div>
                 </div>
-                <div className="scrollable">
-                    <TablaPedidos
-                        pedidos={pedidosFiltrados}
-                    ></TablaPedidos>
-                </div>
-            </div>
-        </GridLayoutAdmin >
+            </GridLayoutAdmin>
+        </>
     )
 }
 

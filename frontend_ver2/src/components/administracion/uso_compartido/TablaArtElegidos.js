@@ -4,7 +4,7 @@ import { Table, Button } from 'react-bootstrap'
 const TablaArtElegidos = ({ articulos, cantidad, eliminar }) => {
     return (
         <Table bordered size="sm" striped variant='light' >
-            <thead>
+            <thead >
                 <tr>
                     <th>#</th>
                     <th>Nombre</th>
@@ -16,7 +16,7 @@ const TablaArtElegidos = ({ articulos, cantidad, eliminar }) => {
             <tbody>
                 {articulos.map((art, index) => {
                     return <tr key={art.Articulo.id}>
-                        <td>{index+1}</td>
+                        <td>{index + 1}</td>
                         <td>{art.Articulo.nombre}</td>
                         <td>{parseFloat(cantidad[index]).toFixed(3)}</td>
                         <td>{art.Articulo.unidadMedida}</td>

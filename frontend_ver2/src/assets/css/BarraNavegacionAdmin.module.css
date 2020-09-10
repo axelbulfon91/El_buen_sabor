@@ -1,0 +1,19 @@
+.botonLogout {
+    text-align: center;
+    margin-right: 1em;
+    line-height: 1em;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+}
+
+.botonLogout button {
+    background: transparent;
+    border: 0px;
+    color: black;
+    font-weight: bold;
+    transition: 0.1s;
+}
+
+.botonLogout button:hover {
+    transform: scale(1.2);
+}

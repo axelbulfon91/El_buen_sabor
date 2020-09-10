@@ -32,23 +32,3 @@
   border-radius: 25%;
   display: inline-block;
 }
-
-.nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active {
-  color: darkred !important;
-  background-color: #fff;
-  border-color: #dee2e6 #dee2e6 #fff;
-  text-decoration: none;
-}
-
-a {
-  color: black !important
-}
-
-.scrollable {
-  max-height: 45vw;
-  /* Just for the demo          */
-  overflow-y: auto;
-  /* Trigger vertical scroll    */
-  overflow-x: hidden;
-  /* Hide the horizontal scroll */
-}

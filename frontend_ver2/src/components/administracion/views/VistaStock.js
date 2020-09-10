@@ -9,6 +9,7 @@ import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionPestanias from '../abm_stock/NavegacionPestanias';
+import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 
 
 const VistaStock = () => {
@@ -116,6 +117,7 @@ const VistaStock = () => {
     }
     return (
         <Fragment>
+            <BarraNavegacionAdmin />
             <GridLayoutAdmin>
                 {/* COLUMNA 1 */}
                 <NavegacionAdminLateral />

@@ -7,6 +7,7 @@ import TablaElaborados from '../abm_catalogo/TablaElaborados'
 import FormElaboradoContainer from '../abm_catalogo/FormElaboradoContainer'
 import useDataApi from '../uso_compartido/useDataApi'
 import SelectCategorias from '../abm_catalogo/SelectCategorias'
+import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin'
 
 
 const VistaCatalogo = () => {
@@ -57,6 +58,7 @@ const VistaCatalogo = () => {
 
     return (
         <Fragment>
+            <BarraNavegacionAdmin />
             <GridLayoutAdmin>
                 {/* COLUMNA 1 */}
                 <NavegacionAdminLateral />
