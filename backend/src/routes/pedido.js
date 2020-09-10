@@ -175,19 +175,27 @@ router.put('/estado/:id', async (req, res) => {
         include: detalle_pedido_model
     });
     if (pedido) {
-
         //Actualizacion de stock correspondiente
         if (pedido.dataValues.estado === "pendiente" && req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
             await actualizarStockPedido(pedido, 'restar');
+        }
+        if (req.body.estado === "demorado") {//Si el nuevo estado es demorado, sumo 10 minutos al tiempo de elaboracion
+            const nuevoTiempoElaboracion = parseInt(pedido.dataValues.tiempoElaboracion) + 10;
+            await pedido.update({
+                estado: req.body.estado,
+                tiempoElaboracion: nuevoTiempoElaboracion
+            })
+        } else {
+            await pedido.update({
+                estado: req.body.estado
+            })
         }
         //Si el estado era distinto de pendiente pero se Cancela, vuelvo a sumar el stock
         // if (pedido.dataValues.estado !== "pendiente" && req.body.estado === "cancelado") {
         //     await actualizarStockPedido(pedido, 'sumar');
         // }
         //Finalmente se actualiza el estado del pedido
-        await pedido.update({
-            estado: req.body.estado
-        })
+
     }
     res.json({ "Actualizado": "OK" })
 });

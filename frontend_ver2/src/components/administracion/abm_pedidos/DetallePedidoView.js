@@ -102,7 +102,11 @@ const DetallePedidoView = (props) => {
                 flexWrap: 'nowrap'
             }}>
             </Modal.Footer>
-            <AccionesPedido pedido={pedido} />
+            <AccionesPedido
+                setRefreshToken={props.setRefreshToken}
+                pedido={pedido}
+                onHide={props.onHide}
+            />
 
         </Modal>
     )

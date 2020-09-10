@@ -79,6 +79,7 @@ const VistaPedidos = () => {
                     <div className="scrollable">
                         <TablaPedidos
                             pedidos={pedidosFiltrados}
+                            setRefreshToken={setRefreshToken}
                         ></TablaPedidos>
                     </div>
                 </div>

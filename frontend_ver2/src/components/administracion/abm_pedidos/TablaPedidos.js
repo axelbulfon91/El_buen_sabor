@@ -2,9 +2,9 @@ import React, { Fragment, useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { format } from 'date-fns'
 import DetallePedidoContainer from './DetallePedidoContainer';
+import { toast } from 'react-toastify';
 
-
-const TablaPedidos = ({ pedidos }) => {
+const TablaPedidos = ({ pedidos, setRefreshToken }) => {
     //Estado Modal de Detalle
     const [pedidoSeleccionado, setPedidoSeleccionado] = useState(null);
     const [showModalDetallePedido, setShowModalDetallePedido] = useState(false);
@@ -62,6 +62,7 @@ const TablaPedidos = ({ pedidos }) => {
                 showModalDetallePedido && <DetallePedidoContainer
                     pedido={pedidoSeleccionado}
                     showModal={showModalDetallePedido}
+                    setRefreshToken={setRefreshToken}
                     closeModal={() => setShowModalDetallePedido(false)}
                 >
                 </DetallePedidoContainer>

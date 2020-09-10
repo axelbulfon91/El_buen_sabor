@@ -13,7 +13,7 @@ import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 const VistaCocinero = () => {
     const [pedidos, setPedidos] = useState([])
     const [pedidosFiltrados, setPedidosFiltrados] = useState([])
-    const [refreshToken] = useState(0)
+    const [refreshToken, setRefreshToken] = useState(0)
     //Filtros
     const [fecha, setFecha] = useState("")
     const [estado, setEstado] = useState("todos")
@@ -78,6 +78,7 @@ const VistaCocinero = () => {
                 </div>
                 <div className="scrollable">
                     <TablaPedidos
+                        setRefreshToken={setRefreshToken}
                         pedidos={pedidosFiltrados}
                     ></TablaPedidos>
                 </div>

@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import jwtDecode from 'jwt-decode'
 import { Form, Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 import { TIPOS_ESTADO_PEDIDOS } from '../uso_compartido/valoresHardCoded'
+import { toast } from 'react-toastify';
 
-export const AccionesPedido = ({ pedido }) => {
-    const [nuevoEstado, setNuevoEstado] = useState("")
+
+export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
     const [botonNuevoEstado, setBotonNuevoEstado] = useState(null)
     const [botonGenerarFactura, setbotonGenerarFactura] = useState(null)
     const [botonCancelarODemorar, setBotonCancelarODemorar] = useState(null)
@@ -20,9 +22,10 @@ export const AccionesPedido = ({ pedido }) => {
     useEffect(() => {
         setBotonCancelarODemorar(
             <button
+                onClick={() => actualizarPedido("cancelado")}
                 className="d-flex align-items-center justify-content-center"
-                style={{ border: "1px solid black", width: "135px", backgroundColor: "Crimson", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>
-                Pasar a Cancelado<i className="fa fa-arrow-right"></i>
+                style={{ border: "1px solid black", width: "165px", backgroundColor: "Crimson", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>
+                <span>Pasar a Cancelado</span><i className="fa fa-arrow-right"></i>
             </button>
         )
 
@@ -30,36 +33,37 @@ export const AccionesPedido = ({ pedido }) => {
             setselectNuevoEstado(<Form.Group as={Row}>
                 <Form.Label column>Actualizar estado a: </Form.Label>
                 <Col>
-                    <Form.Control as="select" onChange={(e) => filtrarPorEstado(e.target.value)}>
+                    <Form.Control as="select" onChange={(e) => handleSelectNuevoEstado(e.target.value)}>
                         <option value="-">-</option>
                         {TIPOS_ESTADO_PEDIDOS.map(estado => {
                             return estado.valor === estadoActual || estado.valor === "cancelado" ? null : <option key={estado.valor} value={estado.valor}>{estado.valor}</option>
                         })}
-
                     </Form.Control>
                 </Col>
             </Form.Group>)
             if (estadoActual === "entregado") {
                 setbotonGenerarFactura(
                     <button
-                        style={{ border: "1px solid black", width: "135px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-                        <i className="fa fa-file-upload mr-2"></i>Generar Factura
+                        onClick={() => generarFactura(pedido)}
+                        className="d-flex align-items-center justify-content-center"
+                        style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
+                        Generar Factura<i className="fa fa-file-upload mr-2"></i>
                     </button>
                 )
             }
         } else if (rol === "CAJERO") {
             if (estadoActual === "pendiente") {
-                setNuevoEstado("confirmado")
                 setBotonNuevoEstado(devolverBotonNuevoEstado("confirmado"))
             } else if (estadoActual === "listo") {
-                setNuevoEstado("entregado")
                 setBotonNuevoEstado(devolverBotonNuevoEstado("entregado"))
             } else if (estadoActual === "entregado") {
                 setBotonCancelarODemorar(null)
                 setbotonGenerarFactura(
                     <button
-                        style={{ border: "1px solid black", width: "135px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-                        <i className="fa fa-file-upload mr-2"></i>Generar Factura
+                        onClick={() => generarFactura(pedido)}
+                        className="d-flex align-items-center justify-content-center"
+                        style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
+                        Generar Factura<i className="fa fa-file-upload mr-2"></i>
                     </button>
                 )
             }
@@ -67,13 +71,13 @@ export const AccionesPedido = ({ pedido }) => {
             if (estadoActual !== "listo") {
                 setBotonCancelarODemorar(
                     <button
+                        onClick={() => actualizarPedido("demorado")}
                         className="d-flex align-items-center justify-content-center"
-                        style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>
+                        style={{ border: "1px solid black", width: "165px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>
                         Pasar a demorado<i className="fa fa-arrow-right"></i>
                     </button>
                 )
                 if (estadoActual === "confirmado") {
-                    setNuevoEstado("listo")
                     setBotonNuevoEstado(devolverBotonNuevoEstado("listo"))
                 }
             } else {
@@ -85,27 +89,56 @@ export const AccionesPedido = ({ pedido }) => {
     const devolverBotonNuevoEstado = (estado) => {
         switch (estado) {
             case "pendiente":
-                return <button className="d-flex align-items-center justify-content-center" style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSalmon", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}> Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
+                return <button onClick={() => actualizarPedido(estado)}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ border: "1px solid black", width: "165px", backgroundColor: "DarkSalmon", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}> Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
             case "confirmado":
-                return <button className="d-flex align-items-center justify-content-center" style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkTurquoise", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
+                return <button onClick={() => actualizarPedido(estado)}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ border: "1px solid black", width: "165px", backgroundColor: "DarkTurquoise", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
             case "demorado":
-                return <button className="d-flex align-items-center justify-content-center" style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
+                return <button onClick={() => actualizarPedido(estado)}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ border: "1px solid black", width: "165px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
             case "listo":
-                return <button className="d-flex align-items-center justify-content-center" style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSeaGreen", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
+                return <button onClick={() => actualizarPedido(estado)}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ border: "1px solid black", width: "165px", backgroundColor: "DarkSeaGreen", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
             case "entregado":
-                return <button className="d-flex align-items-center justify-content-center" style={{ border: "1px solid black", width: "135px", backgroundColor: "DeepSkyBlue", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
+                return <button onClick={() => actualizarPedido(estado)}
+                    className="d-flex align-items-center justify-content-center"
+                    style={{ border: "1px solid black", width: "165px", backgroundColor: "DeepSkyBlue", borderRadius: "15px", padding: "0.5em 1em", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pasar a {estado}<i className="fa fa-arrow-right"></i></button>
             default:
                 break;
         }
     }
 
-    const filtrarPorEstado = (nuevoEstado) => {
-        setNuevoEstado(nuevoEstado)
-        setBotonNuevoEstado(devolverBotonNuevoEstado(nuevoEstado))
+    const handleSelectNuevoEstado = async (newState) => {
+        setBotonNuevoEstado(devolverBotonNuevoEstado(newState))
     }
-
+    const actualizarPedido = async (newState) => {
+        try {
+            await axios.put(`http://localhost:4000/api/pedidos/estado/${pedido.id}`, { estado: newState });
+            setRefreshToken((token) => token + 1)
+            onHide();
+            toast.success('Pedido Actualizado', {
+                position: "bottom-right",
+                autoClose: 3000,
+                hideProgressBar: true,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+        } catch (error) {
+            alert(error)
+        }
+    }
+    const generarFactura = (pedido) => {
+        console.log(pedido);
+    }
     return (
-        <div className="mx-4">
+        <div className="mx-4 lead">
             {selectNuevoEstado}
             <div className="d-flex justify-content-around mx-5 mb-3">
                 {estadoActual === "cancelado" ? null : botonCancelarODemorar}
