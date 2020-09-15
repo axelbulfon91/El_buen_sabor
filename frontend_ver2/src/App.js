@@ -63,6 +63,7 @@ function App() {
           <RutaPrivadaAdmin exact path="/admin/existencias" component={VistaExistencias} />
           <RutaPrivadaAdmin exact path="/admin/usuarios" component={VistaUsuarios} />
           <RutaPrivadaAdmin exact path="/admin/negocio" component={VistaDatosNegocio} />
+          <RutaPrivadaAdmin exact path="/admin/stock" component={VistaStock} />
           <RutaPrivadaAdmin exact path="/admin" component={VistaStock} />
           {/* Vistas Cajero */}
           <RutaPrivadaCajero path="/admin/cajero" component={VistaCajero} />
