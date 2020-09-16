@@ -73,6 +73,13 @@ router.put('/:id', async (req, res) => {
             //email: req.body.email,
             horarios: nuevoshorarios,
         })
+        await Domicilio.update({
+            id_local: local.dataValues.id,
+            calle: req.body.calle,
+            numeracion: req.body.numeracion,
+            id_localidad: req.body.id_localidad,
+        },{where:{id_local : req.params.id}});
+        
         res.json({message: "Datos actualizados"})
     }else{
         res.json({message: "Local no encontrado"})
