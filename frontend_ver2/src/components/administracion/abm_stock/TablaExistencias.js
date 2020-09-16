@@ -53,7 +53,7 @@ const TablaExistencias = ({ existencias, conNombre, conEliminar, refrescarExiste
                             <td>{format(new Date(ex.fechaVencimiento), 'dd/MM/yyyy')}</td>
                             <td>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ex.costoPorUnidad) + "/" + ex.Articulo.unidadMedida}</td>
                             <td>{new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(ex.cantidad * ex.costoPorUnidad)}</td>
-                            {conEliminar && <td className="text-center"><Button size='lg' variant="outline-danger" onClick={(e) => {
+                            {conEliminar && <td className="text-center"><Button size='lg' variant="outline-danger" onClick={() => {
                                 handleShowModalEliminar(ex.id, ex.Articulo.Categorium.tipo)
                             }}><i className='fa fa-times'></i></Button></td>}
 
