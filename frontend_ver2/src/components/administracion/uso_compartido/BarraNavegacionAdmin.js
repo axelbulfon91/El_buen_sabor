@@ -9,7 +9,6 @@ const BarraNavegacionAdmin = () => {
         //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol    
         if (sessionStorage.getItem('token')) {
             const userData = jwtDecode(sessionStorage.getItem('token'));
-            console.log(userData);
             setUser(userData)
         }
     }, [])

@@ -77,7 +77,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                         Pasar a demorado<i className="fa fa-arrow-right"></i>
                     </button>
                 )
-                if (estadoActual === "confirmado") {
+                if (estadoActual === "confirmado" || estadoActual === "demorado") {
                     setBotonNuevoEstado(devolverBotonNuevoEstado("listo"))
                 }
             } else {

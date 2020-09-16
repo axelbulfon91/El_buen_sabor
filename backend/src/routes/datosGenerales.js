@@ -15,6 +15,7 @@ router.post('/', async (req, res) => {
 
         const local = await DatosGenerales.create({
             telefono: req.body.telefono,
+            email: req.body.email,
             horarios: horarios,
         });
         console.log(local.dataValues)
@@ -69,8 +70,16 @@ router.put('/:id', async (req, res) => {
         const nuevoshorarios = JSON.stringify(req.body.horarios)
         await local.update({
             telefono: req.body.telefono,
+            email: req.body.email,
             horarios: nuevoshorarios,
         })
+        await Domicilio.update({
+            id_local: local.dataValues.id,
+            calle: req.body.calle,
+            numeracion: req.body.numeracion,
+            id_localidad: req.body.id_localidad,
+        },{where:{id_local : req.params.id}});
+        
         res.json({message: "Datos actualizados"})
     }else{
         res.json({message: "Local no encontrado"})

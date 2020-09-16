@@ -7,7 +7,6 @@ import datosContext from '../../datosLocalContext';
 function SeccionContacto() {
 
     var datos = useContext(datosContext)
-
     function conocerDia(cod){
         switch (cod) {
             case 1 : return "Lunes";
@@ -38,6 +37,7 @@ function SeccionContacto() {
                                     <div className="row" style={{ paddingRight: "10%" }}>
                                         <div className="col">
                                             <ul className="list-unstyled">
+                                                
                                                 {datos.horarios.map((d, i) => (
                                                     <li key={i}><span>{conocerDia(d.dia)}</span></li>
                                                 ))}

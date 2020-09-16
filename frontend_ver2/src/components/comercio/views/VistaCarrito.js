@@ -22,7 +22,7 @@ function mensaje() {
 
 }
 
-const VistaCarrito = props => {
+const VistaCarrito = () => {
 
     var datos = useContext(datosContext)
 
@@ -131,11 +131,9 @@ const VistaCarrito = props => {
 
     function dentroDeHorario() {
         var diaActual = new Date(Date.now())
-        const diaAbierto = datos.horarios.find((d) => {
+        const diaAbierto = datos && datos.horarios.find((d) => {
             if (d.dia === diaActual.getDay()) { // d.dia devuelve el numero de dia pj 0-Domingo, 1-Lunes, etc  
-
                 return d.dia
-
             }
         })
         if (diaAbierto) {
@@ -144,11 +142,11 @@ const VistaCarrito = props => {
             const abre = moment(horarioApertura).format("DD HH:mm")
             const act = moment(diaActual).format("DD HH:mm")
             var cierre = null
-            diaAbierto.horarioApertura > diaAbierto.horarioCierre 
+            diaAbierto.horarioApertura > diaAbierto.horarioCierre
                 ? cierre = moment(horarioCierre).add(1, "day").format("DD HH:mm") // Si el horario de cierre es despues de las 00, incrementa un dia
                 : cierre = moment(horarioCierre).format("DD HH:mm")
 
-            if (moment(act).isBetween(abre, cierre)) { 
+            if (moment(act).isBetween(abre, cierre)) {
                 console.log("Permitido")
                 return true
             } else {
@@ -157,7 +155,7 @@ const VistaCarrito = props => {
                 return false
             }
 
-        }else{
+        } else {
             alert("Hoy no abrimos, sepa disculpar")
             return false
         }
@@ -203,7 +201,7 @@ const VistaCarrito = props => {
             }
         } else {
             alert('Debe estar logueado para poder realizar un pedido, redirigiendo a la pantalla de login')
-            window.location.href = "/LoginPage"
+            window.location.href = "/login"
         }
 
 

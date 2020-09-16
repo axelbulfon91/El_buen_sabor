@@ -36,7 +36,8 @@ router.get('/', async (req, res)=>{
             attributes: ['id', 'nombre']
         }]
     });
-    res.json({'provincias y localidades': prov_y_loc})
+    console.log(prov_y_loc.dataValues)
+    res.json({'provincias y localidades': prov_y_loc.dataValues})
 })
 
 //Regresa todas las provincias para el llenado de los DropDowns------------------------------------------------------Trae provincias

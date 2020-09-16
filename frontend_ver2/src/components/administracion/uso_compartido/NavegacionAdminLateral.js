@@ -31,6 +31,8 @@ const NavegacionAdmin = () => {
                     <NavLink className="text-white nav-link" to="/admin/pedidos">Pedidos</NavLink>
                     <NavLink className="text-white nav-link" to="/admin/categorias">Categorías</NavLink>
                     <NavLink className="text-white nav-link" to="/admin/existencias">Existencias</NavLink>
+                    <NavLink className="text-white nav-link" to="/admin/usuarios">Usuarios</NavLink>
+                    <NavLink className="text-white nav-link" to="/admin/negocio">Datos Negocio</NavLink>
                 </div>
             </div>
 

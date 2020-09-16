@@ -60,11 +60,11 @@ router.post('/registro', async (req, res) => {
                 expiresIn: 60 * 60 // 1 hora de tiempo de expiracion
             })
             res.json({ message: 'Usuario creado correctamente', token: token });
-            
+
         } else {
             res.json({ message: 'Usuario ya registrado' });
         }
-    } catch{ (err) => res.json({ message: 'Error en registro de usuario: ' + err }) };
+    } catch { (err) => res.json({ message: 'Error en registro de usuario: ' + err }) };
 
 });
 
@@ -97,7 +97,7 @@ router.post('/login', async (req, res) => {
 //Registro/Login con Google
 router.post("/login/google", async (req, res) => {
 
-    const user = await userModel.findOne({ where: { email: req.body.email } })    
+    const user = await userModel.findOne({ where: { email: req.body.email } })
     if (user) {
 
         const rol = await rolModel.findOne({
@@ -141,9 +141,8 @@ router.post("/login/google", async (req, res) => {
 
 })
 
-//Trae todos los usuarios del sistema
+//Trae todos los usuarios del sistema CON AUTORIZACION DE ADMIN
 router.get('/', comprobarToken, async (req, res) => {
-
     const user = await userModel.findOne({
         where: { id: req.id_user }, //Verifica con el id dentro del JWT
         include: [{
@@ -151,9 +150,7 @@ router.get('/', comprobarToken, async (req, res) => {
             attributes: ['rol']
         }]
     })
-
     if (user) {
-
         const ultimoRol = user.dataValues.rols.length
         if (user.dataValues.rols[ultimoRol - 1].rol === "ADMINISTRADOR") {
             const users = await userModel.findAll({
@@ -178,8 +175,8 @@ router.get('/', comprobarToken, async (req, res) => {
     } else {
         res.json({ message: 'Usuario no encontrado' })
     }
-
 })
+
 
 //Trae el usuario con el id del parametro
 router.get('/:id', async (req, res) => {
@@ -201,14 +198,11 @@ router.get('/:id', async (req, res) => {
             attributes: ['rol', 'created_at'],
         }]
     })
-
     if (user) {
         res.json(user)
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
     }
-
-
 })
 
 //Elimina el usuario del id indicado en el parametro
