@@ -12,6 +12,7 @@
     "date-fns": "^2.15.0",
     "jwt-decode": "^2.2.0",
     "moment": "^2.27.0",
+    "node-modules": "^1.0.1",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",
     "react-dom": "^16.13.1",
