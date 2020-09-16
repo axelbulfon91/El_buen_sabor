@@ -6,11 +6,13 @@ import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import TablaUsuarios from '../abm_usuarios/TablaUsuarios';
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre';
+import FiltroPorRol from '../abm_usuarios/FiltroPorRol';
+
 
 
 
 const VistaUsuarios = () => {
-
+    const [rolSeleccionado, setRolSeleccionado] = useState("todos")
     const [usuarios, setUsuarios] = useState([]);
     const [usuariosFiltrados, setUsuariosFiltrados] = useState([])
     const [refreshToken, setrefreshToken] = useState(0)
@@ -39,11 +41,26 @@ const VistaUsuarios = () => {
         }
         fetchUsuarios();
     }, [refreshToken])
+    useEffect(() => {
+        usuarios && filtrarPorRol(rolSeleccionado)
+    }, [usuarios])
+
     const filtrarNombre = (nombre) => {
         setUsuariosFiltrados(usuarios.filter((user) => {//se filtra la lista de los datos originales y se le asigna a listaFiltrada
             return user.nombre.toLowerCase().includes(nombre.toLowerCase());
         }))
+        if (nombre === "") {
+            filtrarPorRol(rolSeleccionado);
+        }
     }
+    const filtrarPorRol = (rol) => {
+        const usuariosAux = usuarios.filter(user => {
+            return user.rols[0].rol === rol;
+        })
+        rol === "todos" ? setUsuariosFiltrados(usuarios) : setUsuariosFiltrados(usuariosAux);
+        setRolSeleccionado(rol)
+    }
+
     const abrirFormulario = async (usuario) => {
         setUsuarioSeleccionado(usuario);
 
@@ -57,13 +74,19 @@ const VistaUsuarios = () => {
                 <div id="columna-2" className="m-5">
                     <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Usuarios</strong></h1>
                     <div className='d-flex justify-content-between align-items-center'>
-                        <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
+                        <FiltroPorRol
+                            filtrarPorRol={filtrarPorRol}
+                            conOpcionTodas={true}
+                        ></FiltroPorRol>
                         <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)", width: "14%", marginBottom: "9px" }} variant="info" onClick={() => abrirFormulario()}>
                             <i className='fa fa-plus'></i> Crear Nuevo</Button>
                     </div>
+                    <div>
+                        <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
+                    </div>
                     <TablaUsuarios
                         usuarios={usuariosFiltrados}
-                        setrefreshToken={setrefreshToken}
+                        refrescarUsuarios={setrefreshToken}
                         abrirFormulario={abrirFormulario}
                     />
                 </div>

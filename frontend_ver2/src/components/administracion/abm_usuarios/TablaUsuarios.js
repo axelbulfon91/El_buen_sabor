@@ -1,18 +1,33 @@
 import React, { Fragment, useState } from 'react'
-import { Table } from 'react-bootstrap'
-import DetalleUsuarioContainer from './DetalleUsuarioContainer'
+import { Table, Button } from 'react-bootstrap'
+import axios from 'axios'
+import ModalBotonEliminar from '../abm_stock/ModalBotonEliminar'
 
 
 const TablaUsuarios = (props) => {
-    const { usuarios, setRefreshToken } = props;
+    const { usuarios, refrescarUsuarios } = props;
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
-    const [showModalDetalleUsuario, setShowModalDetalleUsuario] = useState(false)
-
+    const [idUsuarioSeleccionado, setIdUsuarioSeleccionado] = useState(null);
+    const [showModalEliminar, setShowModalEliminar] = useState(false)
 
     const handleShowModalUsuario = (usuario) => {
         setUsuarioSeleccionado(usuario);
-        setShowModalDetalleUsuario(true);
+        //TODO
     }
+    const handleShowModalEliminar = async (id) => {
+        setIdUsuarioSeleccionado(id);
+        setShowModalEliminar(true);
+    };
+    const handleEliminar = async (id) => {
+        try {
+            await axios.delete(`http://localhost:4000/api/usuarios/${id}`)
+        } catch (error) {
+            console.log(error);
+        }
+        refrescarUsuarios((token) => token + 1);
+        handleCloseModalEliminar();
+    }
+    const handleCloseModalEliminar = () => setShowModalEliminar(false);
     return (
         <Fragment>
             <Table className="text-center lead" striped hover size="sm">
@@ -21,6 +36,7 @@ const TablaUsuarios = (props) => {
                     <th>Nombre</th>
                     <th>email</th>
                     <th>rol</th>
+                    <th>Acción</th>
 
                 </thead>
                 <tbody>
@@ -30,20 +46,23 @@ const TablaUsuarios = (props) => {
                             <td>{usuario.nombre}</td>
                             <td>{usuario.email}</td>
                             <td>{usuario.rols[0].rol}</td>
+                            <td className="text-center"><Button size='lg' variant="outline-danger" onClick={(e) => {
+                                handleShowModalEliminar(usuario.id)
+                            }}><i className='fa fa-times'></i></Button></td>
 
                         </tr>
                     })}
                 </tbody>
             </Table>
-            {/* RENDERIZADO CONDICIONAL DE MODAL DETALLE PEDIDO */}
+            {/* MODAL ELIMINAR */}
             {
-                showModalDetalleUsuario && <DetalleUsuarioContainer
-                    usuario={usuarioSeleccionado}
-                    showModal={showModalDetalleUsuario}
-                    setRefreshToken={setRefreshToken}
-                    closeModal={() => setShowModalDetalleUsuario(false)}
+                showModalEliminar && <ModalBotonEliminar
+                    id={idUsuarioSeleccionado}
+                    handleCloseModalEliminar={handleCloseModalEliminar}
+                    showModalEliminar={showModalEliminar}
+                    handleEliminar={handleEliminar}
                 >
-                </DetalleUsuarioContainer>
+                </ModalBotonEliminar>
             }
         </Fragment>
     )
