@@ -21,8 +21,13 @@ const VistaDatosNegocio = () => {
     useEffect(() => {
         const traerDatos = async () => {
             const resp = await Axios.get('http://localhost:4000/api/datosGenerales/1')
-            //setEmail(resp.data.email)          
-            setHorarios(resp.data.horarios)
+            setEmail(resp.data.email)   
+            if(resp.data.horarios){
+                setHorarios(resp.data.horarios)
+            }else{
+                setHorarios([])
+            }       
+            
             setTelefono(resp.data.telefono)
             if (resp.data.Domicilio) {
                 var dom = {
