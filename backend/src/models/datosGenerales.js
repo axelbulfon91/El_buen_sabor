@@ -6,6 +6,9 @@ const datosGeneralesModel = sequelize.define('DatosGenerales', {
     telefono: {
         type: Sequelize.STRING,
     },
+    // email: {
+    //     type: Sequelize.STRING,
+    // },
     horarios: {
         type: Sequelize.STRING
     }

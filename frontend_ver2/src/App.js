@@ -37,7 +37,7 @@ function App() {
   const [datos, setDatos] = useState(null)
 
   useEffect(() => {
-    Axios.get('http://localhost:4000/api/datosGenerales/11').then((resp) => {
+    Axios.get('http://localhost:4000/api/datosGenerales/1').then((resp) => {
       setDatos(resp.data)
     })
   }, [])

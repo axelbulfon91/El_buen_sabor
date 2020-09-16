@@ -15,6 +15,7 @@ router.post('/', async (req, res) => {
 
         const local = await DatosGenerales.create({
             telefono: req.body.telefono,
+            //email: req.body.email,
             horarios: horarios,
         });
         console.log(local.dataValues)
@@ -69,6 +70,7 @@ router.put('/:id', async (req, res) => {
         const nuevoshorarios = JSON.stringify(req.body.horarios)
         await local.update({
             telefono: req.body.telefono,
+            //email: req.body.email,
             horarios: nuevoshorarios,
         })
         res.json({message: "Datos actualizados"})
