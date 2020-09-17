@@ -1,10 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { Form, Modal, Button, Col } from 'react-bootstrap'
-
-
-
-
-
+import React, { useState, useEffect, useRef } from 'react'
+import { Form, Modal, Button } from 'react-bootstrap'
 
 const AltaUsuarioView = (props) => {
     const { usuarioSeleccionado, handleGuardar } = props;
@@ -16,6 +11,7 @@ const AltaUsuarioView = (props) => {
     const [password, setPassword] = useState("")
     const [rol, setRol] = useState(4)
 
+    const selectRol = useRef(null);
     useEffect(() => {
         if (usuarioSeleccionado) {
             const u = usuarioSeleccionado;
@@ -24,8 +20,13 @@ const AltaUsuarioView = (props) => {
             setTelefono(u.telefono)
             setPassword(u.password)
             setRol(u.rol)
+
+
+
         }
     }, [])
+
+
 
     return (
         <Modal
@@ -59,7 +60,7 @@ const AltaUsuarioView = (props) => {
                     </Form.Group>
                     <Form.Group>
                         <Form.Label>Rol:</Form.Label>
-                        <Form.Control as="select" value={rol} onChange={(e) => setRol(e.target.value)}>
+                        <Form.Control as="select" value={rol} onChange={(e) => setRol(e.target.value)} ref={selectRol}>
                             <option value={4}>CLIENTE</option>
                             <option value={1}>COCINERO</option>
                             <option value={2}>CAJERO</option>
@@ -75,7 +76,7 @@ const AltaUsuarioView = (props) => {
                 flexWrap: 'nowrap'
             }}>
                 <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} onClick={props.onHide} variant="danger" block>Cancelar</Button>
-                <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} onClick={() => props.handleGuardar(nombre, email, password, telefono, parseInt(rol))} variant="success" block>Guardar</Button>
+                <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} onClick={() => handleGuardar(nombre, email, password, telefono, parseInt(rol))} variant="success" block>Guardar</Button>
             </Modal.Footer>
         </Modal>
     );

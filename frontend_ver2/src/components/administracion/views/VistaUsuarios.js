@@ -66,7 +66,10 @@ const VistaUsuarios = () => {
     const abrirFormulario = async (usuario) => {
         setUsuarioSeleccionado(usuario);
         setModalAltaUsuario(true);
-
+    }
+    const cerrarFormulario = () => {
+        setUsuarioSeleccionado(null);
+        setModalAltaUsuario(false);
     }
 
     return (
@@ -91,13 +94,14 @@ const VistaUsuarios = () => {
                         usuarios={usuariosFiltrados}
                         refrescarUsuarios={() => setrefreshToken(prevState => prevState = prevState + 1)}
                         abrirFormulario={abrirFormulario}
+                        cerrarModal={() => cerrarFormulario()}
                     />
                 </div>
                 { //Renderizado Condicional del Modal
                     modalAltaUsuario && <AltaUsuarioContainer
                         refrescarUsuarios={() => setrefreshToken(prevState => prevState = prevState + 1)}
                         mostrarModal={modalAltaUsuario}
-                        cerrarModal={() => setModalAltaUsuario(false)}
+                        cerrarModal={() => cerrarFormulario()}
                         usuarioSeleccionado={usuarioSeleccionado}
                     ></AltaUsuarioContainer>
                 }
