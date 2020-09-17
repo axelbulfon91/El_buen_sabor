@@ -41,6 +41,11 @@ router.post('/registro', async (req, res) => {
                         rol: "ADMINISTRADOR"
                     })
                         break;
+                    case 4: await rolModel.create({
+                        usuario_id: nuevoUsuario.dataValues.id,
+                        rol: "CLIENTE"
+                    })
+                        break;
                     default: null
                         break;
                 }
@@ -241,26 +246,36 @@ router.put('/:id', async (req, res) => {
             email: req.body.username,
             telefono: req.body.telefono
         })
-        console.log(user.dataValues.id)
-
-        switch (req.body.rol) {
-            case 1: await rolModel.create({
-                usuario_id: user.dataValues.id,
-                rol: "COCINERO"
+        if (req.body.rol) {
+            switch (req.body.rol) {
+                case 1: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "COCINERO"
+                })
+                    break;
+                case 2: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "CAJERO"
+                })
+                    break;
+                case 3: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "ADMINISTRADOR"
+                })
+                    break;
+                case 4: await rolModel.create({
+                    usuario_id: nuevoUsuario.dataValues.id,
+                    rol: "CLIENTE"
+                })
+                    break;
+                default: null
+                    break;
+            }
+        } else {
+            await rolModel.create({
+                usuario_id: nuevoUsuario.dataValues.id,
+                rol: "CLIENTE"
             })
-                break;
-            case 2: await rolModel.create({
-                usuario_id: user.dataValues.id,
-                rol: "CAJERO"
-            })
-                break;
-            case 3: await rolModel.create({
-                usuario_id: user.dataValues.id,
-                rol: "ADMINISTRADOR"
-            })
-                break;
-            default: null
-                break;
         }
 
 

@@ -7,11 +7,13 @@ import axiosAutorizado from '../../../utils/axiosAutorizado';
 import TablaUsuarios from '../abm_usuarios/TablaUsuarios';
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre';
 import FiltroPorRol from '../abm_usuarios/FiltroPorRol';
+import AltaUsuarioContainer from '../abm_usuarios/AltaUsuarioContainer';
 
 
 
 
 const VistaUsuarios = () => {
+    const [modalAltaUsuario, setModalAltaUsuario] = useState(false)
     const [rolSeleccionado, setRolSeleccionado] = useState("todos")
     const [usuarios, setUsuarios] = useState([]);
     const [usuariosFiltrados, setUsuariosFiltrados] = useState([])
@@ -63,6 +65,7 @@ const VistaUsuarios = () => {
 
     const abrirFormulario = async (usuario) => {
         setUsuarioSeleccionado(usuario);
+        setModalAltaUsuario(true);
 
     }
 
@@ -86,10 +89,18 @@ const VistaUsuarios = () => {
                     </div>
                     <TablaUsuarios
                         usuarios={usuariosFiltrados}
-                        refrescarUsuarios={setrefreshToken}
+                        refrescarUsuarios={() => setrefreshToken(prevState => prevState = prevState + 1)}
                         abrirFormulario={abrirFormulario}
                     />
                 </div>
+                { //Renderizado Condicional del Modal
+                    modalAltaUsuario && <AltaUsuarioContainer
+                        refrescarUsuarios={() => setrefreshToken(prevState => prevState = prevState + 1)}
+                        mostrarModal={modalAltaUsuario}
+                        cerrarModal={() => setModalAltaUsuario(false)}
+                        usuarioSeleccionado={usuarioSeleccionado}
+                    ></AltaUsuarioContainer>
+                }
             </GridLayoutAdmin>
         </>
     )
