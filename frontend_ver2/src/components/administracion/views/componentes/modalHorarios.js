@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import { Modal, Button, Row } from 'react-bootstrap'
 
-function ModalHorarios({ show, setShow, horarios, setHorarios, modif, setModif}) {
+function ModalHorarios({ show, setShow, horarios, setHorarios, modif, setModif }) {
 
     const [horarioApertura, setHorarioApertura] = useState("")
     const [horarioCierre, setHorarioCierre] = useState("")
@@ -22,6 +22,7 @@ function ModalHorarios({ show, setShow, horarios, setHorarios, modif, setModif})
             setHorarios(horarios)
             setModif({ flag: false })
 
+
         } else {
             var nuevoHorario = {
                 dia: dia,
@@ -29,22 +30,23 @@ function ModalHorarios({ show, setShow, horarios, setHorarios, modif, setModif})
                 horarioCierre: horarioCierre
             }
 
-            if (horarios.some(h => h.dia === dia)) {
+            if (horarios.some(h => h.dia === dia)) { // Validacion de Formulario cargado
                 alert("El dia ingresado ya se encuentra cargado")
             } else if (horarioApertura === "" || horarioCierre === "") {
                 alert("Los horarios no pueden estar en blanco")
             } else {
                 horarios.push(nuevoHorario)
                 setHorarios(horarios)
-            }
-            
 
+            }
         }
         setModif({ flag: false })
         setShow(false)
+
+
     }
 
-    const conocerDia = (cod) =>{
+    const conocerDia = (cod) => {
         switch (cod) {
             case 1: return "Lunes";
             case 2: return "Martes";
@@ -59,7 +61,7 @@ function ModalHorarios({ show, setShow, horarios, setHorarios, modif, setModif})
 
 
     return (
-        <Modal show={show} onHide={() => setShow(false)} size="md">
+        <Modal show={show} onHide={() => { setShow(false); setModif({ flag: false }); }} size="md">
             <Modal.Header closeButton>
                 <Modal.Title>Horarios</Modal.Title>
             </Modal.Header>

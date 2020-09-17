@@ -16,29 +16,31 @@ const VistaDatosNegocio = () => {
     const [showModalDom, setShowModalDom] = useState(false);
     const [horarios, setHorarios] = useState([]);
     const [modif, setModif] = useState({ flag: false, cambio: {} });
+    const [nuevo, setNuevo] = useState(false)
     var domicilios = []
 
     useEffect(() => {
         const traerDatos = async () => {
             const resp = await Axios.get('http://localhost:4000/api/datosGenerales/1')
-            setEmail(resp.data.email)   
-            if(resp.data.horarios){
-                setHorarios(resp.data.horarios)
-            }else{
+            if (resp.data.message === "Local no encontrado") {
                 setHorarios([])
-            }       
-            
-            setTelefono(resp.data.telefono)
-            if (resp.data.Domicilio) {
-                var dom = {
-                    idLocalidad: resp.data.Domicilio.Localidad.id,
-                    nombreLocalidad: resp.data.Domicilio.Localidad.nombre,
-                    calle: resp.data.Domicilio.calle,
-                    numeracion: resp.data.Domicilio.numeracion
+                setNuevo(true)
+            } else {
+                setEmail(resp.data.email)
+                setHorarios(resp.data.horarios)
+                setTelefono(resp.data.telefono)
+                if (resp.data.Domicilio) {
+                    var dom = {
+                        idLocalidad: resp.data.Domicilio.Localidad.id,
+                        nombreLocalidad: resp.data.Domicilio.Localidad.nombre,
+                        calle: resp.data.Domicilio.calle,
+                        numeracion: resp.data.Domicilio.numeracion
+                    }
+                    domicilios.push(dom)
+                    setDomicilio(domicilios)
                 }
-                domicilios.push(dom)
-                setDomicilio(domicilios)
             }
+
 
         }
         traerDatos()
@@ -46,16 +48,35 @@ const VistaDatosNegocio = () => {
     }, [])
 
     const handleOnSubmit = async () => {
-        var datosAGuardar = {
-            email: email,
-            telefono: telefono,
-            horarios: horarios,
-            calle: domicilio[0].calle,
-            numeracion: domicilio[0].numeracion,
-            id_localidad: domicilio[0].idLocalidad
+        if (domicilio && domicilio.length) { // Verifica que haya domicilio cargado
+            if (horarios && horarios.length) { // Verifica que haya horarios cargado
+                if (telefono.length !== 0 || email.length !== 0) {
+                    var datosAGuardar = {
+                        email: email,
+                        telefono: telefono,
+                        horarios: horarios,
+                        calle: domicilio[0].calle,
+                        numeracion: domicilio[0].numeracion,
+                        id_localidad: domicilio[0].idLocalidad
+                    }
+                    if (!nuevo) { //Verifica si hay que actualizar o crear uno
+                        const resp = await Axios.put('http://localhost:4000/api/datosGenerales/1', datosAGuardar)
+                        alert(resp.data.message)
+                    } else {
+                        const resp = await Axios.post('http://localhost:4000/api/datosGenerales', datosAGuardar)
+                        alert(resp.data.message)
+                    }
+                } else {
+                    alert("Los campos Email y telefono no pueden estar vacios")
+                }
+            } else {
+                alert("Debe ingresar Horarios de atencion")
+            }
+        } else {
+            alert("Debe ingresar Domicilio del local")
         }
-        const resp = await Axios.put('http://localhost:4000/api/datosGenerales/1', datosAGuardar)
-        console.log(resp.data)
+
+
 
 
     }
@@ -89,9 +110,6 @@ const VistaDatosNegocio = () => {
         setModif({ flag: true, cambio: h })
     }
 
-
-
-
     return (
         <>
             <BarraNavegacionAdmin />
@@ -99,7 +117,6 @@ const VistaDatosNegocio = () => {
                 <NavegacionAdminLateral></NavegacionAdminLateral>
                 <div id="columna-2" className="m-5">
                     <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Datos de Negocio</strong></h1>
-
                     <div className="form-group">
                         <label htmlFor="inputEmail4">Email de local</label>
                         <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} className="form-control" id="inputEmail4" placeholder="Email de local" />
@@ -110,7 +127,8 @@ const VistaDatosNegocio = () => {
                     </div>
                     <div className="form-row mt-3">
                         <div className=" form-group col-md-6">
-                            <Table size="sm" className='text-center' bordered>
+                            <h5>Domicilio</h5>
+                            <Table size="sm" className='text-center'>
                                 <thead className="thead-dark">
                                     <tr>
                                         <th>Localidad</th>
@@ -121,8 +139,8 @@ const VistaDatosNegocio = () => {
                                 </thead>
                                 <tbody>
                                     {domicilio.length > 0 ? (
-                                        (domicilio.map((d) => (
-                                            <tr>
+                                        (domicilio.map((d, i) => (
+                                            <tr key={i}>
                                                 <td className="text-left">{d.nombreLocalidad}</td>
                                                 <td>{d.calle}</td>
                                                 <td>{d.numeracion}</td>
@@ -132,23 +150,24 @@ const VistaDatosNegocio = () => {
                                         )
                                     )
                                         :
-                                        <tr className="text-center" ><td colspan="3" >Sin datos</td></tr>
+                                        <tr className="text-center" ><td colSpan="3" >Sin datos</td></tr>
                                     }
                                 </tbody>
+                                {domicilio.length < 1 &&
+                                    <tfoot>
+                                        <tr className="text-center" >
+                                            <td colSpan="4">
+                                                <button onClick={() => setShowModalDom(true)} className="btn btn-secondary">Cargar Domicilio</button>
+                                            </td>
+                                        </tr>
+                                    </tfoot>
+                                }
+
                             </Table>
                         </div>
-                        <div className="form-group col-md-3">
-                            {domicilio.length < 1 &&
-                                <div>
-                                    <button onClick={() => setShowModalDom(true)} className="btn btn-secondary">Cargar Domicilio</button>
-                                </div>
-                            }
-                        </div>
-                    </div>
-
-                    <div className="form-row mt-3">
-                        <div className=" form-group col-md-6">
-                            <Table size="sm" className='text-center' hover bordered>
+                        <div className="form-group col-md-6">
+                            <h5>Horarios</h5>
+                            <Table size="sm" className='text-center' hover>
                                 <thead className="thead-dark">
                                     <tr>
                                         <th>Dia</th>
@@ -172,19 +191,25 @@ const VistaDatosNegocio = () => {
                                         :
                                         <tr><td className="text-center" colpan="3" >Sin datos</td></tr>
                                     }
-                                    <tr className="text-center" ><td colspan="4">
-                                        <button onClick={() => setShow(true)} className="btn btn-success btn-sm">Agregar horario</button>
-                                    </td></tr>
+
                                 </tbody>
+                                <tfoot>
+                                    <tr className="text-center" >
+                                        <td colSpan="4">
+                                            <button onClick={() => setShow(true)} className="btn btn-success btn-sm">Agregar horario</button>
+                                        </td>
+                                    </tr>
+                                </tfoot>
                             </Table>
                         </div>
-                        <div className="form-group col-md-6">
+                    </div>
+                    <div className="form-row justify-content-md-center mt-2">
+                        <div className="form-group col-md-3 ">
                             <div className="text-center">
-                                <button onClick={(e) => handleOnSubmit(e)} className="btn btn-primary float-right">Guardar datos</button>
+                                <button onClick={(e) => handleOnSubmit(e)} className="btn btn-primary btn-block">Guardar datos</button>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 {
                     <ModalHorarios

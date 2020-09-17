@@ -6,16 +6,16 @@ import datosContext from '../../datosLocalContext';
 
 function SeccionContacto() {
 
-    var datos = useContext(datosContext)
-    function conocerDia(cod){
+    var datos = useContext(datosContext || null)
+    function conocerDia(cod) {
         switch (cod) {
-            case 1 : return "Lunes";
-            case 2 : return "Martes";
-            case 3 : return "Miercoles";
-            case 4 : return "Jueves";
-            case 5 : return "Viernes";
-            case 6 : return "Sabado";
-            case 0 : return "Domingo";
+            case 1: return "Lunes";
+            case 2: return "Martes";
+            case 3: return "Miercoles";
+            case 4: return "Jueves";
+            case 5: return "Viernes";
+            case 6: return "Sabado";
+            case 0: return "Domingo";
         }
     }
     if (datos === null) {
@@ -37,17 +37,22 @@ function SeccionContacto() {
                                     <div className="row" style={{ paddingRight: "10%" }}>
                                         <div className="col">
                                             <ul className="list-unstyled">
-                                                
-                                                {datos.horarios.map((d, i) => (
-                                                    <li key={i}><span>{conocerDia(d.dia)}</span></li>
-                                                ))}
-                                            </ul>
+                                                {datos.horarios !== undefined ?
+                                                    datos.horarios.map((d, i) => (
+                                                        <li key={i}><span>{conocerDia(d.dia)}</span></li>
+                                                    )) :
+                                                    <li>Sin datos</li>
+                                                }
+                                            </ul>   
                                         </div>
                                         <div className="col">
                                             <ul className="list-unstyled">
-                                                {datos.horarios.map((d, i) => (
-                                                    <li key={i}><span>{d.horarioApertura}</span> - <span>{d.horarioCierre}</span></li>
-                                                ))}
+                                                {datos.horarios !== undefined ?
+                                                    datos.horarios.map((d, i) => (
+                                                        <li key={i}><span>{d.horarioApertura}</span> - <span>{d.horarioCierre}</span></li>
+                                                    ))
+                                                    : <li>Sin datos</li>
+                                                }
                                             </ul>
                                         </div>
                                     </div>
@@ -63,11 +68,15 @@ function SeccionContacto() {
                             </div>
                         </div>
                         <div className="row d-flex justify-content-center">
-                            <p>{"Teléfonos de Contacto: " + datos.telefono +
+                            <p>{ datos.Domicilio !== undefined ?
+                                "Teléfonos de Contacto: " + datos.telefono +
                                 " - Direccion: " + datos.Domicilio.calle + " " +
                                 datos.Domicilio.numeracion + ", " +
                                 datos.Domicilio.Localidad.nombre + ", " +
-                                datos.Domicilio.Localidad.Provincium.nombre}</p>
+                                datos.Domicilio.Localidad.Provincium.nombre
+                                :
+                                <p>Sin datos</p>
+                            }</p>
                         </div>
                     </div>
                 </footer>
