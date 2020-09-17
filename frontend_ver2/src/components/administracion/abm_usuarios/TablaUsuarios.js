@@ -10,10 +10,6 @@ const TablaUsuarios = (props) => {
     const [idUsuarioSeleccionado, setIdUsuarioSeleccionado] = useState(null);
     const [showModalEliminar, setShowModalEliminar] = useState(false)
 
-    const handleShowModalUsuario = (usuario) => {
-        setUsuarioSeleccionado(usuario);
-        //TODO
-    }
     const handleShowModalEliminar = async (id) => {
         setIdUsuarioSeleccionado(id);
         setShowModalEliminar(true);
@@ -41,7 +37,7 @@ const TablaUsuarios = (props) => {
                 </thead>
                 <tbody>
                     {usuarios && usuarios.map(usuario => {
-                        return <tr style={{ cursor: "pointer" }} key={usuario.id} onClick={() => handleShowModalUsuario(usuario)}>
+                        return <tr style={{ cursor: "pointer" }} key={usuario.id} onClick={() => abrirFormulario(usuario)}>
                             <td>{usuario.id}</td>
                             <td>{usuario.nombre}</td>
                             <td>{usuario.email}</td>
