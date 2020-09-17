@@ -39,8 +39,8 @@ const CategoriaAltaView = (props) => {
                 justifyContent: 'center',
                 flexWrap: 'nowrap'
             }}>
-                <Button style={{boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)"}} onClick={props.onHide} variant="danger" block>Cancelar</Button>
-                <Button style={{boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)"}} onClick={() => props.handleGuardar(nombre, tipo)} variant="success" block>Guardar</Button>
+                <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} onClick={props.onHide} variant="danger" block>Cancelar</Button>
+                <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)" }} onClick={() => props.handleGuardar(nombre, tipo)} variant="success" block>Guardar</Button>
             </Modal.Footer>
         </Modal>
     );

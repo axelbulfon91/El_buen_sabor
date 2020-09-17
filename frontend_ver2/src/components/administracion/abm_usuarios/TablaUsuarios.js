@@ -5,7 +5,7 @@ import ModalBotonEliminar from '../abm_stock/ModalBotonEliminar'
 
 
 const TablaUsuarios = (props) => {
-    const { usuarios, refrescarUsuarios } = props;
+    const { usuarios, refrescarUsuarios, abrirFormulario } = props;
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
     const [idUsuarioSeleccionado, setIdUsuarioSeleccionado] = useState(null);
     const [showModalEliminar, setShowModalEliminar] = useState(false)
@@ -24,7 +24,7 @@ const TablaUsuarios = (props) => {
         } catch (error) {
             console.log(error);
         }
-        refrescarUsuarios((token) => token + 1);
+        refrescarUsuarios();
         handleCloseModalEliminar();
     }
     const handleCloseModalEliminar = () => setShowModalEliminar(false);
