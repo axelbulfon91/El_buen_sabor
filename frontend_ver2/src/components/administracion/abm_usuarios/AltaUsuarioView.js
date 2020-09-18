@@ -26,8 +26,6 @@ const AltaUsuarioView = (props) => {
         }
     }, [])
 
-
-
     return (
         <Modal
             {...props}
