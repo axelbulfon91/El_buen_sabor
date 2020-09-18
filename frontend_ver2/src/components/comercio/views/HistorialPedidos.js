@@ -1,63 +1,42 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Table, Button, Popover, OverlayTrigger } from 'react-bootstrap';
+import { Container, Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import estilos from '../../../assets/css/VistaCarrito.module.css'
 import BarraNavegacion from '../uso_compartido/BarraNavegacion'
 import { format, register } from 'timeago.js';
 import { Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
+import ModalDetalle from './modalDetalleHistorialPedido';
+import formEstado from '../../administracion/abm_pedidos/TablaPedidos';
 
-function HistorialPedidos() {
+const HistorialPedidos = () => {
 
     const userData = jwtDecode(sessionStorage.getItem('token'));
     const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
     const [totales, setTotales] = useState([])
+    const [modalDetalle, setModalDetalle] = useState(false)
+    const [detalle, setDetalle] = useState({})
 
     useEffect(() => {
-        obtenerDatos()
-    }, [])
 
-    async function obtenerDatos() {
+        const obtenerDatos = async () => {
+            const resp = await axiosAutorizado().get("http://localhost:4000/api/pedidos/usuario/" + idUsuario) // ID de usuario 
 
-        const resp = await axiosAutorizado().get("http://localhost:4000/api/pedidos/usuario/" + idUsuario) // ID de usuario 
-        const pedidos = resp.data.pedidos
-        const totales = resp.data.totales
-        if (pedidos !== null) {
-            setPedidos(pedidos)
-            setTotales(totales)
+            if (resp.data.pedidos) {
+                setPedidos(resp.data.pedidos)
+                console.log(resp.data.pedidos)
+                setTotales(resp.data.totales)
+            }
         }
-        console.log(pedidos)
-    }
+        obtenerDatos();
 
-    const mostrarPop = (pedido) => (
-        <Popover>
-            <Popover.Content>
-                <ul>
-                    {pedido.Detalle_Pedidos.map((prod, i) =>
-                        <li key={i}>
-                            <p>{prod.elaborado.nombre} x {prod.cantidad} <br />
-                             $ {prod.precioDetalle} x {prod.cantidad} = $ {(prod.precioDetalle * prod.cantidad)}</p>
-                        </li>
-                    )}
-                </ul>
-            </Popover.Content>
-            <Popover.Content>
-                <b>Tipo de envio: </b>
-                {(pedido.tipoRetiro === 0) ?
-                    <b>Delivery</b>
-                    :
-                    <b>Retiro por local</b>
-                }
-            </Popover.Content>
-        </Popover>
-    )
-
+    }, [])
+    
     return (
         <>
             <div className={estilos.fondo}>
                 <BarraNavegacion></BarraNavegacion>
-                
                 <Container className="mt-5">
                     <h3>Historial de Pedidos</h3>
                     <Table responsive className="mt-3">
@@ -75,21 +54,19 @@ function HistorialPedidos() {
                                 pedidos.map((pedido, i) =>
                                     <tr key={i} className="text-center">
                                         <td>{pedido.id}</td>
-                                        <td>{format(new Date(pedido.createdAt), 'es')}</td>
-                                        <td>
-
-                                            <OverlayTrigger trigger="hover" placement="right" overlay={mostrarPop(pedido)}>
-                                                <Button variant="info">Detalle</Button>
-                                            </OverlayTrigger>
-
-
+                                        <td data-toggle="tooltip" data-placement="right" title={new Date(pedido.createdAt).toLocaleString()}>
+                                            {format(new Date(pedido.createdAt), 'es')}
                                         </td>
-                                        <td>$ {totales[i]}</td>
-                                        <td>{(pedido.estado === "Finalizado") ?
-                                            <Button className="btn btn-warning">Facturado<br />Ver Factura</Button>
-                                            :
-                                            pedido.estado
-                                        }
+                                        <td>
+                                            <Link to="#" onClick={() => { setDetalle({ ped: pedido, total: totales[i] }); setModalDetalle(true); }} variant="info">Ver detalle</Link>
+                                        </td>
+                                        <td>$ {parseFloat(totales[i]).toFixed(2)}</td>
+                                        <td>
+                                            {(pedido.estado === "Finalizado") ?
+                                                <Button className="btn btn-warning">Facturado<br />Ver Factura</Button>
+                                                :
+                                                formEstado.devolverEstado(pedido.estado)
+                                            }
                                         </td>
                                     </tr>
                                 )
@@ -114,6 +91,16 @@ function HistorialPedidos() {
                 </Container>
 
             </div>
+            {detalle.ped !== undefined ?
+                <ModalDetalle
+                    modalDetalle={modalDetalle}
+                    setModalDetalle={setModalDetalle}
+                    detalle={detalle}>
+                </ModalDetalle>
+                :
+                <span>Cargando...</span>
+            }
+
         </>
     )
 }
@@ -141,27 +128,3 @@ register('es', localeFunc);
 
 export default HistorialPedidos
 
-
-    // < Button id = { "detalle" + i } type = "button" >
-    //     Detalle
-    //                                             </Button >
-    // <Popover placement="right" target={"detalle" + i}>
-    //     <Popover.Content>
-    //         <ul>
-    //             {pedido.Detalle_Pedidos.map((prod, i) =>
-    //                 <li key={i}>
-    //                     <p>{prod.elaborado.nombre} x {prod.cantidad} <br />
-    //                                                                         $ {prod.precioDetalle} x {prod.cantidad} = $ {(prod.precioDetalle * prod.cantidad)}</p>
-    //                 </li>
-    //             )}
-    //         </ul>
-    //     </Popover.Content>
-    //     <Popover.Content>
-    //         <b>Tipo de envio: </b>
-    //         {(pedido.tipoRetiro === 0) ?
-    //             <b>Delivery</b>
-    //             :
-    //             <b>Retiro por local</b>
-    //         }
-    //     </Popover.Content>
-    // </Popover>

@@ -29,7 +29,7 @@ const VistaCarrito = () => {
     const [carrito, setCarrito] = useState([]);
     const [total, setTotal] = useState(0);
     const [costoFinal, setCostoFinal] = useState(0);
-    const [tipoRetiro, setTipoRetiro] = useState("delivery");
+    const [tipoRetiro, setTipoRetiro] = useState(0);
     const [cambio, setCambio] = useState(false)
     const [tiempoElab, setTiempoElab] = useState(0)
 
@@ -94,9 +94,9 @@ const VistaCarrito = () => {
         var valor = aux.toFixed(2)
         setTotal(valor)
         setTiempoElab(auxTiempo)
-        if (tipoRetiro === "delivery") {
+        if (tipoRetiro === 0) {
             setCostoFinal(valor)
-        } else if (tipoRetiro === "retiroPorLocal") {
+        } else if (tipoRetiro === 1) {
             setCostoFinal((valor - (valor * 0.1).toFixed(2)))
         }
         //setCambio(!cambio)
@@ -111,13 +111,12 @@ const VistaCarrito = () => {
     }
 
     function cambiarTipoRetiro(val) {
-
-        if (val === "delivery") {
+        if (parseInt(val) === 0) {
             setCostoFinal(total)
-        } else if (val === "retiroPorLocal") {
-            setCostoFinal((total - (total * 0.1)).toFixed(2))
+        } else if (parseInt(val) === 1) {
+            setCostoFinal((total - (total * 0.1)))
         }
-        setTipoRetiro(val)
+        setTipoRetiro(parseInt(val))
         setCambio(!cambio)
     }
 
@@ -137,16 +136,17 @@ const VistaCarrito = () => {
             }
         })
         if (diaAbierto) {
-            var horarioApertura = Date.parse(diaActual.getDate() + "-" + diaActual.getMonth() + "-" + diaActual.getFullYear() + " " + diaAbierto.horarioApertura)
-            var horarioCierre = Date.parse(diaActual.getDate() + "-" + diaActual.getMonth() + "-" + diaActual.getFullYear() + " " + diaAbierto.horarioCierre)
-            const abre = moment(horarioApertura).format("DD HH:mm")
+            var horarioApertura =  diaActual.getDate() +  " " + diaAbierto.horarioApertura
+            var horarioCierre = diaActual.getDate() + " " + diaAbierto.horarioCierre
+            console.log(moment(horarioApertura, "DD HH:mm" )._i)
+            const abre = moment(horarioApertura, "DD HH:mm" )._i
             const act = moment(diaActual).format("DD HH:mm")
             var cierre = null
             diaAbierto.horarioApertura > diaAbierto.horarioCierre
-                ? cierre = moment(horarioCierre).add(1, "day").format("DD HH:mm") // Si el horario de cierre es despues de las 00, incrementa un dia
-                : cierre = moment(horarioCierre).format("DD HH:mm")
-
-            if (moment(act).isBetween(abre, cierre)) {
+                ? cierre = moment(horarioCierre, "DD HH:mm").add(1, "day").format("DD HH:mm")// Si el horario de cierre es despues de las 00, incrementa un dia
+                : cierre = moment(horarioCierre, "DD HH:mm" )._i
+            console.log("Abre: " + abre + " -  Actual: " + act + " - Cierra: " + cierre)
+            if (moment(act, "DD HH:mm").isBetween(moment(abre, "DD HH:mm"), moment(cierre, "DD HH:mm"))) {
                 console.log("Permitido")
                 return true
             } else {
@@ -178,7 +178,7 @@ const VistaCarrito = () => {
                 var pedido = {
                     productosPedidos: carritoListo,
                     id_usuario: idUsuario,
-                    estado: "porConfirmar",
+                    estado: "pendiente",
                     tipoRetiro: tipoRetiro,
                     tiempoElaboracion: tiempoElab
                 }
@@ -194,10 +194,12 @@ const VistaCarrito = () => {
                     alert("No hay stock suficiente para generar el pedidos")
                     //window.sessionStorage.removeItem('carrito')
                     window.location.href = "/Catalogo"
+                }else{
+                    alert(resp.data.message)
                 }
 
             } else {
-                window.location.href = "/"
+                //window.location.href = "/"
             }
         } else {
             alert('Debe estar logueado para poder realizar un pedido, redirigiendo a la pantalla de login')
@@ -277,14 +279,14 @@ const VistaCarrito = () => {
                                 <tr>
                                     <td colSpan={2} className="text-left">
                                         <h5>Tipo de retiro:
-                                                    <select value={tipoRetiro} className="ml-1" onChange={(e) => cambiarTipoRetiro(e.target.value)}>
-                                                <option value="delivery">Delivery</option>
-                                                <option value="retiroPorLocal">Retiro en local ( -10% )</option>
+                                            <select defaultValue={tipoRetiro} className="ml-1" onChange={(e) => cambiarTipoRetiro(e.target.value)}>
+                                                <option value={0}>Delivery</option>
+                                                <option value={1}>Retiro en local ( -10% )</option>
                                             </select>
                                         </h5>
                                     </td>
                                     <td className="text-left">
-                                        <h4 className="text-danger">Precio final: $ {costoFinal}</h4>
+                                        <h4 className="text-danger">Precio final: $ {parseFloat(costoFinal).toFixed(2)}</h4>
                                     </td>
                                 </tr>
                                 <tr>
