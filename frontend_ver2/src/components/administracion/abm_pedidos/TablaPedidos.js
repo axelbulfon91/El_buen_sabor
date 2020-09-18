@@ -14,25 +14,8 @@ const TablaPedidos = ({ pedidos, setRefreshToken }) => {
         setShowModalDetallePedido(true);
     };
 
-    const devolverEstado = (estado) => {
-        switch (estado) {
-            case "pendiente":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSalmon", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pendiente</span>
-            case "confirmado":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkTurquoise", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Confirmado</span>
-            case "demorado":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Demorado</span>
-            case "listo":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSeaGreen", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Listo</span>
-            case "entregado":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DeepSkyBlue", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Entregado</span>
-            case "cancelado":
-                return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "Crimson", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Cancelado</span>
+    
 
-            default:
-                break;
-        }
-    }
     return (
         <Fragment>
             <Table className="text-center lead" striped hover size="sm">
@@ -71,4 +54,24 @@ const TablaPedidos = ({ pedidos, setRefreshToken }) => {
     )
 }
 
-export default TablaPedidos
+const devolverEstado = (estado) => {
+    switch (estado) {
+        case "pendiente":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSalmon", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pendiente</span>
+        case "confirmado":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkTurquoise", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Confirmado</span>
+        case "demorado":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkOrchid", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Demorado</span>
+        case "listo":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSeaGreen", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Listo</span>
+        case "entregado":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DeepSkyBlue", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Entregado</span>
+        case "cancelado":
+            return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "Crimson", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Cancelado</span>
+
+        default:
+            break;
+    }
+}
+
+export default {TablaPedidos, devolverEstado}

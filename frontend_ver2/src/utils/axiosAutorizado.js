@@ -1,7 +1,6 @@
 import axios from "axios";
 
 const axiosAutorizado = () => {
-
     const token = sessionStorage.getItem('token')
     return axios.create({
         baseURL: "",
