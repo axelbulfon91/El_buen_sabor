@@ -2,7 +2,6 @@ import React, { Fragment, useState } from 'react'
 import { Table } from 'react-bootstrap'
 import { format } from 'date-fns'
 import DetallePedidoContainer from './DetallePedidoContainer';
-import { toast } from 'react-toastify';
 
 const TablaPedidos = ({ pedidos, setRefreshToken }) => {
     //Estado Modal de Detalle
@@ -14,7 +13,7 @@ const TablaPedidos = ({ pedidos, setRefreshToken }) => {
         setShowModalDetallePedido(true);
     };
 
-    
+
 
     return (
         <Fragment>
@@ -54,7 +53,7 @@ const TablaPedidos = ({ pedidos, setRefreshToken }) => {
     )
 }
 
-const devolverEstado = (estado) => {
+export const devolverEstado = (estado) => {
     switch (estado) {
         case "pendiente":
             return <span style={{ border: "1px solid black", width: "135px", backgroundColor: "DarkSalmon", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "white", display: "inline-block", fontWeight: "bolder" }}>Pendiente</span>
@@ -74,4 +73,4 @@ const devolverEstado = (estado) => {
     }
 }
 
-export default {TablaPedidos, devolverEstado}
+export default TablaPedidos

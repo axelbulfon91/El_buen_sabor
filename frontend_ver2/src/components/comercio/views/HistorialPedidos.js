@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Table, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Container, Table, Button } from 'react-bootstrap';
 import estilos from '../../../assets/css/VistaCarrito.module.css'
 import BarraNavegacion from '../uso_compartido/BarraNavegacion'
 import { format, register } from 'timeago.js';
@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 import jwtDecode from 'jwt-decode';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import ModalDetalle from './modalDetalleHistorialPedido';
-import formEstado from '../../administracion/abm_pedidos/TablaPedidos';
+import { devolverEstado } from '../../administracion/abm_pedidos/TablaPedidos';
 
 const HistorialPedidos = () => {
 
@@ -32,7 +32,7 @@ const HistorialPedidos = () => {
         obtenerDatos();
 
     }, [])
-    
+
     return (
         <>
             <div className={estilos.fondo}>
@@ -65,7 +65,7 @@ const HistorialPedidos = () => {
                                             {(pedido.estado === "Finalizado") ?
                                                 <Button className="btn btn-warning">Facturado<br />Ver Factura</Button>
                                                 :
-                                                formEstado.devolverEstado(pedido.estado)
+                                                devolverEstado(pedido.estado)
                                             }
                                         </td>
                                     </tr>

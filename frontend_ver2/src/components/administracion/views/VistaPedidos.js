@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios';
-import { Button, Form } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import FiltroPorEstado from '../abm_pedidos/FiltroPorEstado';
@@ -8,8 +8,6 @@ import TablaPedidos from '../abm_pedidos/TablaPedidos';
 import FiltroPorFecha from '../uso_compartido/FiltroPorFecha';
 import FiltroPorId from '../abm_pedidos/FiltroPorId';
 import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
-
-
 
 
 const VistaPedidos = () => {
