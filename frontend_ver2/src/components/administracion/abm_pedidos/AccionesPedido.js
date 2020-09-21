@@ -136,6 +136,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
     }
     const generarFactura = (pedido) => {
         console.log(pedido);
+       
     }
     return (
         <div className="mx-4 lead">
