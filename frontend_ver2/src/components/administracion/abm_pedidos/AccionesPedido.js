@@ -4,6 +4,8 @@ import { Form, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { TIPOS_ESTADO_PEDIDOS } from '../uso_compartido/valoresHardCoded'
 import { toast } from 'react-toastify';
+import FacturaPedido from './FacturaPedido';
+
 
 
 export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
@@ -43,12 +45,8 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
             </Form.Group>)
             if (estadoActual === "entregado") {
                 setbotonGenerarFactura(
-                    <button
-                        onClick={() => generarFactura(pedido)}
-                        className="d-flex align-items-center justify-content-center"
-                        style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-                        Generar Factura<i className="fa fa-file-upload mr-2"></i>
-                    </button>
+                    <FacturaPedido pedido={pedido}>
+                   </FacturaPedido>
                 )
             }
         } else if (rol === "CAJERO") {
@@ -59,12 +57,8 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
             } else if (estadoActual === "entregado") {
                 setBotonCancelarODemorar(null)
                 setbotonGenerarFactura(
-                    <button
-                        onClick={() => generarFactura(pedido)}
-                        className="d-flex align-items-center justify-content-center"
-                        style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-                        Generar Factura<i className="fa fa-file-upload mr-2"></i>
-                    </button>
+                    <FacturaPedido pedido={pedido}>
+                   </FacturaPedido>
                 )
             }
         } else if (rol === "COCINERO") {
@@ -134,10 +128,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
             alert(error)
         }
     }
-    const generarFactura = (pedido) => {
-        console.log(pedido);
-       
-    }
+
     return (
         <div className="mx-4 lead">
             {selectNuevoEstado}
@@ -146,6 +137,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                 {botonNuevoEstado}
                 {botonGenerarFactura}
             </div>
+        
         </div>
     )
 }
