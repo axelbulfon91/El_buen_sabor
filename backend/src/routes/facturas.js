@@ -5,8 +5,9 @@ const pedidoModel = require('../models/pedido')
 const userModel = require('../models/usuario');
 const detalle_pedido_model = require('../models/detalle_pedido');
 const elaboradoModel = require('../models/elaborado');
+const {comprobarToken} = require('../lib/service_jwt');
 
-router.post('/', async (req, res) => {
+router.post('/',comprobarToken,async (req, res) => {
 
     const id_pedido = req.body.id_pedido; //Id del pedido
     const id_cajero = req.body.id_cajero; //Id del cajero que genera la factura
@@ -15,17 +16,33 @@ router.post('/', async (req, res) => {
         {
             where: {
                 id: id_pedido,
-                estado: "Finalizado"
+                estado: "entregado"
             }
         }
     )
-    console.log(pedidoFacturado)
+    //console.log(pedidoFacturado)
     if (pedidoFacturado) {
+
+        const existeFactura = await facturaModel.findOne(
+            {
+                where : {
+                    id_pedido: id_pedido
+                }
+            }
+        )
+        
+        if(existeFactura){
+
+            res.status(200).json({ 'message': 'Factura encontrada', 'Detalle': existeFactura })
+
+        }
+
         const factura = await facturaModel.create({
             id_pedido: pedidoFacturado.dataValues.id,
             id_cajero
         })
         res.status(200).json({ 'message': 'Factura realizada con exito', 'Detalle': factura })
+
 
     } else {
         res.json({ 'message': 'El pedido indicado no esta indicado como Finalizado o no tiene un ID correcto' })
@@ -35,7 +52,7 @@ router.post('/', async (req, res) => {
 
 });
 
-router.get('/', async (req, res) => {
+router.get('/',comprobarToken, async (req, res) => {
     const facturas = await facturaModel.findAll({
         attributes: { exclude: ['id_pedido', 'updatedAt'] },
         include: [{
@@ -57,7 +74,7 @@ router.get('/', async (req, res) => {
     res.json({ 'facturas': facturas })
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id',comprobarToken, async (req, res) => {
 
     const id_factura = req.params.id
 
