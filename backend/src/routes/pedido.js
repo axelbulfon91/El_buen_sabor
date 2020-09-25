@@ -17,6 +17,7 @@ router.post('/', async (req, res) => {
     ////////////Comprobacion de existencia de Stock en los insumos//////////////
     const validacion = await validarStock(productosPedidos)
     console.log(validacion)
+    const domElegido = JSON.stringify(req.body.domElegido)
     /////////////Si hay Stock, Genero el Pedido ////////////////////
     if (validacion.hayStock) {
         const userID = req.body.id_usuario // Token ---> id_user
@@ -26,6 +27,7 @@ router.post('/', async (req, res) => {
         const pedido = await pedidoModel.create({ //Creo pedido a con id_usuario
             id_cliente: user.id,
             estado: estado,
+            domElegido: domElegido, 
             tipoRetiro: req.body.tipoRetiro,
             //TIEMPO DE ELABORACION DESDE EL FRONT
             tiempoElaboracion: req.body.tiempoElaboracion

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import GoogleLogin from 'react-google-login';
 import Axios from 'axios';
-import { Container } from "react-bootstrap";
+import { Container, Button } from "react-bootstrap";
 
 function VistaLogin() {
     const [usuario, setUsuario] = useState("")
@@ -14,7 +14,7 @@ function VistaLogin() {
             nombre: r.profileObj.name
         }
         const resp = await Axios.post("http://localhost:4000/api/usuarios/login/google", user)
-        
+
         if (resp.data.message !== 'Error al registrar el usuario') {
             alert(resp.data.message)
             window.sessionStorage.setItem('token', resp.data.token)
@@ -52,6 +52,23 @@ function VistaLogin() {
         loginCorrectoLocal()
     }
 
+    const enviarEmail = async () => {
+
+        if (usuario !== "") {
+            const data = {
+                email: usuario
+            }
+
+            const resp = await Axios.post('http://localhost:4000/api/enviarEmail/recuperarPassword', data)
+            if (resp.data.message === "OK") {
+                alert("Revise su correo para resetear la clave")
+            }
+        } else {
+            alert('Debe ingresar un correo valido')
+        }
+    }
+
+
     return (
         <React.Fragment>
 
@@ -81,11 +98,12 @@ function VistaLogin() {
 
                             <button type="submit" className="btn btn-primary mr-3">Ingresar</button>
                             Sin cuenta? <a href="/registro" className="text-primary">Registrate</a>
-                        </form>                        
+                            <Button className="d-flex float-right btn btn-sm btn-warning" onClick={() => enviarEmail()}>Olvide mi contraseña</Button>
+                        </form>
+
                         <br />
                     o ingresa por Google
-
-                    <GoogleLogin
+                        <GoogleLogin
                             className="ml-4"
                             clientId="505222477717-sitpp1mna4vtrih544ugpmorbo669qj9.apps.googleusercontent.com"
                             buttonText="Ingresar con Google"

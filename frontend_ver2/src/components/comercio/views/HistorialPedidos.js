@@ -25,14 +25,12 @@ const HistorialPedidos = () => {
 
             if (resp.data.pedidos) {
                 setPedidos(resp.data.pedidos)
-                console.log(resp.data.pedidos)
-                setTotales(resp.data.totales)
             }
         }
         obtenerDatos();
 
     }, [])
-
+    
     return (
         <>
             <div className={estilos.fondo}>
@@ -50,7 +48,7 @@ const HistorialPedidos = () => {
                             </tr>
                         </thead>
                         <tbody className="text-dark">
-                            {(pedidos.length !== 0) ?
+                            {pedidos !== undefined ?
                                 pedidos.map((pedido, i) =>
                                     <tr key={i} className="text-center">
                                         <td>{pedido.id}</td>
@@ -58,9 +56,9 @@ const HistorialPedidos = () => {
                                             {format(new Date(pedido.createdAt), 'es')}
                                         </td>
                                         <td>
-                                            <Link to="#" onClick={() => { setDetalle({ ped: pedido, total: totales[i] }); setModalDetalle(true); }} variant="info">Ver detalle</Link>
+                                            <Link to="#" onClick={() => { setDetalle(pedido); setModalDetalle(true); }} variant="info">Ver detalle</Link>
                                         </td>
-                                        <td>$ {parseFloat(totales[i]).toFixed(2)}</td>
+                                        <td>$ {pedido.tipoRetiro === 0 ? obtenerTotal(pedido).toFixed(2) : (obtenerTotal(pedido) - (obtenerTotal(pedido) * 0.1)).toFixed(2)}</td>
                                         <td>
                                             {(pedido.estado === "Finalizado") ?
                                                 <Button className="btn btn-warning">Facturado<br />Ver Factura</Button>
@@ -91,7 +89,7 @@ const HistorialPedidos = () => {
                 </Container>
 
             </div>
-            {detalle.ped !== undefined ?
+            {detalle !== undefined ?
                 <ModalDetalle
                     modalDetalle={modalDetalle}
                     setModalDetalle={setModalDetalle}
@@ -125,6 +123,16 @@ const localeFunc = (number, index, totalSec) => {
     ][index];
 };
 register('es', localeFunc);
+
+export const obtenerTotal = (pedido)=>{
+    var total = 0
+    pedido.Detalle_Pedidos.forEach(p => {        
+        total += p.precioDetalle
+        
+    });
+    return total
+    
+}
 
 export default HistorialPedidos
 

@@ -14,8 +14,6 @@
     "moment": "^2.27.0",
     "react": "^16.13.1",
     "react-bootstrap": "^1.2.2",
-    "react-bootstrap-table-next": "^4.0.3",
-    "react-bootstrap-table2-editor": "^1.4.0",
     "react-dom": "^16.13.1",
     "react-google-login": "^5.1.21",
     "react-router": "^5.2.0",

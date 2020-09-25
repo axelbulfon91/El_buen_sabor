@@ -32,7 +32,7 @@ const BarraNavegacion = () => {
         };
         // EFECTO SCROLL DEL NAVBAR
         window.addEventListener("scroll", updateNavbarColor);
-        //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol    
+        //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol       
         if (sessionStorage.getItem('token')) {
             const userData = jwtDecode(sessionStorage.getItem('token'));
             console.log(userData);
@@ -57,6 +57,8 @@ const BarraNavegacion = () => {
             window.removeEventListener("scroll", updateNavbarColor);
         };
     }, []);
+
+
     const handleLogout = () => {
         sessionStorage.clear();
         window.location.href = "/"
@@ -85,7 +87,6 @@ const BarraNavegacion = () => {
                     <NavLink exact className={classnames("h6 my-0 mx-2", textColor)} to="/catalogo"><i className="fa fa-pizza-slice mr-2"></i>Catálogo</NavLink>
                     <NavLink exact className={classnames("h6 my-0 mx-2", textColor)} to="/carrito"><i className="fa fa-shopping-cart mr-2"></i>Carrito</NavLink>
                     {linkUsuario}
-
                 </Nav>
             </Navbar.Collapse>
         </Navbar>

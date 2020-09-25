@@ -37,8 +37,12 @@ app.use('/api/productos/bebidas', require('./routes/bebidas'));
 app.use('/api/productos/existencias', require('./routes/existencias'));
   //Facturas
 app.use('/api/facturas', require('./routes/facturas'));
-
+  //Datos de negocio
 app.use('/api/datosGenerales', require('./routes/datosGenerales'));
+
+app.use('/api/enviarEmail', require('./routes/enviarEmail'));
+
+
 
 //Archivos estaticos
 app.use(express.static(path.join(__dirname, 'public')));

@@ -17,6 +17,7 @@ import LandingPage from './components/comercio/views/LandingPage';
 import Catalogo from './components/comercio/views/VistaCatalogoComercio';
 import Login from './components/vistaLogin';
 import Registro from './components/vistaRegistro';
+import CambioPassword from './components/CambioPassword';
 
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -54,8 +55,9 @@ function App() {
           <Route exact path="/" component={LandingPage} />
           <Route path="/catalogo" component={Catalogo} />
           <RutaPrivada path="/historialPedidos" component={HistorialPedidos} />
-          <Route path="/perfil" component={Perfil} />
+          <RutaPrivada path="/perfil" component={Perfil} />
           <Route path="/carrito" component={VistaCarrito} />
+          <Route path="/recuperarPassword/:email" component={CambioPassword} />
           {/* Vistas Administrador */}
           <RutaPrivadaAdmin exact path="/admin/categorias" component={VistaCategorias} />
           <RutaPrivadaAdmin exact path="/admin/catalogo" component={VistaCatalogo} />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
-import { Table, Modal, Button, Row } from 'react-bootstrap'
+import { Table} from 'react-bootstrap'
 import Axios from 'axios';
 import ModalHorarios from './componentes/modalHorarios';
 import ComponenteFormDomicilio from './componentes/ComponenteFormDomicilio';
@@ -11,7 +11,7 @@ const VistaDatosNegocio = () => {
 
     const [email, setEmail] = useState("")
     const [telefono, setTelefono] = useState("")
-    const [domicilio, setDomicilio] = useState([]);
+    const [domicilio, setDomicilio] = useState([]);    
     const [show, setShow] = useState(false);
     const [showModalDom, setShowModalDom] = useState(false);
     const [horarios, setHorarios] = useState([]);

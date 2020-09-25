@@ -13,11 +13,12 @@ const RutaPrivada = ({ component: Component, ...rest }) => {
         } catch {
           token = null
         }
-        if (token) {
-          return <Component {...props} />
+        if (!token) {
+          alert('Usuario no logueado')
+          return <Redirect to='/login' />
         }
-        alert('Usuario no logueado')
-        return <Redirect to='/login' />
+        return <Component {...props} />
+
 
       }}
     />

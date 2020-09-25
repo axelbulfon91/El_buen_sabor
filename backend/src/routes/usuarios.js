@@ -8,7 +8,8 @@ const localidadModel = require('../models/Ubicacion/localidad');
 const provinciaModel = require('../models/Ubicacion/provincia');
 const rolModel = require('../models/rol');
 const { secret } = require('../keys')
-const { comprobarToken } = require('../lib/service_jwt')
+const { comprobarToken } = require('../lib/service_jwt');
+const domicilioModel = require('../models/Ubicacion/domicilio');
 
 //Registro Local
 router.post('/registro', async (req, res) => {
@@ -182,10 +183,9 @@ router.get('/', comprobarToken, async (req, res) => {
     }
 })
 
-
 //Trae el usuario con el id del parametro
-router.get('/:id', async (req, res) => {
-
+router.get('/:id', comprobarToken, async (req, res) => {
+    
     const user = await userModel.findOne({
         where: { id: req.params.id },
         include: [{
@@ -234,10 +234,21 @@ router.delete('/:id', async (req, res) => {
 })
 
 //Actualiza nombre, email y telefono del usuario del id indicado en el parametro
-router.put('/:id', async (req, res) => {
+router.put('/:id', comprobarToken, async (req, res) => {
 
+    const domicilios = req.body.domicilios // array con domicilios a cargar desde el front
     const user = await userModel.findOne({
-        where: { id: req.params.id }
+        where: { id: req.params.id },
+        include: [{
+            model: domicilio,
+            include: [{
+                model: localidadModel,
+                attributes: { exclude: ['id_provincia'] },
+                include: [{
+                    model: provinciaModel,
+                }]
+            }]
+        }]
     });
 
     if (user) {
@@ -249,22 +260,22 @@ router.put('/:id', async (req, res) => {
         if (req.body.rol) {
             switch (req.body.rol) {
                 case 1: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
+                    usuario_id: user.dataValues.id,
                     rol: "COCINERO"
                 })
                     break;
                 case 2: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
+                    usuario_id: user.dataValues.id,
                     rol: "CAJERO"
                 })
                     break;
                 case 3: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
+                    usuario_id: user.dataValues.id,
                     rol: "ADMINISTRADOR"
                 })
                     break;
                 case 4: await rolModel.create({
-                    usuario_id: nuevoUsuario.dataValues.id,
+                    usuario_id: user.dataValues.id,
                     rol: "CLIENTE"
                 })
                     break;
@@ -273,12 +284,82 @@ router.put('/:id', async (req, res) => {
             }
         } else {
             await rolModel.create({
-                usuario_id: nuevoUsuario.dataValues.id,
+                usuario_id: user.dataValues.id,
                 rol: "CLIENTE"
             })
         }
+        // const resp = await domicilioModel.findAll({ where: { id_usuario: req.params.id } })
+        // const domiciliosGuardados = resp.map((r) => { //carga un array con todos los domicilios guardados en la BD para el usuario
+        //     return r.dataValues
+        // })
+        // console.log({ "domicilios para guardar ": domicilios })
+        // console.log({ "domicilios guardados ": domiciliosGuardados })
+        // if (domicilios && domicilios.length) {
+        //     for (let i = 0; i < domicilios.length; i++) {                
+        //         if (domiciliosGuardados && domiciliosGuardados.length) {
+        //             for (let j = 0; j < domiciliosGuardados.length; j++) {
+        //                 if (domicilios[i].id === domiciliosGuardados[j].id) {
+        //                     await domicilioModel.delete({ where: { id: domiciliosGuardados[j].id } })
+        //                     await domicilioModel.create({
+        //                         calle: domicilios[i].calle,
+        //                         numeracion: domicilios[i].numeracion,
+        //                         detalle_adicional: domicilios[i].detalle,
+        //                         id_localidad: domicilios[i].idLocalidad,
+        //                         id_usuario: req.params.id
+        //                     })
+        //                 } else {
+        //                     await domicilioModel.create({
+        //                         calle: domicilios[i].calle,
+        //                         numeracion: domicilios[i].numeracion,
+        //                         detalle_adicional: domicilios[i].detalle,
+        //                         id_localidad: domicilios[i].idLocalidad,
+        //                         id_usuario: req.params.id
+        //                     })
+        //                 }                        
+        //             }
+        //         } else {    // Sin domicilios guardasos - se guarda el priero
+        //             await domicilioModel.create({
+        //                 calle: domicilios[i].calle,
+        //                 numeracion: domicilios[i].numeracion,
+        //                 detalle_adicional: domicilios[i].detalle,
+        //                 id_localidad: domicilios[i].idLocalidad,
+        //                 id_usuario: req.params.id
+        //             })
+        //         }
+                
+        //     }
+        // }
 
 
+
+        // domicilios.forEach(async (d) => {
+        //     var domAActualizar = user.dataValues.Domicilios.filter((dom) => {
+        //         if (d.id === dom.dataValues.id) {
+        //             console.log("Entroooooooooooooooooooooooooooo")
+        //             return dom
+        //         }
+        //     })
+        //     console.log("NOoooooooooooooooo Entroooooooooooooooooooooooooooo")
+        //     console.log(domAActualizar)
+        //     if (domAActualizar.length === 0) {
+        //         const resp = await domicilioModel.create({
+        //             calle: d.calle,
+        //             numeracion: d.numeracion,
+        //             detalle_adicional: d.detalle,
+        //             id_localidad: d.idLocalidad,
+        //             id_usuario: req.params.id
+        //         })
+        //         console.log(resp.dataValues)
+        //     } else {
+        //         await domicilioModel.update({
+        //             calle: d.calle,
+        //             numeracion: d.numeracion,
+        //             detalle_adicional: d.detalle,
+        //             id_localidad: parseInt(d.idLocalidad)
+        //         })
+
+        //     }
+        // })
         res.status(200).json({ message: 'Usuario actualizado correctamente', 'newUser': user })
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
@@ -287,18 +368,25 @@ router.put('/:id', async (req, res) => {
 })
 
 //Actualiza el password del usuario del id indicado en el parametro
-router.put('/password/:id', async (req, res) => {
+router.put('/password/:email', async (req, res) => {
 
     const user = await userModel.findOne({
-        where: { id: req.params.id }
+        where: { email: req.params.email }
     });
 
     if (user) {
         const passwordHash = await encriptarPassword(req.body.password);
-        await user.update({
+        const userUpdate = await user.update({
             password: passwordHash
         })
-        res.status(200).json({ message: 'Password actualizada correctamente' })
+        const rol = await rolModel.findOne({
+            where: {
+                usuario_id: userUpdate.dataValues.id
+            },
+            order: [['id', 'DESC']]
+        })
+        const token = jwt.sign({ 'id': userUpdate.dataValues.id, rol: rol.dataValues.rol, "nombre": userUpdate.dataValues.nombre }, secret)
+        res.status(200).json({ message: 'Password actualizada correctamente', 'token': token })
     } else {
         res.status(403).json({ message: 'Usuario no encontrado' })
     }

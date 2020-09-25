@@ -8,6 +8,7 @@ import jwtDecode from 'jwt-decode';
 import { toast } from 'react-toastify';
 import datosContext from '../../../datosLocalContext';
 import moment from 'moment';
+import ModalEleccionDomicilio from './modalEleccionDomicilio';
 
 function mensaje() {
     toast.error('Producto eliminado', {
@@ -32,15 +33,15 @@ const VistaCarrito = () => {
     const [tipoRetiro, setTipoRetiro] = useState(0);
     const [cambio, setCambio] = useState(false)
     const [tiempoElab, setTiempoElab] = useState(0)
-
-
+    const [showModal, setShowModal] = useState(false)
+    const [domElegido, setDomElegido] = useState(null)
+    let carritoAux = sessionStorage.getItem('carrito')
+    
     useEffect(() => {
 
-
-        if (window.sessionStorage.getItem('carrito')) {
+        if (carritoAux) { //si exite carrito en el sessionStorage lo carga
             let aux = []
-            aux = JSON.parse(window.sessionStorage.getItem('carrito'))
-
+            aux = JSON.parse(carritoAux)
             setCarrito(aux)
             calcularTotal(aux)
         }
@@ -123,7 +124,7 @@ const VistaCarrito = () => {
     function eliminar(idx) {
 
         carrito.splice(idx, 1)
-        window.sessionStorage.setItem('carrito', JSON.stringify(carrito))
+        sessionStorage.setItem('carrito', JSON.stringify(carrito))
         calcularTotal()
         mensaje()
     }
@@ -136,15 +137,15 @@ const VistaCarrito = () => {
             }
         })
         if (diaAbierto) {
-            var horarioApertura =  diaActual.getDate() +  " " + diaAbierto.horarioApertura
+            var horarioApertura = diaActual.getDate() + " " + diaAbierto.horarioApertura
             var horarioCierre = diaActual.getDate() + " " + diaAbierto.horarioCierre
-            console.log(moment(horarioApertura, "DD HH:mm" )._i)
-            const abre = moment(horarioApertura, "DD HH:mm" )._i
+            console.log(moment(horarioApertura, "DD HH:mm")._i)
+            const abre = moment(horarioApertura, "DD HH:mm")._i
             const act = moment(diaActual).format("DD HH:mm")
             var cierre = null
             diaAbierto.horarioApertura > diaAbierto.horarioCierre
                 ? cierre = moment(horarioCierre, "DD HH:mm").add(1, "day").format("DD HH:mm")// Si el horario de cierre es despues de las 00, incrementa un dia
-                : cierre = moment(horarioCierre, "DD HH:mm" )._i
+                : cierre = moment(horarioCierre, "DD HH:mm")._i
             console.log("Abre: " + abre + " -  Actual: " + act + " - Cierra: " + cierre)
             if (moment(act, "DD HH:mm").isBetween(moment(abre, "DD HH:mm"), moment(cierre, "DD HH:mm"))) {
                 console.log("Permitido")
@@ -163,44 +164,56 @@ const VistaCarrito = () => {
     }
 
     async function realizarPedido() {
-
         if (sessionStorage.getItem('token')) {
-            if (dentroDeHorario()) {
-                const userData = jwtDecode(sessionStorage.getItem('token'));
-                const idUsuario = userData.id
-                var carritoListo = carrito.map(c => {
-                    if (c.producto.Articulo) {
-                        return { "idBebida": c.producto.Articulo.id, "cantidad": c.cant }
-                    } else {
-                        return { "idElaborado": c.producto.id, "cantidad": c.cant }
-                    }
-                })
-                var pedido = {
-                    productosPedidos: carritoListo,
-                    id_usuario: idUsuario,
-                    estado: "pendiente",
-                    tipoRetiro: tipoRetiro,
-                    tiempoElaboracion: tiempoElab
+            if (tipoRetiro === 0) {
+                if (!domElegido) {
+                    setShowModal(true)
                 }
-                const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
-                console.log(resp.data)
-
-                if (resp.data.message === "OK") {
-                    alert("Pedido realizado correctamente, volvera al inicio")
-                    window.sessionStorage.removeItem('carrito')
-                    window.location.href = "/"
-
-                } else if (resp.data.message == "No hay stock") {
-                    alert("No hay stock suficiente para generar el pedidos")
-                    //window.sessionStorage.removeItem('carrito')
-                    window.location.href = "/Catalogo"
-                }else{
-                    alert(resp.data.message)
-                }
-
-            } else {
-                //window.location.href = "/"
             }
+            if (domElegido || tipoRetiro === 1) {
+                const confirmar = window.confirm("Realizar pedido?")
+                if (confirmar) {
+                    if (dentroDeHorario()) {
+                        const userData = jwtDecode(sessionStorage.getItem('token'));
+                        const idUsuario = userData.id
+                        var carritoListo = carrito.map(c => {
+                            if (c.producto.Articulo) {
+                                return { "idBebida": c.producto.Articulo.id, "cantidad": c.cant }
+                            } else {
+                                return { "idElaborado": c.producto.id, "cantidad": c.cant }
+                            }
+                        })
+                        var pedido = {
+                            productosPedidos: carritoListo,
+                            id_usuario: idUsuario,
+                            estado: "pendiente",
+                            tipoRetiro: tipoRetiro,
+                            domElegido: domElegido,
+                            tiempoElaboracion: tiempoElab
+                        }
+
+
+                        const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
+                        if (resp.data.message === "OK") {
+                            alert("Pedido realizado correctamente, volvera al inicio")
+                            window.sessionStorage.removeItem('carrito')
+                            //window.location.href = "/"
+
+                        } else if (resp.data.message == "No hay stock") {
+                            alert("No hay stock suficiente para generar el pedidos")
+                            //window.sessionStorage.removeItem('carrito')
+                            window.location.href = "/Catalogo"
+                        } else {
+                            alert(resp.data.message)
+                        }
+                    } else {
+                        //window.location.href = "/"
+                    }
+                }
+
+            }
+
+
         } else {
             alert('Debe estar logueado para poder realizar un pedido, redirigiendo a la pantalla de login')
             window.location.href = "/login"
@@ -217,7 +230,7 @@ const VistaCarrito = () => {
             <Container className="mt-5">
                 <Row>
                     <h3 className="text-light">Tu Carrito</h3>
-                    <Button onClick={() => vaciarCarrito()} className="ml-auto btn-warning">Vaciar Carrito <i className="fa fa-times" /></Button>
+                    <Button onClick={() => vaciarCarrito()} className="ml-auto btn-warning">Vaciar Carrito<i className="fa fa-times" /></Button>
                 </Row>
                 <Table responsive className="mt-5">
                     <thead>
@@ -271,9 +284,12 @@ const VistaCarrito = () => {
                         {(carrito.length !== 0) ?
                             <React.Fragment>
                                 <tr>
-                                    <td colSpan={5} className="text-center">
-                                        <h4 className="text-light">Total: $ {total}</h4>
+                                    <td colSpan={2} className="text-left">
                                         <h4 className="text-dark">Tiempo de elaboracion aproximada: {tiempoElab} min</h4>
+                                    </td>
+                                    <td colSpan={3} className="text-right">
+                                        <h4 className="text-light">Total: $ {total}</h4>
+
                                     </td>
                                 </tr>
                                 <tr>
@@ -285,12 +301,22 @@ const VistaCarrito = () => {
                                             </select>
                                         </h5>
                                     </td>
-                                    <td className="text-left">
+                                    <td colSpan={3} className="text-right">
                                         <h4 className="text-danger">Precio final: $ {parseFloat(costoFinal).toFixed(2)}</h4>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colSpan={5} className="text-center mt-5">
+                                    {
+                                        domElegido ?
+                                            <td colSpan={2} className="text-left mt-5">
+                                                <h5>Enviar a {domElegido.calle + " " + domElegido.numeracion + " en " + domElegido.nombreLocalidad}
+                                                    <button onClick={() => { setDomElegido(null); setShowModal(true) }} className="ml-2 btn btn-sm btn-warning">Cambiar domicilio</button></h5>
+                                            </td>
+                                            :
+                                            <td colSpan={2}></td>
+                                    }
+
+                                    <td colSpan={3} className="text-right mt-5">
                                         <button onClick={() => realizarPedido()} className="btn btn-lg btn-success">PEDIR</button>
                                     </td>
                                 </tr>
@@ -307,6 +333,16 @@ const VistaCarrito = () => {
                     </tfoot>
                 </Table>
             </Container>
+            {carrito.length > 0 &&
+                <ModalEleccionDomicilio
+                    showModal={showModal}
+                    setShowModal={setShowModal}
+                    domElegido={domElegido}
+                    setDomElegido={setDomElegido}
+                ></ModalEleccionDomicilio>
+            
+            }
+
         </div>
     )
 
