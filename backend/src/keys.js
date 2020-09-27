@@ -5,5 +5,4 @@ module.exports = {
     user: 'root',
     password: '',
     secret: "mi_secreto"
-
 }

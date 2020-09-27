@@ -102,7 +102,7 @@ function VistaRegistro() {
 
                     <GoogleLogin
                             className="ml-4"
-                            clientId="505222477717-sitpp1mna4vtrih544ugpmorbo669qj9.apps.googleusercontent.com"
+                            clientId={process.env.REACT_APP_GOOGLE_LOGIN_CLIENTE_ID}
                             buttonText="Ingresar con Google"
                             onSuccess={registroCorrecto}
                             onFailure={registroIncorrecto}

@@ -373,7 +373,6 @@ router.put('/password/:email', async (req, res) => {
     const user = await userModel.findOne({
         where: { email: req.params.email }
     });
-
     if (user) {
         const passwordHash = await encriptarPassword(req.body.password);
         const userUpdate = await user.update({
@@ -388,7 +387,7 @@ router.put('/password/:email', async (req, res) => {
         const token = jwt.sign({ 'id': userUpdate.dataValues.id, rol: rol.dataValues.rol, "nombre": userUpdate.dataValues.nombre }, secret)
         res.status(200).json({ message: 'Password actualizada correctamente', 'token': token })
     } else {
-        res.status(403).json({ message: 'Usuario no encontrado' })
+        res.status(200).json({ message: 'Usuario no encontrado' })
     }
 
 })
