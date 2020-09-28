@@ -9,7 +9,6 @@ const TablaUsuarios = (props) => {
     const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
     const [idUsuarioSeleccionado, setIdUsuarioSeleccionado] = useState(null);
     const [showModalEliminar, setShowModalEliminar] = useState(false)
-
     const handleShowModalEliminar = async (id) => {
         setIdUsuarioSeleccionado(id);
         setShowModalEliminar(true);
@@ -22,6 +21,11 @@ const TablaUsuarios = (props) => {
         }
         refrescarUsuarios();
         handleCloseModalEliminar();
+    }
+    const devolerUltimoRol = (rols) => {
+        const largo = rols.length;
+        const ultimo = rols[largo - 1].rol
+        return ultimo
     }
     const handleCloseModalEliminar = () => setShowModalEliminar(false);
     return (
@@ -41,7 +45,7 @@ const TablaUsuarios = (props) => {
                             <td>{usuario.id}</td>
                             <td>{usuario.nombre}</td>
                             <td>{usuario.email}</td>
-                            <td>{usuario.rols[0].rol}</td>
+                            <td>{devolerUltimoRol(usuario.rols)}</td>
                             <td className="text-center"><Button size='lg' variant="outline-danger" onClick={(e) => {
                                 handleShowModalEliminar(usuario.id)
                             }}><i className='fa fa-times'></i></Button></td>

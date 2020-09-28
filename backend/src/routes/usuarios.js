@@ -185,7 +185,7 @@ router.get('/', comprobarToken, async (req, res) => {
 
 //Trae el usuario con el id del parametro
 router.get('/:id', comprobarToken, async (req, res) => {
-    
+
     const user = await userModel.findOne({
         where: { id: req.params.id },
         include: [{
@@ -326,7 +326,7 @@ router.put('/:id', comprobarToken, async (req, res) => {
         //                 id_usuario: req.params.id
         //             })
         //         }
-                
+
         //     }
         // }
 

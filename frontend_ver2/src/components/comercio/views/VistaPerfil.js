@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import BarraNavegacion from '../uso_compartido/BarraNavegacion'
 import estilos from '../../../assets/css/VistaPerfil.module.css'
-import { Button, Container, Table, OverlayTrigger, Popover, ResponsiveEmbed } from 'react-bootstrap';
+import { Button, Container, Table, OverlayTrigger, Popover } from 'react-bootstrap';
 import { useState } from 'react';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import jwtDecode from 'jwt-decode';
@@ -75,7 +75,6 @@ const Perfil = () => {
             console.log("Sin domicilios a cargar")
         }
         alert(resp.data.message)
-
     }
 
     return (

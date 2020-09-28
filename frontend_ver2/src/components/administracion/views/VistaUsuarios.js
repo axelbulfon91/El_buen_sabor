@@ -37,6 +37,7 @@ const VistaUsuarios = () => {
                 })
                 setUsuarios(ordenados)
                 setUsuariosFiltrados(ordenados)
+                console.log(ordenados)
             } catch (error) {
                 console.log(error);
             }
@@ -57,7 +58,8 @@ const VistaUsuarios = () => {
     }
     const filtrarPorRol = (rol) => {
         const usuariosAux = usuarios.filter(user => {
-            return user.rols[0].rol === rol;
+            const largo = user.rols.length;
+            return user.rols[largo - 1].rol === rol;
         })
         rol === "todos" ? setUsuariosFiltrados(usuarios) : setUsuariosFiltrados(usuariosAux);
         setRolSeleccionado(rol)

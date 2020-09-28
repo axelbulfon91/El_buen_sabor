@@ -1,6 +1,7 @@
 import React from 'react'
 import axios from 'axios'
 import AltaUsuarioView from './AltaUsuarioView'
+import axiosAutorizado from '../../../utils/axiosAutorizado'
 
 
 
@@ -8,10 +9,11 @@ import AltaUsuarioView from './AltaUsuarioView'
 const AltaUsuarioContainer = ({ refrescarUsuarios, mostrarModal, cerrarModal, usuarioSeleccionado }) => {
 
 
-    const handleGuardar = async (nombre, username, password, telefono, rol) => {//TODO: agregar campo direccion
+    const handleGuardar = async (nombre, username, password, telefono, rol, domicilios) => {//TODO: agregar campo direccion
         let url = usuarioSeleccionado ? `http://localhost:4000/api/usuarios/${usuarioSeleccionado.id}` : `http://localhost:4000/api/usuarios/registro`;
         try {
-            await axios({
+            const axiosAuth = axiosAutorizado();
+            await axiosAuth({
                 method: usuarioSeleccionado ? "put" : 'post',
                 url: url,
                 data: {
@@ -22,13 +24,32 @@ const AltaUsuarioContainer = ({ refrescarUsuarios, mostrarModal, cerrarModal, us
                     rol
                 }
             });
+            if (usuarioSeleccionado) {
+                if (domicilios && domicilios.length) { // Guarda en BD todos los domicilios de la pantalla de edicion de datos
+                    domicilios.map(async (d) => {
+                        var dom = {
+                            id_domicilio: d.id,
+                            calle: d.calle,
+                            numeracion: d.numeracion,
+                            detalle_adicional: d.detalle,
+                            id_localidad: d.idLocalidad
+                        }
+                        const respAct = await axiosAutorizado().put('http://localhost:4000/api/usuarios/domicilios/' + usuarioSeleccionado.id, dom)
+                        console.log(respAct.data)
+                    })
+                } else {
+                    console.log("Sin domicilios a cargar")
+                }
+            }
+
             refrescarUsuarios();
             cerrarModal();
         } catch (error) {
+            console.log(url);
             console.log(error);
         }
-
     }
+
 
 
     return (

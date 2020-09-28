@@ -30,7 +30,7 @@ const HistorialPedidos = () => {
         obtenerDatos();
 
     }, [])
-    
+
     return (
         <>
             <div className={estilos.fondo}>
@@ -124,14 +124,14 @@ const localeFunc = (number, index, totalSec) => {
 };
 register('es', localeFunc);
 
-export const obtenerTotal = (pedido)=>{
+export const obtenerTotal = (pedido) => {
     var total = 0
-    pedido.Detalle_Pedidos.forEach(p => {        
+    pedido.Detalle_Pedidos.forEach(p => {
         total += p.precioDetalle
-        
+
     });
     return total
-    
+
 }
 
 export default HistorialPedidos
