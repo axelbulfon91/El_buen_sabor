@@ -1,26 +1,26 @@
 const { Router } = require('express');
 const nodemailer = require('nodemailer')
 const router = Router();
-
+const btoa = require('btoa')
 
 router.post('/recuperarPassword', async (req, res) => {
 
     const email = req.body.email
-
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: 'localelbuensabor@gmail.com',
-            pass: 'laboratorio4' // naturally, replace both with your real credentials or an application-specific password
+            user: process.env.EMAIL,
+            pass: process.env.PASS
         }
     });
+    const emailCod = btoa(email)
     var mailOptions = {
         from: "El Buen sabor",
         to: email,                      //E-mail del destinatario
         subject: "Recuperar contraseña",
         html: `<h1>Recuperar contraseña</h1>
                 <p>Para restablecer tu contraseña haz click en el siguiente enlace</p>
-                <p><a href='http://localhost:3000/recuperarPassword/${email}'>Recuperar contraseña</a></p> 
+                <p><a href='http://localhost:3000/recuperarPassword/${emailCod}'>Recuperar contraseña</a></p> 
                 <p>El Buen sabor</p>                
                 `
 

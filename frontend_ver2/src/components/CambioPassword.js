@@ -4,7 +4,7 @@ import Axios from 'axios';
 
 function CambioPassword(props) {
 
-    const [usuario, setUsuario] = useState(props.match.params.email)
+    const [usuario, setUsuario] = useState(atob(props.match.params.email))
     const [contrasenia, setContrasenia] = useState("")
     const [contrasenia2, setContrasenia2] = useState("")
 
@@ -14,13 +14,12 @@ function CambioPassword(props) {
     }
 
     const cambioPassword = async () => {
-
         if (usuario !== "") {
             if (contrasenia === contrasenia2 && contrasenia.length >= 6) {
                 const user = {
                     password: contrasenia
                 }
-                const resp = await Axios.put("http://localhost:4000/api/usuarios/password/" + usuario, user)                
+                const resp = await Axios.put("http://localhost:4000/api/usuarios/password/" + usuario, user)       
                 if (resp.data.message === "Password actualizada correctamente") {
                     alert(resp.data.message)
                     window.sessionStorage.setItem('token', resp.data.token)

@@ -4,6 +4,8 @@ const path = require('path');
 const passport = require('passport');
 const app = express();
 const cors = require('cors');
+require('dotenv').config({path: 'src/.env'})
+
 
 //Inicializaciones
 require('./database');
