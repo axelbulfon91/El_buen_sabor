@@ -6,4 +6,10 @@
     background: linear-gradient(to right, #FFD194, #D1913C);
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     min-height: 100vh;
+    padding-top: 15px;
+    padding-left: 0%;
+    padding-right: 0%;
+    border-top: 1px solid rgb(255, 255, 255, 0.2);
+    border-bottom: 1px solid rgb(255, 255, 255, 0.2)
 }
+

@@ -36,7 +36,7 @@ const VistaCarrito = () => {
     const [showModal, setShowModal] = useState(false)
     const [domElegido, setDomElegido] = useState(null)
     let carritoAux = sessionStorage.getItem('carrito')
-    
+
     useEffect(() => {
 
         if (carritoAux) { //si exite carrito en el sessionStorage lo carga
@@ -197,7 +197,7 @@ const VistaCarrito = () => {
                         if (resp.data.message === "OK") {
                             alert("Pedido realizado correctamente, volvera al inicio")
                             window.sessionStorage.removeItem('carrito')
-                            //window.location.href = "/"
+                            window.location.href = "/"
 
                         } else if (resp.data.message == "No hay stock") {
                             alert("No hay stock suficiente para generar el pedidos")
@@ -333,17 +333,18 @@ const VistaCarrito = () => {
                     </tfoot>
                 </Table>
             </Container>
-            {carrito.length > 0 &&
+            {
+                carrito.length > 0 &&
                 <ModalEleccionDomicilio
                     showModal={showModal}
                     setShowModal={setShowModal}
                     domElegido={domElegido}
                     setDomElegido={setDomElegido}
                 ></ModalEleccionDomicilio>
-            
+
             }
 
-        </div>
+        </div >
     )
 
 }

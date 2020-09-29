@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Container, Table, Button } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import estilos from '../../../assets/css/VistaCarrito.module.css'
 import BarraNavegacion from '../uso_compartido/BarraNavegacion'
 import { format, register } from 'timeago.js';
@@ -8,13 +8,17 @@ import jwtDecode from 'jwt-decode';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import ModalDetalle from './modalDetalleHistorialPedido';
 import { devolverEstado } from '../../administracion/abm_pedidos/TablaPedidos';
+import { TablePagination } from 'react-pagination-table';
+import '../../../assets/css/TablaHistorial.css';
+import PropTypes from 'prop-types';
+
 
 const HistorialPedidos = () => {
 
+    const Header = ["ID", "Fecha", "Detalle", "Total", "Estado"];
     const userData = jwtDecode(sessionStorage.getItem('token'));
     const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
-    const [totales, setTotales] = useState([])
     const [modalDetalle, setModalDetalle] = useState(false)
     const [detalle, setDetalle] = useState({})
 
@@ -26,10 +30,22 @@ const HistorialPedidos = () => {
             if (resp.data.pedidos) {
                 setPedidos(resp.data.pedidos)
             }
+            const filas = resp.data.pedidos.map((pedido, i) => {
+                const f = {
+                    id: pedido.id,
+                    fecha: format(new Date(pedido.createdAt), 'es'),
+                    detalle: <Link to="#" onClick={() => { setDetalle(pedido); setModalDetalle(true); }} variant="info">Ver detalle</Link>,
+                    total: "$ " + (pedido.tipoRetiro === 0 ? obtenerTotal(pedido).toFixed(2) : (obtenerTotal(pedido) - (obtenerTotal(pedido) * 0.1)).toFixed(2)),
+                    estado: devolverEstado(pedido.estado)
+                }
+                return f
+            }
+            )
+            setPedidos(filas)
         }
-        obtenerDatos();
-
+        obtenerDatos()
     }, [])
+
 
     return (
         <>
@@ -37,66 +53,35 @@ const HistorialPedidos = () => {
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5">
                     <h3>Historial de Pedidos</h3>
-                    <Table responsive className="mt-3">
-                        <thead>
-                            <tr className="text-center">
-                                <th>ID</th>
-                                <th>Fecha</th>
-                                <th>Detalle</th>
-                                <th>Total</th>
-                                <th>Estado</th>
-                            </tr>
-                        </thead>
-                        <tbody className="text-dark">
-                            {pedidos !== undefined ?
-                                pedidos.map((pedido, i) =>
-                                    <tr key={i} className="text-center">
-                                        <td>{pedido.id}</td>
-                                        <td data-toggle="tooltip" data-placement="right" title={new Date(pedido.createdAt).toLocaleString()}>
-                                            {format(new Date(pedido.createdAt), 'es')}
-                                        </td>
-                                        <td>
-                                            <Link to="#" onClick={() => { setDetalle(pedido); setModalDetalle(true); }} variant="info">Ver detalle</Link>
-                                        </td>
-                                        <td>$ {pedido.tipoRetiro === 0 ? obtenerTotal(pedido).toFixed(2) : (obtenerTotal(pedido) - (obtenerTotal(pedido) * 0.1)).toFixed(2)}</td>
-                                        <td>
-                                            {(pedido.estado === "Finalizado") ?
-                                                <Button className="btn btn-warning">Facturado<br />Ver Factura</Button>
-                                                :
-                                                devolverEstado(pedido.estado)
-                                            }
-                                        </td>
-                                    </tr>
-                                )
-                                :
-                                <React.Fragment>
-                                    <tr>
-                                        <th colSpan={5}>
-                                            <h3 className="text-center mt-5">No hay pedidos en el historial</h3>
-                                        </th>
-                                    </tr>
-                                </React.Fragment>
-                            }
-                        </tbody>
-                        <tfoot>
-                            <tr>
-                                <th colSpan={5} className="text-center">
-                                    <Link to="/" className="btn btn-success">Volver al catalogo</Link>
-                                </th>
-                            </tr>
-                        </tfoot>
-                    </Table>
+                    {pedidos.length !== 0 ?
+                        <TablePagination
+                            className="text-center mt-5"
+                            headers={Header}
+                            partialPageCount={1}
+                            data={pedidos}
+                            columns="id.fecha.detalle.total.estado"
+                            perPageItemCount={5}
+                            totalCount={pedidos.length}
+                            arrayOption={ [[]] }
+                            nextPageText=""
+                            prePageText=""
+                        />
+                        : 
+                        <div className="text-center">
+                            <h3 className="mt-5">Sin Datos</h3>
+                            <a className="btn btn-success mt-4" href="/">Volver a la pagina principal</a>
+                        </div>
+                        
+                    }
                 </Container>
 
             </div>
-            {detalle !== undefined ?
+            {detalle !== undefined &&
                 <ModalDetalle
                     modalDetalle={modalDetalle}
                     setModalDetalle={setModalDetalle}
                     detalle={detalle}>
-                </ModalDetalle>
-                :
-                <span>Cargando...</span>
+                </ModalDetalle>                
             }
 
         </>
@@ -134,5 +119,9 @@ export const obtenerTotal = (pedido) => {
 
 }
 
-export default HistorialPedidos
+HistorialPedidos.propTypes = {
+    Header: PropTypes.arrayOf(PropTypes.string).isRequired,
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
+};
 
+export default HistorialPedidos
