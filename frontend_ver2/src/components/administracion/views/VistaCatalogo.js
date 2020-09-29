@@ -1,27 +1,56 @@
 import React, { useState, Fragment, useEffect } from 'react'
 import { Button } from 'react-bootstrap'
+import axios from 'axios'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin'
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral'
 import FiltroPorNombre from '../abm_stock/FiltroPorNombre'
 import TablaElaborados from '../abm_catalogo/TablaElaborados'
 import FormElaboradoContainer from '../abm_catalogo/FormElaboradoContainer'
-import useDataApi from '../uso_compartido/useDataApi'
 import SelectCategorias from '../abm_catalogo/SelectCategorias'
 import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin'
 
 
 const VistaCatalogo = () => {
     //Estado inicial de la Vista
-    const [productosUrl] = useState('http://localhost:4000/api/productos/elaborados')
-    const [{ data, isLoading, isError }, setRefreshKey] = useDataApi(productosUrl)
-    const [listaFiltrada, setListaFiltrada] = useState(null)
+    const [refreshKey, setRefreshKey] = useState(0)
+    const [data, setData] = useState([])
+    const [listaFiltrada, setListaFiltrada] = useState([])
+    const [isError, setIsError] = useState(false)
+    const [isLoading, setIsLoading] = useState(false)
     //Codigo para manejar modal del Elaborado
     const [modalShowElaborado, setModalShowElaborado] = useState(false);
     const [elaborado, setElaborado] = useState(null);
     //Cuando se completa la carga de data se actualiza la listaFiltrada que se pasa a la tabla
     useEffect(() => {
-        setListaFiltrada(data)
-    }, [data])
+        const fetchCatalogo = async () => {
+            setIsLoading(true)
+            const productosUrl = 'http://localhost:4000/api/productos/elaborados'
+            try {
+                const catalogoResult = await axios.get(productosUrl);
+                const result = catalogoResult.data;
+                const ordenados = result.sort((a, b) => {
+                    if (a.id < b.id) {
+                        return 1;
+                    }
+                    if (a.id > b.id) {
+                        return -1;
+                    }
+                    return 0;
+                })
+                setIsLoading(false)
+                setData(ordenados)
+                setListaFiltrada(ordenados)
+                console.log(ordenados)
+            } catch (error) {
+                setIsLoading(false)
+                setIsError(true)
+                console.log(error);
+            }
+        }
+        fetchCatalogo();
+    }, [refreshKey])
+
+
     //Manejor del Filtro por Categorías
     const [categoriaElegida, setCategoriaElegida] = useState("todas")
 
@@ -48,10 +77,10 @@ const VistaCatalogo = () => {
 
     const abrirFormulario = async (elaboradoElegido) => {
         if (elaboradoElegido) {//El comando viene del botón editar
-            await setElaborado(elaboradoElegido);
+            setElaborado(elaboradoElegido);
             setModalShowElaborado(true)
         } else {
-            await setElaborado(null);
+            setElaborado(null);
             setModalShowElaborado(true)
         }
     }
@@ -74,9 +103,9 @@ const VistaCatalogo = () => {
                         <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
                     </div>
                     <div className="scrollable">
-                        {isError && <div>Something went wrong ...</div>}
-                        {isLoading && <div>Loading...</div>}
-                        {listaFiltrada &&
+                        {isError && <h1 style={{ color: "red", textAlign: "center" }}>Error al cargar los datos ...</h1>}
+                        {isLoading && <h1 style={{ textAlign: "center" }}>Loading...</h1>}
+                        {listaFiltrada.length > 0 &&
                             <TablaElaborados
                                 elaborados={listaFiltrada}
                                 refrescar={setRefreshKey}
