@@ -23,6 +23,7 @@ const VistaCatalogo = () => {
     //Cuando se completa la carga de data se actualiza la listaFiltrada que se pasa a la tabla
     useEffect(() => {
         const fetchCatalogo = async () => {
+            setIsLoading(true)
             const productosUrl = 'http://localhost:4000/api/productos/elaborados'
             try {
                 const catalogoResult = await axios.get(productosUrl);
@@ -36,10 +37,13 @@ const VistaCatalogo = () => {
                     }
                     return 0;
                 })
+                setIsLoading(false)
                 setData(ordenados)
                 setListaFiltrada(ordenados)
                 console.log(ordenados)
             } catch (error) {
+                setIsLoading(false)
+                setIsError(true)
                 console.log(error);
             }
         }
@@ -99,9 +103,9 @@ const VistaCatalogo = () => {
                         <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
                     </div>
                     <div className="scrollable">
-                        {isError && <div>Something went wrong ...</div>}
-                        {isLoading && <div>Loading...</div>}
-                        {listaFiltrada &&
+                        {isError && <h1 style={{ color: "red", textAlign: "center" }}>Error al cargar los datos ...</h1>}
+                        {isLoading && <h1 style={{ textAlign: "center" }}>Loading...</h1>}
+                        {listaFiltrada.length > 0 &&
                             <TablaElaborados
                                 elaborados={listaFiltrada}
                                 refrescar={setRefreshKey}
