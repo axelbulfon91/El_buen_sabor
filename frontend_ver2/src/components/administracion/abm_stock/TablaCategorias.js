@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Button, Table, Image, Col, Row } from 'react-bootstrap'
 import axios from 'axios'
 import ModalBotonEliminar from './ModalBotonEliminar'
+import mensaje from '../../../utils/Toast'
 
 
 const TablaCategorias = ({ categorias, refrescarCategorias }) => {
@@ -10,41 +11,42 @@ const TablaCategorias = ({ categorias, refrescarCategorias }) => {
     const [showModalEliminar, setShowModalEliminar] = useState(false);
     const handleCloseModalEliminar = () => setShowModalEliminar(false);
     const handleShowModalEliminar = async (id) => {
-        await setidCategoria(id)
+        setidCategoria(id)
         setShowModalEliminar(true);
     };
     const handleEliminar = async (id) => {
         let url = `http://localhost:4000/api/productos/categorias/${id}`;
         try {
-            const borrada = await axios.delete(url);
+            await axios.delete(url);
             refrescarCategorias();
-            console.log(borrada.data);
+            mensaje("error", "Eliminado Exitosamente")
         } catch (e) {
+            mensaje("error", "No se ha podido Eliminar")
             console.log(e);
         }
         handleCloseModalEliminar();
     }
     const devolverImagen = (tipo) => {
         if (tipo === "insumos") {
-            return <Image thumbnail style={{maxHeight: "70px"}}  src={`http://localhost:4000/imgs/insumos2.jpg`}></Image>
+            return <Image thumbnail style={{ maxHeight: "70px" }} src={`http://localhost:4000/imgs/insumos2.jpg`}></Image>
         } else if (tipo === "semielaborados") {
-            return <Image  thumbnail style={{maxHeight: "70px"}} src={`http://localhost:4000/imgs/semielaborados1.jpg`}></Image>
-        } else if (tipo === "elaborados"){
-            return <Image thumbnail style={{maxHeight: "70px"}} src={`http://localhost:4000/imgs/elaborados1.jpg`}></Image>
-        }else{
-            return <Image thumbnail style={{maxHeight: "70px"}} src={`http://localhost:4000/imgs/bebidas1.jpg`}></Image>
+            return <Image thumbnail style={{ maxHeight: "70px" }} src={`http://localhost:4000/imgs/semielaborados1.jpg`}></Image>
+        } else if (tipo === "elaborados") {
+            return <Image thumbnail style={{ maxHeight: "70px" }} src={`http://localhost:4000/imgs/elaborados1.jpg`}></Image>
+        } else {
+            return <Image thumbnail style={{ maxHeight: "70px" }} src={`http://localhost:4000/imgs/bebidas1.jpg`}></Image>
         }
     }
     const devolverCategoria = (categoria) => {
         switch (categoria.tipo) {
             case "insumos":
-                return <span className="badge" style={{backgroundColor: "DarkMagenta", color: "white"}}>{categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkMagenta", color: "white" }}>{categoria.nombre}</span>
             case "semielaborados":
-                return <span className="badge" style={{backgroundColor: "DarkOliveGreen", color: "white"}}>{categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkOliveGreen", color: "white" }}>{categoria.nombre}</span>
             case "bebidas":
-                return <span className="badge" style={{backgroundColor: "DarkSalmon", color: "white"}}> {categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkSalmon", color: "white" }}> {categoria.nombre}</span>
             case "elaborados":
-                return <span className="badge" style={{backgroundColor: "DarkGoldenRod", color: "white"}}>{categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkGoldenRod", color: "white" }}>{categoria.nombre}</span>
             default:
                 return
         }
@@ -64,9 +66,9 @@ const TablaCategorias = ({ categorias, refrescarCategorias }) => {
                 </thead>
                 <tbody>
                     {
-                        categorias && categorias.map((cat,index) => {
+                        categorias && categorias.map((cat, index) => {
                             return <tr key={cat.id} >
-                                <td>{index+1}</td>
+                                <td>{index + 1}</td>
                                 <td >
                                     <Row>
                                         <Col sm={3}>{devolverImagen(cat.tipo)}</Col>

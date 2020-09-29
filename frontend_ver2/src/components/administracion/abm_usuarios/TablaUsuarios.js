@@ -2,6 +2,7 @@ import React, { Fragment, useState } from 'react'
 import { Table, Button } from 'react-bootstrap'
 import axios from 'axios'
 import ModalBotonEliminar from '../abm_stock/ModalBotonEliminar'
+import mensaje from '../../../utils/Toast'
 
 
 const TablaUsuarios = (props) => {
@@ -16,7 +17,10 @@ const TablaUsuarios = (props) => {
     const handleEliminar = async (id) => {
         try {
             await axios.delete(`http://localhost:4000/api/usuarios/${id}`)
+            mensaje("error", "Usuario Borrado con Exito")
+
         } catch (error) {
+            mensaje("error", "No se pudo Borrar")
             console.log(error);
         }
         refrescarUsuarios();
@@ -46,9 +50,11 @@ const TablaUsuarios = (props) => {
                             <td>{usuario.nombre}</td>
                             <td>{usuario.email}</td>
                             <td>{devolerUltimoRol(usuario.rols)}</td>
-                            <td className="text-center"><Button size='lg' variant="outline-danger" onClick={(e) => {
-                                handleShowModalEliminar(usuario.id)
-                            }}><i className='fa fa-times'></i></Button></td>
+                            <td className="text-center"><Button size='lg' variant="outline-danger"
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleShowModalEliminar(usuario.id)
+                                }}><i className='fa fa-times'></i></Button></td>
 
                         </tr>
                     })}

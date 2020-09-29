@@ -3,8 +3,8 @@ import jwtDecode from 'jwt-decode'
 import { Form, Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import { TIPOS_ESTADO_PEDIDOS } from '../uso_compartido/valoresHardCoded'
-import { toast } from 'react-toastify';
 import FacturaPedido from './FacturaPedido';
+import mensaje from '../../../utils/Toast';
 
 
 
@@ -46,7 +46,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
             if (estadoActual === "entregado") {
                 setbotonGenerarFactura(
                     <FacturaPedido pedido={pedido}>
-                   </FacturaPedido>
+                    </FacturaPedido>
                 )
             }
         } else if (rol === "CAJERO") {
@@ -58,7 +58,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                 setBotonCancelarODemorar(null)
                 setbotonGenerarFactura(
                     <FacturaPedido pedido={pedido}>
-                   </FacturaPedido>
+                    </FacturaPedido>
                 )
             }
         } else if (rol === "COCINERO") {
@@ -115,16 +115,9 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
             await axios.put(`http://localhost:4000/api/pedidos/estado/${pedido.id}`, { estado: newState });
             setRefreshToken((token) => token + 1)
             onHide();
-            toast.success('Pedido Actualizado', {
-                position: "bottom-right",
-                autoClose: 3000,
-                hideProgressBar: true,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
+            mensaje("exito", "Pedido Actualizado Exitosamente")
         } catch (error) {
+            mensaje("error", "No se pudo actualizar")
             alert(error)
         }
     }
@@ -137,7 +130,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                 {botonNuevoEstado}
                 {botonGenerarFactura}
             </div>
-        
+
         </div>
     )
 }

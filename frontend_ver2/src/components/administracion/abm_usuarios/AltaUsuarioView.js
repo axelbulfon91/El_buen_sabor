@@ -3,6 +3,7 @@ import { Form, Modal, Button } from 'react-bootstrap'
 import ComponenteFormDomicilio from '../views/componentes/ComponenteFormDomicilio';
 import TablaDomicilios from './TablaDomicilios';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
+import notificacion from '../../../utils/Toast';
 
 
 const AltaUsuarioView = (props) => {
@@ -65,6 +66,7 @@ const AltaUsuarioView = (props) => {
                 var domiciliosActualizados = domicilios.filter((dom, idx) => {
                     if (idx !== i) return dom
                 })
+                notificacion("error", "Domicilio Removido")
                 setDomicilios(domiciliosActualizados)
             }
         } else {

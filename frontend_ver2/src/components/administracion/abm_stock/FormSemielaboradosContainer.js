@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import FormSemielaboradosView from './FormSemielaboradosView'
+import mensaje from '../../../utils/Toast'
 
 const FormSemielaboradosContainer = ({ refrescar, semielaborado, modalShow, setModalShow }) => {
     const [categorias, setCategorias] = useState('');
@@ -38,10 +39,11 @@ const FormSemielaboradosContainer = ({ refrescar, semielaborado, modalShow, setM
                 const nuevoSemielaborado = await axios.put(`http://localhost:4000/api/productos/semielaborados/${semielaborado.id}`, datosFormulario, {
                     headers: { 'content-type': 'multipart/form-data' }
                 });
-                console.log(nuevoSemielaborado);
+                mensaje("exito", "Cambios guardados exitosamente")
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
             } catch (error) {
+                mensaje("error", "No se pudieron guardar los cambios")
                 console.log(error);
             }
         } else {
@@ -49,15 +51,14 @@ const FormSemielaboradosContainer = ({ refrescar, semielaborado, modalShow, setM
                 const nuevoSemielaborado = await axios.post('http://localhost:4000/api/productos/semielaborados', datosFormulario, {
                     headers: { 'content-type': 'multipart/form-data' }
                 });
-                console.log(nuevoSemielaborado);
+                mensaje("exito", "Nuevo Producto Generado")
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
             } catch (error) {
+                mensaje("error", "No se pudo generar el nuevo producto")
                 console.log(error);
             }
         }
-
-
     }
     return (insumos && categorias && //Solo renderiza despues de obtener las categorias e insumos
         <React.Fragment>

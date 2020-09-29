@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import FormBebidasView from './FormBebidasView'
+import mensaje from '../../../utils/Toast'
+
 
 const FormBebidasContainer = ({ refrescar, bebida, modalShow, setModalShow }) => {
 
@@ -37,7 +39,9 @@ const FormBebidasContainer = ({ refrescar, bebida, modalShow, setModalShow }) =>
                 console.log(nuevaBebida);
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
+                mensaje("exito", "Cambios guardados con Exito")
             } catch (error) {
+                mensaje("error", "No se pudieron guardar los cambios")
                 console.log(error);
             }
 
@@ -46,10 +50,11 @@ const FormBebidasContainer = ({ refrescar, bebida, modalShow, setModalShow }) =>
                 const nuevaBebida = await axios.post('http://localhost:4000/api/productos/bebidas', datosFormulario, {
                     headers: { 'content-type': 'multipart/form-data' }
                 });
-                console.log(nuevaBebida);
+                mensaje("exito", "Nueva Bebida creada Exitosamente")
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
             } catch (error) {
+                mensaje("error", "No se pudo crear la nueva bebida")
                 console.log(error);
             }
         }

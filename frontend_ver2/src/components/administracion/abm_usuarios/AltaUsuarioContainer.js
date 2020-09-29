@@ -1,7 +1,7 @@
 import React from 'react'
-import axios from 'axios'
 import AltaUsuarioView from './AltaUsuarioView'
 import axiosAutorizado from '../../../utils/axiosAutorizado'
+import mensaje from '../../../utils/Toast'
 
 
 
@@ -41,10 +41,11 @@ const AltaUsuarioContainer = ({ refrescarUsuarios, mostrarModal, cerrarModal, us
                     console.log("Sin domicilios a cargar")
                 }
             }
-
+            mensaje("exito", "Guardado con Exito")
             refrescarUsuarios();
             cerrarModal();
         } catch (error) {
+            mensaje("error", "No se pudo guardar")
             console.log(url);
             console.log(error);
         }

@@ -5,27 +5,23 @@ import ModalBotonEliminar from './ModalBotonEliminar'
 import DetalleInsumoContainer from './DetalleInsumoContainer'
 import DetalleSemielaboradoContainer from './DetalleSemielaboradoContainer'
 import DetalleBebidaContainer from './DetalleBebidaContainer'
-import NotificacionToast from '../uso_compartido/NotificacionToast'
-
-
+import mensaje from '../../../utils/Toast'
 
 
 const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) => {
     const [idProductoSeleccionado, setIdProductoSeleccionado] = useState('');
     const [productoSeleccionado, setProductoSeleccionado] = useState({});
-    //Toast
-    const [showToast, setShowToast] = useState(false);
-    const [mensajeToast, setMensajeToast] = useState("")
+
     //Estado Modal de Detalle
     const [showModalDetalleInsumo, setShowModalDetalleInsumo] = useState(false);
     const [showModalDetalleBebida, setShowModalDetalleBebida] = useState(false);
     const [showModalDetalleSemielaborado, setShowModalDetalleSemielaborado] = useState(false);
     const handleShowModalDetalle = async (prod) => {
-        await setIdProductoSeleccionado(prod.Articulo.id)
+        setIdProductoSeleccionado(prod.Articulo.id)
         let prodSelec = await productos.find((pr) => {
             return pr.Articulo.id === prod.Articulo.id
         });
-        await setProductoSeleccionado(prodSelec);
+        setProductoSeleccionado(prodSelec);
         switch (tipoStock) {
             case 'insumos':
                 setShowModalDetalleInsumo(true);
@@ -44,7 +40,7 @@ const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) =>
     const [showModalEliminar, setShowModalEliminar] = useState(false);
     const handleCloseModalEliminar = () => setShowModalEliminar(false);
     const handleShowModalEliminar = async (id) => {
-        await setIdProductoSeleccionado(id)
+        setIdProductoSeleccionado(id)
         setShowModalEliminar(true);
     };
     const handleEliminar = async (id) => {
@@ -63,15 +59,15 @@ const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) =>
                 break;
         }
         try {
-            const borrada = await axios.delete(url);
+            await axios.delete(url);
             refrescar(oldKey => oldKey + 1);
-            console.log(borrada.data);
+            mensaje("error", "Eliminado exitosamente")
         } catch (e) {
+            mensaje("error", "No se pudo Eliminar")
             console.log(e);
         }
-        await handleCloseModalEliminar();
-        await setMensajeToast("Eliminado con Éxito")
-        setShowToast(true)
+        handleCloseModalEliminar();
+
     }
     const renderizarColorDisponibilidad = (art) => {
         const maximo = Number(art.stockMaximo);
@@ -88,11 +84,11 @@ const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) =>
     const devolverCategoria = (categoria) => {
         switch (categoria.tipo) {
             case "insumos":
-                return <span className="badge" style={{backgroundColor: "DarkMagenta", color: "white"}}>{categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkMagenta", color: "white" }}>{categoria.nombre}</span>
             case "semielaborados":
-                return <span className="badge" style={{backgroundColor: "DarkOliveGreen", color: "white"}}>{categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkOliveGreen", color: "white" }}>{categoria.nombre}</span>
             case "bebidas":
-                return <span className="badge" style={{backgroundColor: "DarkSalmon", color: "white"}}> {categoria.nombre}</span>
+                return <span className="badge" style={{ backgroundColor: "DarkSalmon", color: "white" }}> {categoria.nombre}</span>
             default:
                 return
         }
@@ -100,9 +96,8 @@ const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) =>
 
     return (
         <Fragment>
-            {/* //Toast */}
-            {showToast && <NotificacionToast showToast={showToast} setShowToast={setShowToast} mensaje={mensajeToast}/>}
-            <Table striped  size="sm" variant='' hover className='text-center mt-2'>
+
+            <Table striped size="sm" variant='' hover className='text-center mt-2'>
                 <thead className="thead-dark">
                     <tr>
                         <th>Imagen</th>
@@ -133,9 +128,9 @@ const TablaProductos = ({ productos, refrescar, tipoStock, abrirFormulario }) =>
                                     <td className="lead"> {devolverCategoria(prod.Articulo.Categorium)}</td>
                                     <td>
                                         <Row>
-                                            <Col className="text-center lead">{prod.Articulo.stockActual 
-                                            ? (prod.Articulo.unidadMedida === "kg"?(prod.Articulo.stockActual).toFixed(3):prod.Articulo.stockActual) + " " + (prod.Articulo.unidadMedida=== "unidad"?"unidades":prod.Articulo.unidadMedida) 
-                                            : '-'}</Col>
+                                            <Col className="text-center lead">{prod.Articulo.stockActual
+                                                ? (prod.Articulo.unidadMedida === "kg" ? (prod.Articulo.stockActual).toFixed(3) : prod.Articulo.stockActual) + " " + (prod.Articulo.unidadMedida === "unidad" ? "unidades" : prod.Articulo.unidadMedida)
+                                                : '-'}</Col>
                                             <Col className="col-4">{renderizarColorDisponibilidad(prod.Articulo)}</Col>
                                         </Row>
                                     </td>

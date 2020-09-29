@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import FormElaboradoView from './FormElaboradoView'
+import mensaje from '../../../utils/Toast'
 
 
 const FormElaboradoContainer = ({ refrescar, elaborado, modalShow, setModalShow }) => {
     const [categorias, setCategorias] = useState('');
     const [ingredientes, setIngredientes] = useState(null);
-  
+
     useEffect(() => {//Obtengo las Categorias 
         const fetchData = async () => {
             const categoriasResult = await axios('http://localhost:4000/api/productos/categorias');
@@ -44,10 +45,11 @@ const FormElaboradoContainer = ({ refrescar, elaborado, modalShow, setModalShow 
                 const nuevoElaborado = await axios.put(`http://localhost:4000/api/productos/elaborados/${elaborado.id}`, datosFormulario, {
                     headers: { 'content-type': 'multipart/form-data' }
                 });
-                console.log(nuevoElaborado);
+                mensaje("exito", "Editado exitosamente")
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
             } catch (error) {
+                mensaje("error", "No se pudieron guardar los cambios")
                 console.log(error);
             }
         } else {
@@ -55,10 +57,11 @@ const FormElaboradoContainer = ({ refrescar, elaborado, modalShow, setModalShow 
                 const nuevoElaborado = await axios.post('http://localhost:4000/api/productos/elaborados', datosFormulario, {
                     headers: { 'content-type': 'multipart/form-data' }
                 });
-                console.log(nuevoElaborado);
+                mensaje("exito", "Nuevo Producto Creado")
                 setModalShow(false)
                 refrescar(oldKey => oldKey + 1);
             } catch (error) {
+                mensaje("error", "No se pudo crear nuevo producto")
                 console.log(error);
             }
         }

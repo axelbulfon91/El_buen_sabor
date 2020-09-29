@@ -1,9 +1,9 @@
 import React, { Fragment, useState } from 'react'
-import { Table, Image, Button, OverlayTrigger, Tooltip, Row, Col } from 'react-bootstrap'
+import { Table, Image, Button, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import axios from 'axios'
-
 import DetalleElaboradoContainer from './DetalleElaboradoContainer'
 import ModalBotonEliminar from '../abm_stock/ModalBotonEliminar'
+import mensaje from '../../../utils/Toast'
 
 const TablaElaborados = ({ elaborados, refrescar, abrirFormulario }) => {
     const [idElaboradoSeleccionado, setIdElaboradoSeleccionado] = useState('');
@@ -11,11 +11,11 @@ const TablaElaborados = ({ elaborados, refrescar, abrirFormulario }) => {
     //Estado Modal de Detalle
     const [showModalDetalleElaborado, setShowModalDetalleElaborado] = useState(false);
     const handleShowModalDetalle = async (elab) => {
-        await setIdElaboradoSeleccionado(elab.id)
+        setIdElaboradoSeleccionado(elab.id)
         let elabSelec = await elaborados.find((el) => {
             return el.id === elab.id
         });
-        await setElaboradoSeleccionado(elabSelec);
+        setElaboradoSeleccionado(elabSelec);
         setShowModalDetalleElaborado(true);
     }
 
@@ -23,16 +23,17 @@ const TablaElaborados = ({ elaborados, refrescar, abrirFormulario }) => {
     const [showModalEliminar, setShowModalEliminar] = useState(false);
     const handleCloseModalEliminar = () => setShowModalEliminar(false);
     const handleShowModalEliminar = async (id) => {
-        await setIdElaboradoSeleccionado(id)
+        setIdElaboradoSeleccionado(id)
         setShowModalEliminar(true);
     };
     const handleEliminar = async (id) => {
         let url = `http://localhost:4000/api/productos/elaborados/${id}`;
         try {
-            const borrada = await axios.delete(url);
+            await axios.delete(url);
             refrescar(oldKey => oldKey + 1);
-            console.log(borrada.data);
+            mensaje("error", "Eliminado exitosamente")
         } catch (e) {
+            mensaje("error", "No se ha podido eliminar")
             console.log(e);
         }
         handleCloseModalEliminar();
@@ -61,13 +62,13 @@ const TablaElaborados = ({ elaborados, refrescar, abrirFormulario }) => {
                                 }
                             >
                                 <tr style={{ cursor: "pointer" }} key={elab.id} onClick={() => handleShowModalDetalle(elab)}>
-                                    <td><Image thumbnail style={{maxHeight: "80px"}} src={"http://localhost:4000/imgs/" + elab.nombreImg}
+                                    <td><Image thumbnail style={{ maxHeight: "80px" }} src={"http://localhost:4000/imgs/" + elab.nombreImg}
                                         width="100"
                                         fluid
                                         alt="Sin Imagen"
                                     /></td>
                                     <td className="font-weight-bolder">{elab.nombre}</td>
-                                    <td><span className="badge" style={{backgroundColor: "DarkGoldenRod", color: "white"}}>{elab.Categorium.nombre}</span></td>
+                                    <td><span className="badge" style={{ backgroundColor: "DarkGoldenRod", color: "white" }}>{elab.Categorium.nombre}</span></td>
                                     <td> {elab.precio ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(elab.precio) : '-'}</td>
                                     <td>
                                         <Button size='lg' variant="outline-link" onClick={(e) => {

@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
-import { Table} from 'react-bootstrap'
+import { Table } from 'react-bootstrap'
 import Axios from 'axios';
 import ModalHorarios from './componentes/modalHorarios';
 import ComponenteFormDomicilio from './componentes/ComponenteFormDomicilio';
+import mensaje from '../../../utils/Toast';
+
 
 const VistaDatosNegocio = () => {
 
     const [email, setEmail] = useState("")
     const [telefono, setTelefono] = useState("")
-    const [domicilio, setDomicilio] = useState([]);    
+    const [domicilio, setDomicilio] = useState([]);
     const [show, setShow] = useState(false);
     const [showModalDom, setShowModalDom] = useState(false);
     const [horarios, setHorarios] = useState([]);
@@ -40,8 +42,6 @@ const VistaDatosNegocio = () => {
                     setDomicilio(domicilios)
                 }
             }
-
-
         }
         traerDatos()
 
@@ -61,10 +61,10 @@ const VistaDatosNegocio = () => {
                     }
                     if (!nuevo) { //Verifica si hay que actualizar o crear uno
                         const resp = await Axios.put('http://localhost:4000/api/datosGenerales/1', datosAGuardar)
-                        alert(resp.data.message)
+                        mensaje("exito", "Datos Modificados Exitosamente")
                     } else {
                         const resp = await Axios.post('http://localhost:4000/api/datosGenerales', datosAGuardar)
-                        alert(resp.data.message)
+                        mensaje("exito", "Datos Creados Exitosamente")
                     }
                 } else {
                     alert("Los campos Email y telefono no pueden estar vacios")

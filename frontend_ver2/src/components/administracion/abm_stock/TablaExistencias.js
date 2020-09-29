@@ -3,6 +3,7 @@ import { Table, Button } from 'react-bootstrap'
 import { format } from 'date-fns'
 import axios from 'axios'
 import ModalBotonEliminar from './ModalBotonEliminar'
+import mensaje from '../../../utils/Toast'
 
 
 
@@ -14,15 +15,17 @@ const TablaExistencias = ({ existencias, conNombre, conEliminar, refrescarExiste
     const [tipoArticulo, setTipoArticulo] = useState(null)
     const [idExistencia, setIdExistencia] = useState(null)
     const handleShowModalEliminar = async (id, tipo) => {
-        await setIdExistencia(id);
-        await setTipoArticulo(tipo)
+        setIdExistencia(id);
+        setTipoArticulo(tipo)
         setShowModalEliminar(true);
     };
 
     const handleEliminar = async (id) => {
         try {
             await axios.delete(`http://localhost:4000/api/productos/existencias/${tipoArticulo}/${id}`)
+            mensaje("error", "Eliminado exitosamente")
         } catch (error) {
+            mensaje("error", "No se pudo Eliminar")
             console.log(error);
         }
         refrescarExistencias();

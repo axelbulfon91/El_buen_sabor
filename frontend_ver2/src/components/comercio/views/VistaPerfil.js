@@ -6,6 +6,8 @@ import { useState } from 'react';
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import jwtDecode from 'jwt-decode';
 import ComponenteFormDomicilio from '../../administracion/views/componentes/ComponenteFormDomicilio';
+import mensaje from '../../../utils/Toast';
+
 
 const Perfil = () => {
 
@@ -57,24 +59,30 @@ const Perfil = () => {
             telefono,
             email
         }
-        const resp = await axiosAutorizado().put('http://localhost:4000/api/usuarios/' + idUsuario, datos)
-        if (domicilios && domicilios.length) { // Guarda en BD todos los domicilios de la pantalla de edicion de datos
-            domicilios.map(async (d) => {
-                var dom = {
-                    id_domicilio: d.id,
-                    calle: d.calle,
-                    numeracion: d.numeracion,
-                    detalle_adicional: d.detalle,
-                    id_localidad: d.idLocalidad
-                }
-                const respAct = await axiosAutorizado().put('http://localhost:4000/api/usuarios/domicilios/' + idUsuario, dom)
-                console.log(respAct.data)
-            })
-
-        } else {
-            console.log("Sin domicilios a cargar")
+        try {
+            const resp = await axiosAutorizado().put('http://localhost:4000/api/usuarios/' + idUsuario, datos)
+            if (domicilios && domicilios.length) { // Guarda en BD todos los domicilios de la pantalla de edicion de datos
+                domicilios.map(async (d) => {
+                    var dom = {
+                        id_domicilio: d.id,
+                        calle: d.calle,
+                        numeracion: d.numeracion,
+                        detalle_adicional: d.detalle,
+                        id_localidad: d.idLocalidad
+                    }
+                    const respAct = await axiosAutorizado().put('http://localhost:4000/api/usuarios/domicilios/' + idUsuario, dom)
+                    console.log(respAct.data)
+                })
+            } else {
+                console.log("Sin domicilios a cargar")
+            }
+            mensaje("exito", "Datos Actualizados Exitosamente")
+        } catch (error) {
+            mensaje("error", "No se pudo actualizar los Datos")
+            console.log(error);
         }
-        alert(resp.data.message)
+
+
     }
 
     return (

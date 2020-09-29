@@ -3,26 +3,15 @@ import { Modal, Button } from 'react-bootstrap'
 import estilos from '../../assets/css/ModalDetalleCatalogo.module.css'
 import { RibbonOferta } from './RibbonOferta';
 import Axios from 'axios';
+import mensaje from '../../utils/Toast';
 
-import { toast } from 'react-toastify';
 
-function mensaje() {
-    toast.success('Producto agregado al carrito', {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
 
-}
 
 const ModalDetalleCatalogo = (props) => {
-    
+
     const { producto, tipoProducto, oferta } = props;
-    const [cantidad, setCantidad] = useState(1)   
+    const [cantidad, setCantidad] = useState(1)
 
     const nombre = tipoProducto === "bebida"
         ? <span>{producto.Articulo.nombre}</span>
@@ -33,37 +22,35 @@ const ModalDetalleCatalogo = (props) => {
     const precioConDescuento = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(precio - ((precio * descuento) / 100))
     const descripcion = tipoProducto === "elaborado" ? producto.detalle : ""
     const subtotal = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format((precio - ((precio * descuento) / 100)) * cantidad)
-    
-    
 
-    const aniadirACarrito = async () => {       
+
+
+    const aniadirACarrito = async () => {
         var resp = {}
         var carritoAux = []
         console.log(producto)
         if (tipoProducto !== 'bebida') {
-            resp =  await Axios.get("http://localhost:4000/api/productos/elaborados/" + producto.id)
+            resp = await Axios.get("http://localhost:4000/api/productos/elaborados/" + producto.id)
         } else {
-            resp = await Axios.get("http://localhost:4000/api/productos/bebidas/" + producto.id)                  
+            resp = await Axios.get("http://localhost:4000/api/productos/bebidas/" + producto.id)
         }
 
         if (window.sessionStorage.getItem('carrito')) {
             carritoAux = JSON.parse(window.sessionStorage.getItem('carrito'))
         }
-        carritoAux.push({producto: resp.data, cant: cantidad})        
+        carritoAux.push({ producto: resp.data, cant: cantidad })
         console.log(carritoAux)
         window.sessionStorage.setItem('carrito', JSON.stringify(carritoAux));
         props.onHide()
-        mensaje()
+        mensaje("exito", "Producto agregado al carrito")
     }
 
     return (
         <Modal
             {...props}
-
             size="md"
             aria-labelledby="contained-modal-title-vcenter"
             centered
-
         >
             {oferta && <RibbonOferta porcentajeDescuento={descuento}></RibbonOferta>}
             <Modal.Body style={{ padding: "0px" }}>
@@ -114,8 +101,6 @@ const ModalDetalleCatalogo = (props) => {
                         <Button variant="outline-secondary" block onClick={() => aniadirACarrito()}>Añadir al Pedido</Button>
                     </div>
                 </div>
-
-
             </Modal.Body>
         </Modal>
     )
