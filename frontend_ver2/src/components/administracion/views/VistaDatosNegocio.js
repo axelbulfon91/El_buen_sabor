@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { GridLayoutAdmin } from '../uso_compartido/GridLayoutAdmin';
 import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
-import { Table } from 'react-bootstrap'
+import { Table, Button } from 'react-bootstrap'
 import Axios from 'axios';
 import ModalHorarios from './componentes/modalHorarios';
 import ComponenteFormDomicilio from './componentes/ComponenteFormDomicilio';
@@ -144,7 +144,12 @@ const VistaDatosNegocio = () => {
                                                 <td className="text-left">{d.nombreLocalidad}</td>
                                                 <td>{d.calle}</td>
                                                 <td>{d.numeracion}</td>
-                                                <td><button onClick={() => eliminarDom(d.idLocalidad)} className="btn btn-danger btn-sm">X</button></td>
+                                                <td>
+                                                    <Button onClick={() => eliminarDom(d.idLocalidad)}
+                                                        variant="outline-danger"
+                                                        style={{ border: "none" }}
+                                                        size="sm" ><i className="fa fa-times"></i></Button>
+                                                </td>
                                             </tr>
                                         ))
                                         )
@@ -184,7 +189,10 @@ const VistaDatosNegocio = () => {
                                                 <td onClick={() => editar(h)}>{h.horarioApertura}</td>
                                                 <td onClick={() => editar(h)}>{h.horarioCierre}</td>
                                                 <td>
-                                                    <button onClick={() => eliminarDia(parseInt(h.dia))} className="btn btn-danger btn-sm">X</button>
+                                                    <Button onClick={() => eliminarDia(parseInt(h.dia))}
+                                                        variant="outline-danger"
+                                                        style={{ border: "none" }}
+                                                        size="sm" ><i className="fa fa-times"></i></Button>
                                                 </td>
                                             </tr>
                                         )))
@@ -196,7 +204,9 @@ const VistaDatosNegocio = () => {
                                 <tfoot>
                                     <tr className="text-center" >
                                         <td colSpan="4">
-                                            <button onClick={() => setShow(true)} className="btn btn-success btn-sm">Agregar horario</button>
+                                            <button onClick={() => setShow(true)}
+                                                className="btn btn-primary bg-transparent border-0"
+                                                style={{ color: "darkred" }}>+Agregar Horario</button>
                                         </td>
                                     </tr>
                                 </tfoot>
@@ -206,7 +216,7 @@ const VistaDatosNegocio = () => {
                     <div className="form-row justify-content-md-center mt-2">
                         <div className="form-group col-md-3 ">
                             <div className="text-center">
-                                <button onClick={(e) => handleOnSubmit(e)} className="btn btn-primary btn-block">Guardar datos</button>
+                                <Button variant="info" size="lg" onClick={(e) => handleOnSubmit(e)} >Guardar Datos <i className="fa fa-save"></i></Button>
                             </div>
                         </div>
                     </div>
