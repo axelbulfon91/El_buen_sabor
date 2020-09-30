@@ -11,6 +11,7 @@ import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 
 
 const VistaCocinero = () => {
+    const [data, setData] = useState([])
     const [pedidos, setPedidos] = useState([])
     const [pedidosFiltrados, setPedidosFiltrados] = useState([])
     const [refreshToken, setRefreshToken] = useState(0)
@@ -37,14 +38,24 @@ const VistaCocinero = () => {
                     }
                     return 0;
                 })
-                setPedidos(ordenados)
-                setPedidosFiltrados(ordenados)
+                setData(ordenados)
             } catch (error) {
                 console.log(error);
             }
         }
         fetchPedidos();
+        const intervalo = setInterval(() => {
+            fetchPedidos();
+        }, 10000);
+        return () => clearInterval(intervalo)
     }, [refreshToken])
+    useEffect(() => {
+        setPedidos(data)
+    }, [data])
+    useEffect(() => {
+        setPedidosFiltrados(pedidos)
+        buscar()
+    }, [pedidos])
 
     const buscar = () => {
         let filtradosPorFecha = fecha !== "" ? pedidos.filter(p => (p.createdAt).includes(fecha)) : pedidos;

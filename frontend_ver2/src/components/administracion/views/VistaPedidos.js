@@ -11,6 +11,7 @@ import BarraNavegacionAdmin from '../uso_compartido/BarraNavegacionAdmin';
 
 
 const VistaPedidos = () => {
+    const [data, setData] = useState([])
     const [pedidos, setPedidos] = useState([])
     const [pedidosFiltrados, setPedidosFiltrados] = useState([])
     const [refreshToken, setRefreshToken] = useState(0)
@@ -33,8 +34,8 @@ const VistaPedidos = () => {
                     }
                     return 0;
                 })
-                setPedidos(ordenados)
-                setPedidosFiltrados(ordenados)
+                setData(ordenados)
+
             } catch (error) {
                 console.log(error);
             }
@@ -42,10 +43,16 @@ const VistaPedidos = () => {
         fetchPedidos();
         const intervalo = setInterval(() => {
             fetchPedidos();
-            buscar();
-        }, 3000);
+        }, 10000);
         return () => clearInterval(intervalo)
     }, [refreshToken])
+    useEffect(() => {
+        setPedidos(data)
+    }, [data])
+    useEffect(() => {
+        setPedidosFiltrados(pedidos)
+        buscar()
+    }, [pedidos])
 
     const buscar = () => {
         let filtradosPorFecha = fecha !== "" ? pedidos.filter(p => (p.createdAt).includes(fecha)) : pedidos;
