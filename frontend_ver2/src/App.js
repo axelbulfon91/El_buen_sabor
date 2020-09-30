@@ -18,16 +18,13 @@ import Catalogo from './components/comercio/views/VistaCatalogoComercio';
 import Login from './components/vistaLogin';
 import Registro from './components/vistaRegistro';
 import CambioPassword from './components/CambioPassword';
-
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-
 import RutaPrivada from './utils/RutaPrivada';
 import HistorialPedidos from './components/comercio/views/HistorialPedidos';
 import RutaPrivadaCajero from './utils/RutaPrivadaCajero';
 import RutaPrivadaCocinero from './utils/RutaPrivadaCocinero';
 import RutaPrivadaAdmin from './utils/RutaPrivadaAdmin';
-
 import DatosContext from './datosLocalContext';
 import Axios from 'axios';
 import { useState } from 'react';

@@ -7,3 +7,19 @@
     /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
     min-height: 100vh;
 }
+
+.fondoBarra {
+    background: rgb(68, 53, 53);
+    min-height: 12vh;
+}
+
+.btnVaciar {
+    background: transparent;
+    color: darkred;
+    margin-left: auto;
+    border: none;
+}
+
+.cuerpoTabla td {
+    border: none !important
+}

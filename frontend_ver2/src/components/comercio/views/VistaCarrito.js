@@ -5,23 +5,13 @@ import { Container, Row, Table, Button } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import Axios from 'axios';
 import jwtDecode from 'jwt-decode';
-import { toast } from 'react-toastify';
 import datosContext from '../../../datosLocalContext';
 import moment from 'moment';
 import ModalEleccionDomicilio from './modalEleccionDomicilio';
+import mensaje from '../../../utils/Toast';
+import Footer from '../uso_compartido/Footer';
+import SeccionContacto from '../SeccionContacto';
 
-function mensaje() {
-    toast.error('Producto eliminado', {
-        position: "bottom-right",
-        autoClose: 3000,
-        hideProgressBar: true,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-    });
-
-}
 
 const VistaCarrito = () => {
 
@@ -36,7 +26,7 @@ const VistaCarrito = () => {
     const [showModal, setShowModal] = useState(false)
     const [domElegido, setDomElegido] = useState(null)
     let carritoAux = sessionStorage.getItem('carrito')
-    
+
     useEffect(() => {
 
         if (carritoAux) { //si exite carrito en el sessionStorage lo carga
@@ -126,7 +116,7 @@ const VistaCarrito = () => {
         carrito.splice(idx, 1)
         sessionStorage.setItem('carrito', JSON.stringify(carrito))
         calcularTotal()
-        mensaje()
+        mensaje("error", "Producto Eliminado")
     }
 
     function dentroDeHorario() {
@@ -224,126 +214,147 @@ const VistaCarrito = () => {
 
 
     return (
-        <div className={estilos.fondo}>
-            <BarraNavegacion></BarraNavegacion>
+        <>
+            <div className={estilos.fondo}>
+                <div className={estilos.fondoBarra}></div>
+                <BarraNavegacion></BarraNavegacion>
 
-            <Container className="mt-5">
-                <Row>
-                    <h3 className="text-light">Tu Carrito</h3>
-                    <Button onClick={() => vaciarCarrito()} className="ml-auto btn-warning">Vaciar Carrito<i className="fa fa-times" /></Button>
-                </Row>
-                <Table responsive className="mt-5">
-                    <thead>
-                        <tr className="text-center">
-                            <th>Producto</th>
-                            <th>Precio</th>
-                            <th>Cantidad</th>
-                            <th>Subtotal</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody className="text-light">
-                        {(carrito.length !== 0) ?
-                            carrito.map((p, i) =>
-                                <tr key={i} className="text-center">
-                                    <td>
-                                        <Row>
+                <Container className="mt-5">
+                    <Row>
+                        <h3 className="text-dark display-4">Tu Carrito</h3>
+                        <button
+                            onClick={() => vaciarCarrito()}
+                            className={estilos.btnVaciar}>
+                            Vaciar Carrito<i className="ml-2 fa fa-trash-alt" /></button>
+                    </Row>
+                    <Table className="text-center lead mt-3" variant="" hover size="sm">
+                        <thead className="thead-dark">
+                            <tr className="text-center lead">
+                                <th>#</th>
+                                <th>Producto</th>
+                                <th>Precio</th>
+                                <th>Cantidad</th>
+                                <th>Subtotal</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody className={estilos.cuerpoTabla}>
+                            {(carrito.length !== 0) ?
+                                carrito.map((p, i) =>
+
+                                    <tr key={i} className="text-center">
+                                        <td>{i + 1}</td>
+                                        <td className="d-flex justify-content-lg-around align-items-center">
                                             <img src={`http://localhost:4000/imgs/${p.producto.Articulo ? p.producto.Articulo.nombreImg : p.producto.nombreImg}`}
-                                                width="100"
+                                                style={{ maxHeight: "80px", maxWidth: "100px" }}
                                                 alt={p.producto.Articulo ? p.producto.Articulo.nombreImg : p.producto.nombreImg} />
                                             <h5 className="card-title" >{p.producto.Articulo ? p.producto.Articulo.nombre : p.producto.nombre}</h5>
-                                        </Row>
-                                    </td>
-                                    <td>
-                                        <h5 className="card-title" >$ {p.producto.precio}</h5>
-                                    </td>
-                                    <td>
-                                        <Button onClick={() => decrementarUnidad(p, i)} className="btn btn-info">-</Button>
-                                        <span className="mx-3"><b>{p.cant}</b></span>
-                                        <Button onClick={() => incrementarUnidad(p, i)} className="btn btn-info">+</Button>
-                                    </td>
-                                    <td>
-                                        <h5>$ {((parseFloat(p.producto.precio)).toFixed(2) * p.cant).toFixed(2)}</h5>
-                                    </td>
-                                    <td>
-                                        <Button onClick={() => eliminar(i)} className="btn btn-danger" size="sm"><i className="fa fa-times"></i></Button>
-                                    </td>
-                                </tr>
-                            )
-                            :
-                            <React.Fragment>
-                                <tr>
-                                    <th colSpan={5}>
-                                        <h3 className="text-center mt-3">Sin productos en el carrito</h3>
-                                    </th>
-                                </tr>
-                            </React.Fragment>
-                        }
-                    </tbody>
-                    <tfoot>
-                        {(carrito.length !== 0) ?
-                            <React.Fragment>
-                                <tr>
-                                    <td colSpan={2} className="text-left">
-                                        <h4 className="text-dark">Tiempo de elaboracion aproximada: {tiempoElab} min</h4>
-                                    </td>
-                                    <td colSpan={3} className="text-right">
-                                        <h4 className="text-light">Total: $ {total}</h4>
+                                        </td>
+                                        <td>
+                                            <h5 className="card-title" >$ {p.producto.precio}</h5>
+                                        </td>
+                                        <td>
+                                            <Button size="sm" onClick={() => decrementarUnidad(p, i)} variant="dark" style={{ borderRadius: "25px", fontSize: "0.5em" }} ><i className="fa fa-minus"></i></Button>
+                                            <span className="mx-2"><b>{p.cant}</b></span>
+                                            <Button size="sm" onClick={() => incrementarUnidad(p, i)} variant="dark" style={{ borderRadius: "25px", fontSize: "0.5em" }}><i className="fa fa-plus"></i></Button>
+                                        </td>
+                                        <td>
+                                            <h5>$ {((parseFloat(p.producto.precio)).toFixed(2) * p.cant).toFixed(2)}</h5>
+                                        </td>
+                                        <td>
+                                            <Button onClick={() => eliminar(i)}
+                                                variant="outline-danger"
+                                                style={{ border: "none" }}
+                                                size="sm" ><i className="fa fa-times"></i></Button>
+                                        </td>
+                                    </tr>
+                                )
+                                :
+                                <React.Fragment>
+                                    <tr>
+                                        <th colSpan={5}>
+                                            <h3 className="text-center mt-3">Sin productos en el carrito</h3>
+                                        </th>
+                                    </tr>
+                                </React.Fragment>
+                            }
+                        </tbody>
+                        <tfoot className={estilos.cuerpoTabla}>
+                            {(carrito.length !== 0) ?
+                                <React.Fragment>
+                                    <tr> <br></br></tr>
+                                    <tr >
+                                        <td colSpan={3} className="text-left">
+                                            <h5 className="text-dark">-Tiempo de elaboracion aproximada: {tiempoElab} min</h5>
+                                        </td>
+                                        <td colSpan={3} className="text-right pr-2">
+                                            <h5 className="text-dark">Total: $ {total}</h5>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colSpan={2} className="text-left">
-                                        <h5>Tipo de retiro:
+                                        </td>
+                                    </tr>
+                                    <tr style={{ borderTop: "1.5px solid black" }}>
+                                        <td colSpan={3} className="text-left">
+                                            <h5>-Tipo de retiro:
                                             <select defaultValue={tipoRetiro} className="ml-1" onChange={(e) => cambiarTipoRetiro(e.target.value)}>
-                                                <option value={0}>Delivery</option>
-                                                <option value={1}>Retiro en local ( -10% )</option>
-                                            </select>
-                                        </h5>
-                                    </td>
-                                    <td colSpan={3} className="text-right">
-                                        <h4 className="text-danger">Precio final: $ {parseFloat(costoFinal).toFixed(2)}</h4>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    {
-                                        domElegido ?
-                                            <td colSpan={2} className="text-left mt-5">
-                                                <h5>Enviar a {domElegido.calle + " " + domElegido.numeracion + " en " + domElegido.nombreLocalidad}
-                                                    <button onClick={() => { setDomElegido(null); setShowModal(true) }} className="ml-2 btn btn-sm btn-warning">Cambiar domicilio</button></h5>
-                                            </td>
-                                            :
-                                            <td colSpan={2}></td>
-                                    }
+                                                    <option value={0}>Delivery</option>
+                                                    <option value={1}>Retiro en local ( -10% )</option>
+                                                </select>
+                                            </h5>
+                                        </td>
+                                        <td colSpan={3} className="text-right pr-2">
+                                            <h4 className="text-danger font-weight-bold">Precio final: $ {parseFloat(costoFinal).toFixed(2)}</h4>
+                                        </td>
+                                    </tr>
+                                    <tr >
+                                        {
+                                            domElegido ?
+                                                <td colSpan={2} className="text-left mt-5">
+                                                    <h5>-Enviar a:  {domElegido.calle + " " + domElegido.numeracion + " en " + domElegido.nombreLocalidad}
+                                                        <Button onClick={() => { setDomElegido(null); setShowModal(true) }} variant="warning" size="sm">Cambiar domicilio</Button></h5>
+                                                </td>
+                                                :
+                                                <td colSpan={2}></td>
+                                        }
 
-                                    <td colSpan={3} className="text-right mt-5">
-                                        <button onClick={() => realizarPedido()} className="btn btn-lg btn-success">PEDIR</button>
-                                    </td>
-                                </tr>
-                            </React.Fragment>
-                            :
-                            <React.Fragment>
-                                <tr>
-                                    <th colSpan={5} className="text-center">
-                                        <Link to="/Catalogo" className="btn btn-success">Ir al catalogo</Link>
-                                    </th>
-                                </tr>
-                            </React.Fragment>
-                        }
-                    </tfoot>
-                </Table>
-            </Container>
-            {carrito.length > 0 &&
-                <ModalEleccionDomicilio
-                    showModal={showModal}
-                    setShowModal={setShowModal}
-                    domElegido={domElegido}
-                    setDomElegido={setDomElegido}
-                ></ModalEleccionDomicilio>
-            
-            }
+                                    </tr>
+                                    <tr >
+                                        <td colSpan="6" style={{ textAlign: "right" }}
+                                        >
+                                            <Button
+                                                size="lg"
+                                                onClick={() => realizarPedido()}
+                                                variant="info"
+                                            >Confirmar Pedido <i className="fa fa-check"></i></Button>
+                                        </td>
+                                    </tr>
 
-        </div>
+                                </React.Fragment>
+                                :
+                                <React.Fragment>
+                                    <tr>
+                                        <th colSpan={5} className="text-center">
+                                            <Link to="/Catalogo" className="btn btn-info">Ir al catalogo</Link>
+                                        </th>
+                                    </tr>
+                                </React.Fragment>
+                            }
+                        </tfoot>
+                    </Table>
+                </Container>
+                {
+                    carrito.length > 0 &&
+                    <ModalEleccionDomicilio
+                        showModal={showModal}
+                        setShowModal={setShowModal}
+                        domElegido={domElegido}
+                        setDomElegido={setDomElegido}
+                    ></ModalEleccionDomicilio>
+
+                }
+            </div>
+            <SeccionContacto></SeccionContacto>
+            <Footer></Footer>
+        </>
     )
 
 }

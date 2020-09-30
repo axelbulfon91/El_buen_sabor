@@ -39,6 +39,7 @@ const VistaPedidos = () => {
                 console.log(error);
             }
         }
+        fetchPedidos();
         const intervalo = setInterval(() => {
             fetchPedidos();
         }, 3000);

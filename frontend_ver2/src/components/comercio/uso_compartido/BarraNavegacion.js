@@ -16,8 +16,8 @@ const BarraNavegacion = () => {
     useEffect(() => {
         const updateNavbarColor = () => {
             if (
-                document.documentElement.scrollTop > 299 ||
-                document.body.scrollTop > 299
+                document.documentElement.scrollTop > 15 ||
+                document.body.scrollTop > 15
             ) {
                 setTextColor("text-dark")
                 setNavbarShadow(estilos.fondo)
