@@ -93,6 +93,9 @@ router.get('/usuario/:id', comprobarToken, async (req, res) => {
         where: {
             id_cliente: req.params.id
         },
+        order: [
+            ['id', 'DESC'],
+        ],
         attributes: { exclude: ['id_cliente', 'tiempo_elaboracion'] },
         include: [{
             model: detalle_pedido_model,

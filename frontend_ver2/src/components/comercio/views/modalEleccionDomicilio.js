@@ -23,13 +23,13 @@ function ModalEleccionDomicilio({ showModal, setShowModal, domElegido, setDomEle
 
         if (dom === null) {
             alert("Debe seleccionar un domicilio")
-        } else {            
+        } else {
             const domicilio = doms.find((d) => d.id === dom)
             setDomElegido(domicilio)
-            setShowModal(false)   
-            setDom(null)         
+            setShowModal(false)
+            setDom(null)
         }
-        
+
 
     }
 
@@ -53,12 +53,21 @@ function ModalEleccionDomicilio({ showModal, setShowModal, domElegido, setDomEle
                     </select>
                 </Modal.Body>
                 :
-                <h2>Cargando domicilios...</h2>
+                <div className="container text-center">
+                    <p className="mt-3">No hay domicilios cargados para realizar
+                    Delivery <br /> selecciona <b>Retiro por local</b> o <b><a href="/perfil">Carga un domicilio</a></b></p>
+                </div>
             }
             <Modal.Footer>
-                <Button variant="primary" onClick={() => confirmar()}>
-                    Confirmar
+                {doms.length !== 0 ?
+                    <Button variant="primary" onClick={() => confirmar()}>
+                        Confirmar
                     </Button>
+                    :
+                    <Button variant="primary" onClick={() => setShowModal(false)}>
+                        Volver
+                    </Button>
+                }
             </Modal.Footer>
         </Modal>
     )

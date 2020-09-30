@@ -64,10 +64,8 @@ const ModalDetalleHistorialPedido = ({ modalDetalle, setModalDetalle, detalle })
                 </Modal.Footer>
             </Modal>
         )
-    } else {
-        return (
-            <h2>Cargando...</h2>
-        )
+    }else{
+        return null
     }
 
 }
