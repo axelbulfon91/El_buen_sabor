@@ -69,7 +69,7 @@ const BarraNavegacion = () => {
         linkUsuario = <NavDropdown title={<span className={classnames("h6", textColor)}><i className="fa fa-user-circle mr-2"></i>{user.nombre}</span>} className="navbar-dark">
             <NavDropdown.Item><NavLink exact to="/perfil"><i className="fa fa-user-edit mr-2"></i>Mi Perfil</NavLink></NavDropdown.Item>
             <NavDropdown.Item><NavLink exact to="/historialPedidos"><i className="fa fa-clock mr-2"></i>Historial</NavLink></NavDropdown.Item>
-            <NavDropdown.Item onClick={() => handleLogout()}><i className="fa fa-sign-out-alt mr-2"></i>Salir</NavDropdown.Item>
+            <NavDropdown.Item onClick={() => handleLogout()}><i className="fa fa-sign-out-alt mr-2 menu-salir"></i>Salir</NavDropdown.Item>
         </NavDropdown>
 
     } else {

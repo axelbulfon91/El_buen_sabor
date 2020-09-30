@@ -42,6 +42,7 @@ const VistaPedidos = () => {
         fetchPedidos();
         const intervalo = setInterval(() => {
             fetchPedidos();
+            buscar();
         }, 3000);
         return () => clearInterval(intervalo)
     }, [refreshToken])

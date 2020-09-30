@@ -32,3 +32,32 @@
   border-radius: 25%;
   display: inline-block;
 }
+
+.tabla-pedidos table td {
+  border-top: 1px solid black
+}
+
+.tabla-pedidos thead th {
+  border: none !important
+}
+
+.tabla-pedidos a {
+  color: darkred;
+}
+
+.tabla-pedidos a:hover {
+  color: whitesmoke;
+  text-decoration: none;
+}
+
+.dropdown-item a {
+  color: #343a40
+}
+
+.menu-salir {
+  color: rgba(255, 0, 0, 0.829)
+}
+
+.dropdown-toggle::after {
+  color: white
+}

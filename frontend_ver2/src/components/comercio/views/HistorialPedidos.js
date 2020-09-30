@@ -55,10 +55,10 @@ const HistorialPedidos = () => {
                 <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5">
-                    <h3>Historial de Pedidos</h3>
+                    <h3 className="display-4">Historial de Pedidos</h3>
                     {pedidos.length !== 0 ?
                         <TablePagination
-                            className="text-center mt-5 thead-dark"                            
+                            className="text-center mt-5 thead-dark tabla-pedidos"
                             headers={Header}
                             partialPageCount={1}
                             data={pedidos}

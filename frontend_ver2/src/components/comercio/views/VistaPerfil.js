@@ -88,11 +88,11 @@ const Perfil = () => {
 
     return (
         <React.Fragment>
-            <div className={estilos.fondo}>
-            <div className={estilos.fondoBarra}></div>
+            <div className={estilos.fondo} style={{ paddingBottom: "3em" }}>
+                <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5">
-                    <h1>Datos de perfil</h1>
+                    <h1 className="display-4">Datos de perfil</h1>
                     <div className="form-row">
                         <div className="col-md-6">
                             <div className="mb-3">
@@ -108,6 +108,9 @@ const Perfil = () => {
                             <div className="mb-3">
                                 <label>Telefono</label>
                                 <input type="text" onChange={(e) => setTelefono(e.target.value)} className="form-control" placeholder="Telefono" value={telefono} />
+                            </div>
+                            <div className="text-right">
+                                <button className="btn btn-primary bg-transparent border-0" style={{ color: "darkred" }}>-Cambiar Password</button>
                             </div>
                         </div>
                         <div className="col-md-6">
@@ -141,9 +144,16 @@ const Perfil = () => {
                                                             </Popover>
                                                         }
                                                     >
-                                                        <Button className="btn btn-info btn-sm">?</Button>
+                                                        <Button
+                                                            variant="outline-dark"
+                                                            style={{ border: "none" }}
+                                                            size="sm" ><i className="fa fa-question-circle"></i></Button>
                                                     </OverlayTrigger>
-                                                    <button onClick={() => eliminarDom(d, i)} className="ml-1 btn btn-danger btn-sm">X</button>
+                                                    <Button onClick={() => eliminarDom(d, i)}
+                                                        variant="outline-danger"
+                                                        style={{ border: "none" }}
+                                                        size="sm" ><i className="fa fa-times"></i></Button>
+
                                                 </td>
                                             </tr>
                                         ))
@@ -156,17 +166,17 @@ const Perfil = () => {
                                 <tfoot>
                                     <tr className="text-center" >
                                         <td colSpan="4">
-                                            <button onClick={() => setShowModalDom(true)} className="btn btn-secondary">Cargar Domicilio</button>
+                                            <button onClick={() => setShowModalDom(true)} className="btn btn-secondary">Cargar Domicilio <i className="fa fa-upload"></i></button>
                                         </td>
                                     </tr>
                                 </tfoot>
                             </Table>
                         </div>
                     </div>
-                    <button className="btn btn-primary">Cambiar Password</button>
+
 
                     <div className="row justify-content-md-center mt-4">
-                        <button className="btn btn-primary" onClick={() => actualizarDatos()}>Actualizar datos</button>
+                        <Button variant="info" size="lg" onClick={() => actualizarDatos()}>Actualizar datos <i className="fa fa-save"></i></Button>
                     </div>
                 </Container>
             </div>
