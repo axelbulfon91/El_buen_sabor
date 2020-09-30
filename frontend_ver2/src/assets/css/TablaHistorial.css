@@ -7,9 +7,10 @@
     margin: auto;
 }
 
-
-.react-pagination-table__header {
-    background: #e8e8e8;
+.thead-dark th {
+    color: #fff;
+    background-color: #212529;
+    border-color: #32383e;
 }
 
 .react-pagination-table__table {
@@ -17,7 +18,7 @@
     width: 100%;
     max-width: 100%;
     margin-bottom: 20px;
-    border: 1px solid #ddd;
+    
 }
 
 .pagination-status {
@@ -44,21 +45,16 @@
 
 .pagination-status .pagination-status__btn:focus {
     outline: none;
-    
 }
 
-.pagination-status .pagination-status__btn--active,
-.pagination-status .pagination-status__btn:hover {
+.pagination-status .pagination-status__btn--active, .pagination-status .pagination-status__btn:hover {
     font-size: large;
     color: rgb(255, 255, 255);
     background-color: #ffffff00;
     cursor: pointer;
-    border: 1px solid black;    
-    border-radius: 10px;
 }
 
-.pagination-status .pagination-status__btn--disable,
-.pagination-status .pagination-status__btn--disable:hover {
+.pagination-status .pagination-status__btn--disable, .pagination-status .pagination-status__btn--disable:hover {
     color: #000000;
     cursor: default;
     background-color: rgba(0, 0, 0, 0);

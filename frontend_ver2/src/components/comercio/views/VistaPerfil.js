@@ -7,7 +7,8 @@ import axiosAutorizado from '../../../utils/axiosAutorizado';
 import jwtDecode from 'jwt-decode';
 import ComponenteFormDomicilio from '../../administracion/views/componentes/ComponenteFormDomicilio';
 import mensaje from '../../../utils/Toast';
-
+import Footer from '../uso_compartido/Footer';
+import SeccionContacto from '../SeccionContacto';
 
 const Perfil = () => {
 
@@ -88,6 +89,7 @@ const Perfil = () => {
     return (
         <React.Fragment>
             <div className={estilos.fondo}>
+            <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5">
                     <h1>Datos de perfil</h1>
@@ -176,6 +178,8 @@ const Perfil = () => {
                     setDomicilio={setDomicilios}>
                 </ComponenteFormDomicilio>
             }
+            <SeccionContacto></SeccionContacto>
+            <Footer></Footer>
         </React.Fragment>
     )
 }

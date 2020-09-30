@@ -11,6 +11,8 @@ import { devolverEstado } from '../../administracion/abm_pedidos/TablaPedidos';
 import { TablePagination } from 'react-pagination-table';
 import '../../../assets/css/TablaHistorial.css';
 import PropTypes from 'prop-types';
+import Footer from '../uso_compartido/Footer';
+import SeccionContacto from '../SeccionContacto';
 
 
 const HistorialPedidos = () => {
@@ -50,28 +52,29 @@ const HistorialPedidos = () => {
     return (
         <>
             <div className={estilos.fondo}>
+                <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5">
                     <h3>Historial de Pedidos</h3>
                     {pedidos.length !== 0 ?
                         <TablePagination
-                            className="text-center mt-5"
+                            className="text-center mt-5 thead-dark"                            
                             headers={Header}
                             partialPageCount={1}
                             data={pedidos}
                             columns="id.fecha.detalle.total.estado"
                             perPageItemCount={5}
                             totalCount={pedidos.length}
-                            arrayOption={ [[]] }
+                            arrayOption={[[]]}
                             nextPageText=""
                             prePageText=""
                         />
-                        : 
+                        :
                         <div className="text-center">
                             <h3 className="mt-5">Sin Datos</h3>
                             <a className="btn btn-success mt-4" href="/">Volver a la pagina principal</a>
                         </div>
-                        
+
                     }
                 </Container>
 
@@ -81,9 +84,10 @@ const HistorialPedidos = () => {
                     modalDetalle={modalDetalle}
                     setModalDetalle={setModalDetalle}
                     detalle={detalle}>
-                </ModalDetalle>                
+                </ModalDetalle>
             }
-
+            <SeccionContacto></SeccionContacto>
+            <Footer></Footer>
         </>
     )
 }
