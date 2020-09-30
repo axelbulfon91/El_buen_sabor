@@ -35,6 +35,7 @@ function App() {
   const [datos, setDatos] = useState(null)
 
   useEffect(() => {
+    document.title = "Goood Taste!"
     Axios.get('http://localhost:4000/api/datosGenerales/1').then((resp) => {
       setDatos(resp.data)
     })

@@ -14,6 +14,7 @@ const BarraNavegacion = () => {
     const [user, setUser] = useState(null)
     // const [linkUsuario, setLinkUsuario] = useState(null)
     useEffect(() => {
+        document.title = "Goood Taste!"
         const updateNavbarColor = () => {
             if (
                 document.documentElement.scrollTop > 15 ||

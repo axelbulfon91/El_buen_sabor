@@ -61,3 +61,18 @@
 .dropdown-toggle::after {
   color: white
 }
+
+.nav-tabs .nav-link.active {
+  color: darkred !important;
+  border-bottom: 2px solid black !important
+}
+
+.nav-tabs .nav-link {
+  text-decoration: none !important;
+  color: black !important
+}
+
+.nav-lateral .active {
+  border-left: 4px solid white !important;
+  text-decoration: none !important;
+}
