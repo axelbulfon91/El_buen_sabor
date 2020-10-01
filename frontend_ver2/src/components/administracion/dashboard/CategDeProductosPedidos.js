@@ -27,7 +27,7 @@ const CategDeProductosPedidos = ({ prodPorCatPedida, categorias }) => {
     const data = {
         labels: categorias,
         datasets: [{
-            label: "Pedidos del 2020 (uni.)",
+            label: "Datos de Pedidos del 2020",
             data: prodPorCatPedida,
             backgroundColor: coloresFondo,
             hoverBackgroundColor: coloresFondoHover
@@ -37,7 +37,7 @@ const CategDeProductosPedidos = ({ prodPorCatPedida, categorias }) => {
     const options = {
         title: {
             display: true,
-            text: "Distribución productos pedidos según su categoría"
+            text: "Distribución productos pedidos según su categoría (Unidades)"
         },
         scales: {
             yAxes: [{

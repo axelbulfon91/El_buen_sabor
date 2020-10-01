@@ -6,7 +6,7 @@ const PedidosPorEstado = ({ pedidosPorEstado, estados }) => {
     const data = {
         labels: estados,
         datasets: [{
-            label: "Pedidos del 2020 (uni.)",
+            label: "Datos de Pedidos del 2020",
             data: pedidosPorEstado,
             backgroundColor: [
                 "DarkSalmon",
@@ -27,7 +27,7 @@ const PedidosPorEstado = ({ pedidosPorEstado, estados }) => {
     const options = {
         title: {
             display: true,
-            text: "Distribución de pedidos según su estado"
+            text: "Distribución de pedidos según su estado (Unidades)"
         },
         scales: {
             yAxes: [{

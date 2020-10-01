@@ -6,7 +6,7 @@ const PedidosPorMes = ({ pedidosPorMes, meses }) => {
     const data = {
         labels: meses,
         datasets: [{
-            label: "Pedidos del 2020 (uni.)",
+            label: "Datos de Pedidos del 2020",
             data: pedidosPorMes,
             borderColor: ["darkslategray"],
             backgroundColor: [" rgb(48, 80, 80, 0.5)"],
@@ -18,7 +18,7 @@ const PedidosPorMes = ({ pedidosPorMes, meses }) => {
     const options = {
         title: {
             display: true,
-            text: "Distribución de pedidos realizados en 2020"
+            text: "Distribución de pedidos realizados en 2020 (Unidades)"
         }
     }
     return <Line data={data} options={options} />
