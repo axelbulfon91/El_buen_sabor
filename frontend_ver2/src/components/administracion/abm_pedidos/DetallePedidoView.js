@@ -25,7 +25,10 @@ const DetallePedidoView = (props) => {
                 break;
         }
     }
-
+    const obtenerDomicilioElegido = (domElegido) => {
+        const domJson = JSON.parse(domElegido)
+        return `${domJson.calle} ${domJson.numeracion}, ${domJson.nombreLocalidad}`
+    }
 
     return (
         <Modal
@@ -60,26 +63,10 @@ const DetallePedidoView = (props) => {
                         </Form.Group>
                         <Form.Group as={Row} >
                             <Form.Label column>
-                                Cliente:
-                                    </Form.Label>
-                            <Col >
-                                <Form.Control type="text" value={pedido.Usuario.nombre} disabled />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} >
-                            <Form.Label column>
                                 Tiempo de Elaboración:
                                     </Form.Label>
                             <Col >
                                 <Form.Control type="text" value={pedido.tiempoElaboracion + " minutos"} disabled />
-                            </Col>
-                        </Form.Group>
-                        <Form.Group as={Row} >
-                            <Form.Label column>
-                                Tipo de Retiro:
-                                    </Form.Label>
-                            <Col >
-                                <Form.Control type="text" value={pedido.tipoRetiro === 0 ? "Delivery" : "Retiro Por Local"} disabled />
                             </Col>
                         </Form.Group>
                         <Form.Group as={Row} >
@@ -90,6 +77,42 @@ const DetallePedidoView = (props) => {
                                 <Form.Control type="text" value={pedido.estado} disabled />
                             </Col>
                         </Form.Group>
+                        <Form.Group as={Row} className="border-top pt-3">
+                            <Form.Label column>
+                                Cliente:
+                                    </Form.Label>
+                            <Col >
+                                <Form.Control type="text" value={pedido.Usuario.nombre} disabled />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} >
+                            <Form.Label column>
+                                Tel. de Contacto:
+                                    </Form.Label>
+                            <Col >
+                                <Form.Control type="text" value={pedido.Usuario.telefono} disabled />
+                            </Col>
+                        </Form.Group>
+
+                        <Form.Group as={Row} >
+                            <Form.Label column>
+                                Tipo de Retiro:
+                                    </Form.Label>
+                            <Col >
+                                <Form.Control type="text" value={pedido.tipoRetiro === 0 ? "Delivery" : "Retiro Por Local"} disabled />
+                            </Col>
+                        </Form.Group>
+                        {
+                            pedido.tipoRetiro === 0 && <Form.Group as={Row} >
+                                <Form.Label column>
+                                    Domicilio seleccionado:
+                                    </Form.Label>
+                                <Col >
+                                    <Form.Control type="text" value={obtenerDomicilioElegido(pedido.domElegido)} disabled />
+                                </Col>
+                            </Form.Group>
+                        }
+
                         <p className="mb-2 mt-1 pt-1 font-weight-bold border-top"> -Detalle del Pedido: </p>
                         <TablaDetallesPedido productos={pedido.Detalle_Pedidos} />
 

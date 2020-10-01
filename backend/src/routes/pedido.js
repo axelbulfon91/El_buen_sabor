@@ -55,7 +55,7 @@ router.post('/', async (req, res) => {
 
         res.status(200).json({ message: "OK" })
     } else {
-        res.json({ message: 'No hay stock' })
+        res.status(202).json({ message: 'No hay stock' })
     }
 
 });
@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
             }]
         }, {
             model: userModel,
-            attributes: ['id', 'nombre']
+            attributes: ['id', 'nombre', "telefono"]
         }]
     });
     res.json({ "pedidos": pedidos });
