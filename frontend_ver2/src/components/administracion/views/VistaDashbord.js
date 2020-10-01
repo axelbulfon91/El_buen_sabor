@@ -6,14 +6,17 @@ import NavegacionAdminLateral from '../uso_compartido/NavegacionAdminLateral';
 import estilos from '../../../assets/css/VistaDashboard.module.css';
 import PedidosPorEstado from '../dashboard/PedidosPorEstado';
 import PedidosPorMes from '../dashboard/PedidosPorMes';
+import CategDeProductosPedidos from '../dashboard/CategDeProductosPedidos';
 
 
 const VistaDashbord = () => {
     const [data, setData] = useState([])
+    const [categorias, setCategorias] = useState([])
     const [meses] = useState(["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"])
     const [estados] = useState(["pendiente", "confirmado", "demorado", "listo", "entregado", "cancelado"])
     const [pedidosPorMes, setPedidosPorMes] = useState([])
     const [pedidosPorEstado, setPedidosPorEstado] = useState([])
+    const [prodPorCatPedida, setProdPorCatPedida] = useState([])
 
     useEffect(() => {
         const fetchPedidos = async () => {
@@ -25,16 +28,37 @@ const VistaDashbord = () => {
                 console.log(error);
             }
         }
+        const fetchCategorias = async () => {
+            try {
+                const resultCategorias = await axios.get("http://localhost:4000/api/productos/categorias");
+                const categoriasFiltradas = [];
+                resultCategorias.data.forEach(cat => {
+                    if (cat.tipo === "elaborados") {
+                        categoriasFiltradas.push(cat.nombre);
+                    }
+                })
+                resultCategorias.data.forEach(cat => {
+                    if (cat.tipo === "bebidas") {
+                        categoriasFiltradas.push(cat.nombre);
+                    }
+                })
+                setCategorias(categoriasFiltradas);
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         const intervalo = setInterval(() => {
             fetchPedidos();
         }, 5000);
+        fetchCategorias();
         fetchPedidos();
         return () => clearInterval(intervalo)
     }, [])
     useEffect(() => {
         obtenerPedidosPorMes(data);
-        obtenerPedidosPorEstado(data)
+        obtenerPedidosPorEstado(data);
+        obtenerPedidosPorCategoria(data)
     }, [data])
 
     const obtenerPedidosPorMes = (pedidos) => {
@@ -45,6 +69,25 @@ const VistaDashbord = () => {
             pedPorMesAux[mesCreacion] = pedPorMesAux[mesCreacion] + 1;
         })
         setPedidosPorMes(pedPorMesAux)
+    }
+    const obtenerPedidosPorCategoria = (pedidos) => {
+        let pedPorCatAux = categorias.map(() => 0);//Mapeo un arreglo de elementos 0 por cada categoria
+        pedidos.forEach(ped => {//Recorro cada pedido
+            ped.Detalle_Pedidos.forEach(detalle => {//Recorro cada detalle del pedido
+                let catDeDetalle = ""
+                if (detalle.bebida) {
+                    catDeDetalle = detalle.bebida.Articulo.Categorium.nombre
+                } else {
+                    catDeDetalle = detalle.elaborado.Categorium.nombre
+                }
+                categorias.forEach((cat, i) => {
+                    if (cat === catDeDetalle) {
+                        pedPorCatAux[i] = pedPorCatAux[i] + 1
+                    }
+                })
+            });
+        })
+        setProdPorCatPedida(pedPorCatAux)
     }
     const obtenerPedidosPorEstado = (pedidos) => {
         let pedPorEstAux = estados.map(() => 0);
@@ -92,6 +135,9 @@ const VistaDashbord = () => {
                         </div>
                         <div className={estilos.pedidosPorEstado}>
                             <PedidosPorEstado estados={estados} pedidosPorEstado={pedidosPorEstado} />
+                        </div>
+                        <div className={estilos.catDeProdPedidos}>
+                            <CategDeProductosPedidos categorias={categorias} prodPorCatPedida={prodPorCatPedida} />
                         </div>
 
                     </div>

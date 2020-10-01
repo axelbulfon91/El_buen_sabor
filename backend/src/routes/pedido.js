@@ -8,7 +8,8 @@ const articuloModel = require('../models/articulo');
 const detalleElaboradoModel = require('../models/detalle_elaborado');
 const precioModel = require('../models/precio');
 const bebidaModel = require('../models/bebida');
-const { comprobarToken } = require('../lib/service_jwt')
+const { comprobarToken } = require('../lib/service_jwt');
+const categorieModel = require('../models/categorie');
 
 
 
@@ -27,7 +28,7 @@ router.post('/', async (req, res) => {
         const pedido = await pedidoModel.create({ //Creo pedido a con id_usuario
             id_cliente: user.id,
             estado: estado,
-            domElegido: domElegido, 
+            domElegido: domElegido,
             tipoRetiro: req.body.tipoRetiro,
             //TIEMPO DE ELABORACION DESDE EL FRONT
             tiempoElaboracion: req.body.tiempoElaboracion
@@ -68,14 +69,22 @@ router.get('/', async (req, res) => {
             attributes: ['id', 'cantidad', 'precioDetalle'],
             include: [{
                 model: elaboradoModel,
-                attributes: ['id', 'nombre']
+                attributes: ['id', 'nombre'],
+                include: [{
+                    model: categorieModel,
+                    attributes: ['tipo', 'nombre']
+                }]
             },
             {
                 model: bebidaModel,
                 attributes: ['id'],
                 include: {
                     model: articuloModel,
-                    attributes: ['nombre']
+                    attributes: ['nombre'],
+                    include: [{
+                        model: categorieModel,
+                        attributes: ['tipo', 'nombre']
+                    }]
                 }
             }]
         }, {

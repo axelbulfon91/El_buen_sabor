@@ -40,7 +40,6 @@ const VistaCatalogo = () => {
                 setIsLoading(false)
                 setData(ordenados)
                 setListaFiltrada(ordenados)
-                console.log(ordenados)
             } catch (error) {
                 setIsLoading(false)
                 setIsError(true)
