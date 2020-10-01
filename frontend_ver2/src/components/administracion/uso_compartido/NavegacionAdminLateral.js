@@ -24,7 +24,7 @@ const NavegacionAdmin = () => {
     return (
         <nav id="columna-1" className={classnames("d-flex flex-column justify-content-start", estilos.fondo)} >
             <div className="flex-column justify-content-center mt-5 nav-lateral">
-                <NavLink exact className="text-white nav-link" to="/admin">Dashboard</NavLink>
+                <NavLink exact className="text-white nav-link" to="/admin/dashboard">Dashboard</NavLink>
                 <NavLink exact className="text-white nav-link" to="/admin/stock">Stock</NavLink>
                 <NavLink className="text-white nav-link" to="/admin/catalogo">Catálogo</NavLink>
                 <NavLink className="text-white nav-link" to="/admin/pedidos">Pedidos</NavLink>

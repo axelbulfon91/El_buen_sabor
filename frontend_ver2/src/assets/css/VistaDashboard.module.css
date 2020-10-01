@@ -1,0 +1,13 @@
+.contenedorGraficos {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.pedidosPorMes {
+    width: 80%;
+}
+
+.pedidosPorEstado {
+    width: 80%;
+}
