@@ -10,7 +10,6 @@
     padding-right: 0%;
     border-top: 0px solid black;
     border-bottom: 1px solid black;
-    
 }
 
 .titulo {
@@ -24,4 +23,14 @@
     /* border-top: 1px solid black; */
     border-bottom: 1px solid rgb(46, 46, 46);
     padding: 15px;
+}
+
+.linkCatalogo {
+    color: darkRed;
+    font-size: 1.2em;
+}
+
+.linkCatalogo:hover {
+    color: white;
+    text-decoration: none;
 }

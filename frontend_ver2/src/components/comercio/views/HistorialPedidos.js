@@ -32,7 +32,7 @@ const HistorialPedidos = () => {
             if (resp.data.pedidos) {
                 setPedidos(resp.data.pedidos)
             }
-            const filas = resp.data.pedidos.map((pedido, i) => {
+            const filas = resp.data.pedidos.map((pedido) => {
                 const f = {
                     id: pedido.id,
                     fecha: format(new Date(pedido.createdAt), 'es'),
