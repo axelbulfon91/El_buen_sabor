@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import GoogleLogin from 'react-google-login';
 import Axios from 'axios';
-import { Container, Button } from "react-bootstrap";
+import { Container as div, Button } from "react-bootstrap";
 import Footer from '../components/comercio/uso_compartido/Footer';
 import SeccionContacto from '../components/comercio/SeccionContacto';
 import estilos from '../assets/css/VistaPerfil.module.css'
@@ -78,50 +78,65 @@ function VistaLogin() {
             <div className={estilos.fondo} style={{ paddingBottom: "3em" }}>
                 <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
-                <Container className="mt-5">
-                    <h3 className="text-center text-dark display-4">Login</h3>
-                    <div className="row justify-content-center mt-5">
-                        <div className="col-md-6">
+
+                <div style={{ //container
+                    width: "80%",
+                    maxWidth: "450px",
+                    margin: "5em auto",
+                }}>
+                    <div
+                        style={{
+                            border: "0px solid black",
+                        }}>
+                        <h3 className="text-center text-dark display-4">Log in</h3>
+                        <div className="d-flex flex-column">
                             <form onSubmit={(e) => handleOnSubmit(e)}>
                                 <div className="form-group text-left">
-                                    <label>Email address</label>
+                                    <label>Email</label>
                                     <input type="email"
                                         value={usuario}
                                         className="form-control"
-                                        placeholder="Enter email"
+                                        placeholder="Ingresa un Correo Electrónico"
                                         onChange={(e) => setUsuario(e.target.value)}
                                     />
                                 </div>
-                                <div className="form-group text-left">
+                                <div className="form-group mb-1">
                                     <label >Password</label>
                                     <input type="password"
                                         className="form-control"
-                                        placeholder="Password"
+                                        placeholder="Ingresa una Contraseña"
                                         value={contrasenia}
                                         onChange={(e) => setContrasenia(e.target.value)}
                                     />
+                                    <div className="d-flex justify-content-between mt-2">
+                                        <p className="pt-2">¿Sin cuenta? <a href="/registro" className="text-info">Regístrate</a></p>
+                                        <p onClick={() => enviarEmail()}
+                                            className="btn pt-2 bg-transparent border-0 text-right"
+                                            style={{ color: "darkred" }}>Olvidé mi Contraseña</p>
+                                    </div>
+                                </div>
+                                <div className="d-flex flex-column justify-content-around align-items-center">
+                                    <button type="submit" className="btn btn-info btn- w-50"><i className="fa fa-sign-in-alt"></i> Ingresar</button>
+                                    <div className="d-flex justify-content-center mt-3" style={{ width: "100%" }}>
+                                        <GoogleLogin
+                                            className="text-center"
+                                            clientId={process.env.REACT_APP_GOOGLE_LOGIN_CLIENTE_ID}
+                                            buttonText="Ingresar con Google"
+                                            onSuccess={loginCorrectoGoogle}
+                                            onFailure={loginIncorrectoGoogle}
+                                            cookiePolicy={'single_host_origin'}
+                                        />
+                                    </div>
                                 </div>
 
-                                <button type="submit" className="btn btn-primary mr-3">Ingresar</button>
-                            Sin cuenta? <a href="/registro" className="text-primary">Registrate</a>
-                                <Button className="d-flex float-right btn btn-sm btn-warning" onClick={() => enviarEmail()}>Olvide mi contraseña</Button>
-                            </form>
 
-                            <br />
-                            <div className="text-center">
-                                o ingresa por Google
-                                <GoogleLogin
-                                    className="ml-4"
-                                    clientId={process.env.REACT_APP_GOOGLE_LOGIN_CLIENTE_ID}
-                                    buttonText="Ingresar con Google"
-                                    onSuccess={loginCorrectoGoogle}
-                                    onFailure={loginIncorrectoGoogle}
-                                    cookiePolicy={'single_host_origin'}
-                                />
-                            </div>
+
+                                <br />
+
+                            </form>
                         </div>
                     </div>
-                </Container>
+                </div>
             </div>
             <SeccionContacto></SeccionContacto>
             <Footer></Footer>

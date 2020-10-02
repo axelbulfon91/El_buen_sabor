@@ -73,41 +73,43 @@ function VistaRegistro() {
                     <div className="row justify-content-center mt-5">
                         <div className="col-md-6">
                             <div className="form-group text-left">
-                                <label>Email address</label>
+                                <label>Email</label>
                                 <input type="email"
                                     value={usuario}
                                     className="form-control"
-                                    placeholder="Enter email"
+                                    placeholder="Ingresa un Correo Electrónico"
                                     onChange={(e) => setUsuario(e.target.value)}
                                 />
                             </div>
                             <div className="form-group text-left">
-                                <label >Password</label>
+                                <label >Contraseña</label>
                                 <input type="password"
                                     className="form-control"
-                                    placeholder="Password"
+                                    placeholder="Ingresa una Contraseña"
                                     value={contrasenia}
                                     onChange={(e) => setContrasenia(e.target.value)}
                                 />
                             </div>
                             <div className="form-group text-left">
-                                <label >Password</label>
+                                <label >Contraseña</label>
                                 <input type="password"
                                     className="form-control"
-                                    placeholder="Repeat password"
+                                    placeholder="Repite tu Contraseña"
                                     value={contrasenia2}
                                     onChange={(e) => setContrasenia2(e.target.value)}
                                 />
                             </div>
-                            <div className="text-center">
-                                <button onClick={() => registroLocal()} className="btn btn-primary mr-3">Registrarse</button><br /><br />
-                                Tienes cuenta? <a href="/login" className="text-primary">Ingresa</a>
+                            <div className="text-center mt-4 mb-0">
+                                <button onClick={() => registroLocal()}
+                                    className="btn btn-info mb-4"><i className="fa fa-sign-in-alt"></i> Registrarse
+                                 </button>
+                                <p className="mb-2">
+                                    ¿Ya tienes cuenta? <a href="/login" className="text-info">Ingresá</a>
+                                </p>
                             </div>
-                            <br />
                             <div className="text-center">
-                                o registrate por Google
                                 <GoogleLogin
-                                    className="ml-4"
+                                    className=""
                                     clientId={process.env.REACT_APP_GOOGLE_LOGIN_CLIENTE_ID}
                                     buttonText="Ingresar con Google"
                                     onSuccess={registroCorrecto}
