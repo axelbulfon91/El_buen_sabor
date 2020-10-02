@@ -4,7 +4,7 @@ import { Form } from 'react-bootstrap'
 const FiltroPorNombre = ({ filtrarLista }) => {
 
     return (
-        <Form.Group className="mt-2" style={{width:"85%"}}>
+        <Form.Group className="mt-2">
             <Form.Control type="text" placeholder="Filtrar por Nombre" onChange={(e) => {
                 filtrarLista(e.target.value)
             }} />

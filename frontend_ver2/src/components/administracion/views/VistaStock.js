@@ -125,10 +125,11 @@ const VistaStock = () => {
 
                 <div id="columna-2" className="m-5">
                     <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Stock</strong></h1>
-                    <div className='d-flex justify-content-between align-items-center'>
-
-                        <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
-                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)", width: "14%", marginBottom: "9px" }} variant="info" onClick={() => abrirFormulario()}>
+                    <div className='d-flex justify-content-between align-items-center' style={{ gap: "5px" }}>
+                        <div style={{ width: "90%" }}>
+                            <FiltroPorNombre filtrarLista={filtrarNombre}></FiltroPorNombre>
+                        </div>
+                        <Button style={{ boxShadow: "4px 5px 6px -2px rgba(0,0,0,0.62)", marginBottom: "9px", width: "15%" }} variant="info" onClick={() => abrirFormulario()}>
                             <i className='fa fa-plus'></i> Crear Nuevo</Button>
                     </div>
                     <div className='d-flex justify-content-between align-items-'>
