@@ -218,10 +218,9 @@ const VistaCarrito = () => {
             <div className={estilos.fondo}>
                 <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
-
                 <Container className="mt-5">
                     <Row>
-                        <h3 className="text-dark display-4">Tu Carrito</h3>
+                        <h3 className="text-dark display-4" >Tu Carrito</h3>
                         <button
                             onClick={() => vaciarCarrito()}
                             className={estilos.btnVaciar}>

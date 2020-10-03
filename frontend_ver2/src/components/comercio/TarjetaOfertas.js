@@ -16,7 +16,7 @@ const TarjetaOfertas = (props) => {
     const precioConDescuento = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(precio - ((precio * descuento) / 100))
 
     return (
-        <div className={estilos.tarjeta}>
+        <div className={estilos.tarjeta} data-aos="flip-up">
             <RibbonOferta porcentajeDescuento={descuento}></RibbonOferta>
             <div className="row no-gutters"
                 style={{ height: "100%", overflow: "hidden", borderRadius: "15px" }}>

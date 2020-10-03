@@ -65,10 +65,10 @@ function VistaRegistro() {
 
     return (
         <React.Fragment>
-            <div className={estilos.fondo} style={{ paddingBottom: "3em" }}>
+            <div className={estilos.fondo} style={{ paddingBottom: "3em" }} >
                 <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
-                <Container className="mt-5">
+                <Container className="mt-5" >
                     <h3 className="text-center text-dark display-4">Registro</h3>
                     <div className="row justify-content-center mt-5">
                         <div className="col-md-6">

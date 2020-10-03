@@ -84,12 +84,9 @@ function VistaLogin() {
                     maxWidth: "450px",
                     margin: "5em auto",
                 }}>
-                    <div
-                        style={{
-                            border: "0px solid black",
-                        }}>
+                    <div>
                         <h3 className="text-center text-dark display-4">Log in</h3>
-                        <div className="d-flex flex-column">
+                        <div className="d-flex flex-column" >
                             <form onSubmit={(e) => handleOnSubmit(e)}>
                                 <div className="form-group text-left">
                                     <label>Email</label>

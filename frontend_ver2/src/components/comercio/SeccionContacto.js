@@ -43,7 +43,7 @@ function SeccionContacto() {
                                                     )) :
                                                     <li>Sin datos</li>
                                                 }
-                                            </ul>   
+                                            </ul>
                                         </div>
                                         <div className="col">
                                             <ul className="list-unstyled">
@@ -68,7 +68,7 @@ function SeccionContacto() {
                             </div>
                         </div>
                         <div className="row d-flex justify-content-center">
-                            <p>{ datos.Domicilio !== undefined ?
+                            <p>{datos.Domicilio !== undefined ?
                                 "Teléfonos de Contacto: " + datos.telefono +
                                 " - Direccion: " + datos.Domicilio.calle + " " +
                                 datos.Domicilio.numeracion + ", " +
