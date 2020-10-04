@@ -38,7 +38,6 @@ export default class facturaPDF extends PureComponent{
       creator: 'El Buen Sabor'
     });
 
-    let domicilio = JSON.parse(this.state.pedido.domElegido);
     let date = new Date(Factura.createdAt);
     let fecha_factura = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();//prints expected format.
 
@@ -82,13 +81,21 @@ export default class facturaPDF extends PureComponent{
                             <strong>Nombre de Cliente</strong><br />\
                             '+this.state.pedido.Usuario.nombre.replace(" ","&nbsp;")+'<br />\
                             Cliente n°'+this.state.pedido.Usuario.id+'<br />\
-                            &nbsp;<br />\
-                            <strong>Dirección</strong><br />\
-                            '+domicilio.calle.replace(" ","&nbsp;")+'&nbsp;'+domicilio.numeracion+'<br />\
-                            '+domicilio.nombreLocalidad+', Mendoza<br />\
-                            Detalle:&nbsp; '+domicilio.detalle_adicional.replace(" ","&nbsp;")+'<br />\
-                            &nbsp;<br />\
-                        </div>\
+                            &nbsp;<br />';
+
+                            if(this.state.pedido.tipo_retiro == 0){
+                              let domicilio = JSON.parse(this.state.pedido.domElegido);
+                              HTML = HTML + '<strong>Dirección</strong><br />\
+                              '+domicilio.calle.replace(" ","&nbsp;")+'&nbsp;'+domicilio.numeracion+'<br />\
+                              '+domicilio.nombreLocalidad+', Mendoza<br />\
+                              Detalle:&nbsp; '+domicilio.detalle_adicional.replace(" ","&nbsp;")+'<br />\
+                              &nbsp;<br />';
+                            }else{
+                              HTML = HTML + '<strong>Dirección</strong><br />\
+                              RETIRA POR LOCAL<br />';
+                            }
+
+                        HTML = HTML +'</div>\
                     </td>\
                 </tr>\
             </table>\
