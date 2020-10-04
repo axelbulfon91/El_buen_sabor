@@ -68,6 +68,7 @@ const HistorialPedidos = () => {
                             arrayOption={[[]]}
                             nextPageText=""
                             prePageText=""
+
                         />
                         :
                         <div className="text-center">

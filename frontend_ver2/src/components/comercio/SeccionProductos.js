@@ -62,7 +62,7 @@ const SeccionProductos = () => {
                     </nav>
                     {categorias.map(cat => {
                         if (cat.tipo === "elaborados") {
-                            return <div key={cat.id} style={{ marginBottom: "40px" }}>
+                            return <div key={cat.id} style={{ marginBottom: "40px" }} data-aos="fade-right">
                                 <h3 className={classnames("display-5", estilos.titulo)} id={cat.nombre}>{cat.nombre}</h3>
                                 <div className="d-flex justify-content-start flex-wrap mb-3 mt-3">
                                     {elaborados && elaborados.map(el => {
@@ -84,7 +84,7 @@ const SeccionProductos = () => {
                     })}
                     {categorias.map(cat => {
                         if (cat.tipo === "bebidas") {
-                            return <div key={cat.id}>
+                            return <div key={cat.id} data-aos="fade-left">
                                 <h3 className={classnames("display-5", estilos.titulo)} id={cat.nombre}>{cat.nombre}</h3>
                                 <div className="d-flex justify-content-start flex-wrap mb-3 mt-3">
                                     {bebidas && bebidas.map(beb => {

@@ -18,10 +18,6 @@ const CategoriaAltaView = (props) => {
             </Modal.Header>
             <Modal.Body>
                 <Form>
-                    <Form.Group >
-                        <Form.Label>Nombre</Form.Label>
-                        <Form.Control type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
-                    </Form.Group>
                     <Form.Group>
                         <Form.Label>Tipo de Categoría</Form.Label>
                         <Form.Control as="select" value={tipo} onChange={(e) => setTipo(e.target.value)}>
@@ -31,6 +27,10 @@ const CategoriaAltaView = (props) => {
                                 })
                             }
                         </Form.Control>
+                    </Form.Group>
+                    <Form.Group >
+                        <Form.Label>Nombre</Form.Label>
+                        <Form.Control type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
                     </Form.Group>
                 </Form>
             </Modal.Body>
