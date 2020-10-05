@@ -92,7 +92,7 @@ export default class facturaPDF extends PureComponent{
                               &nbsp;<br />';
                             }else{
                               HTML = HTML + '<strong>Dirección</strong><br />\
-                              RETIRA POR LOCAL<br />';
+                              RETIRA &nbsp; POR &nbsp; LOCAL<br />';
                             }
 
                         HTML = HTML +'</div>\
@@ -190,6 +190,16 @@ export default class facturaPDF extends PureComponent{
           </body>\
         </html>';     
 
+
+      var binary = doc.output('Factura');
+
+      const data = {email : this.state.pedido.Usuario.email,
+                      factura : binary}
+  
+      const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
+
+      console.log(resp);
+
     doc.html(
       HTML,
       {
@@ -197,6 +207,9 @@ export default class facturaPDF extends PureComponent{
           doc.save('DOC.pdf')
         }
       });
+
+     
+
 
   }
 

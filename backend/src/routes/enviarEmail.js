@@ -37,6 +37,10 @@ router.post('/recuperarPassword', async (req, res) => {
 router.post('/envioFactura', async (req, res) => {
 
     const email = req.body.email
+    const pdf = req.body.factura
+    console.log(pdf);
+    
+    console.log(email);
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -53,7 +57,13 @@ router.post('/envioFactura', async (req, res) => {
                 <p>Se adjunta comprobante de compra</p>
                 <p>El Buen sabor</p>                
                 `,
-        attachment: [] // PDF adjunto
+                attachments: [
+                    {
+                        filename: 'Factura.pdf',
+                        path: pdf,
+                        contentType: 'application/pdf',
+                        encoding: 'base64'    //this line!!!!
+                    }] // PDF adjunto
 
     }
     await transporter.sendMail(mailOptions, (err, info) => {

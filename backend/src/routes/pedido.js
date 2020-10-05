@@ -89,7 +89,7 @@ router.get('/', async (req, res) => {
             }]
         }, {
             model: userModel,
-            attributes: ['id', 'nombre', "telefono"]
+            attributes: ['id', 'nombre', "telefono","email"]
         }]
     });
     res.json({ "pedidos": pedidos });
