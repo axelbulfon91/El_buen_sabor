@@ -190,17 +190,7 @@ export default class facturaPDF extends PureComponent{
           </body>\
         </html>';     
 
-
-      var binary = doc.output('Factura');
-
-      const data = {email : this.state.pedido.Usuario.email,
-                      factura : binary}
-  
-      const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
-
-      console.log(resp);
-
-    doc.html(
+    var facturaPDF = doc.html(
       HTML,
       {
         callback: function (doc) {
@@ -208,7 +198,25 @@ export default class facturaPDF extends PureComponent{
         }
       });
 
-     
+     /* const data = {email : this.state.pedido.Usuario.email,
+        factura : doc.output('datauristring')}
+
+      const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
+*/
+      //console.log(facturaPDF.output('datauristring'));
+      var pedido = this.state.pedido;
+      
+      facturaPDF.output('datauristring').then(function(result) {
+
+        const data = {
+                      email : pedido.Usuario.email,
+                      factura : result
+                    }
+  
+        const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
+
+        console.log(resp.request)
+    });
 
 
   }
@@ -232,7 +240,7 @@ export default class facturaPDF extends PureComponent{
     return(<button onClick={this.generarFactura}
       className="d-flex align-items-center justify-content-center"
       style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-      Generar Factura<i className="fa fa-file-upload mr-2"></i>
+      Generar y Enviar Factura<i className="fa fa-file-upload mr-2"></i>
       </button>)
   }
 
