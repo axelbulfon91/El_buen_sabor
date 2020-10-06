@@ -37,10 +37,10 @@ router.post('/recuperarPassword', async (req, res) => {
 router.post('/envioFactura', async (req, res) => {
 
     const email = req.body.email
-    const pdf = req.body.pdf
-    console.log("BODY: ", req.body)
+    const pdf = req.body.factura
+
     console.log(pdf);
-    console.log(email);
+
 
 
     const transporter = nodemailer.createTransport({
@@ -69,9 +69,7 @@ router.post('/envioFactura', async (req, res) => {
     }
     await transporter.sendMail(mailOptions, (err, info) => {
         if (err) res.status(500).json({ message: "Error al enviar el email " + err })
-
         res.status(200).json({ message: "OK" })
-
     })
 })
 
