@@ -1,4 +1,4 @@
-import React, {createElement, PureComponent} from 'react';
+import React, { createElement, PureComponent } from 'react';
 
 import { jsPDF } from "jspdf";
 
@@ -6,27 +6,27 @@ import axiosAutorizado from '../../../utils/axiosAutorizado';
 import jwtDecode from 'jwt-decode';
 
 
-export default class facturaPDF extends PureComponent{
+export default class facturaPDF extends PureComponent {
 
-  constructor(props){
+  constructor(props) {
     super(props)
 
     console.log(props);
 
     this.state = {
-        pedido: props.pedido
+      pedido: props.pedido
     };
   }
 
-  jsPDF = (Factura) =>{
-   
-    
+  jsPDF = (Factura) => {
+
+
     let opciones = {
       orientation: 'p',
       unit: 'mm',
       format: [240, 300]
     };
-    
+
     const doc = new jsPDF(opciones);
 
     // Optional - set properties on the document
@@ -39,7 +39,7 @@ export default class facturaPDF extends PureComponent{
     });
 
     let date = new Date(Factura.createdAt);
-    let fecha_factura = date.getFullYear()+'-' + (date.getMonth()+1) + '-'+date.getDate();//prints expected format.
+    let fecha_factura = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//prints expected format.
 
     let HTML = '<html>  \
                 <body style="margin: 30px;\
@@ -59,7 +59,7 @@ export default class facturaPDF extends PureComponent{
                         <span style="font-size: 6px;\
                         font-weight: normal;\
                         color: #fff;\
-                        text-transform: uppercase;">Factura&nbsp;nº'+Factura.id+'</span>\
+                        text-transform: uppercase;">Factura&nbsp;nº'+ Factura.id + '</span>\
                     </td>\
                 </tr>\
                 <tr>\
@@ -67,7 +67,7 @@ export default class facturaPDF extends PureComponent{
                         <span style="font-size: 6px;\
                         font-weight: normal;\
                         color: #fff;\
-                        text-transform: uppercase;">'+fecha_factura+'</span>\
+                        text-transform: uppercase;">'+ fecha_factura + '</span>\
                     </td>\
                 </tr>\
             </table>\
@@ -79,23 +79,23 @@ export default class facturaPDF extends PureComponent{
                         color: #000;">\
                             &nbsp;<br />\
                             <strong>Nombre de Cliente</strong><br />\
-                            '+this.state.pedido.Usuario.nombre.replace(" ","&nbsp;")+'<br />\
-                            Cliente n°'+this.state.pedido.Usuario.id+'<br />\
+                            '+ this.state.pedido.Usuario.nombre.replace(" ", "&nbsp;") + '<br />\
+                            Cliente n°'+ this.state.pedido.Usuario.id + '<br />\
                             &nbsp;<br />';
 
-                            if(this.state.pedido.tipo_retiro == 0){
-                              let domicilio = JSON.parse(this.state.pedido.domElegido);
-                              HTML = HTML + '<strong>Dirección</strong><br />\
-                              '+domicilio.calle.replace(" ","&nbsp;")+'&nbsp;'+domicilio.numeracion+'<br />\
-                              '+domicilio.nombreLocalidad+', Mendoza<br />\
-                              Detalle:&nbsp; '+domicilio.detalle_adicional.replace(" ","&nbsp;")+'<br />\
+    if (this.state.pedido.tipo_retiro == 0) {
+      let domicilio = JSON.parse(this.state.pedido.domElegido);
+      HTML = HTML + '<strong>Dirección</strong><br />\
+                              '+ domicilio.calle.replace(" ", "&nbsp;") + '&nbsp;' + domicilio.numeracion + '<br />\
+                              '+ domicilio.nombreLocalidad + ', Mendoza<br />\
+                              Detalle:&nbsp; '+ domicilio.detalle_adicional.replace(" ", "&nbsp;") + '<br />\
                               &nbsp;<br />';
-                            }else{
-                              HTML = HTML + '<strong>Dirección</strong><br />\
+    } else {
+      HTML = HTML + '<strong>Dirección</strong><br />\
                               RETIRA &nbsp; POR &nbsp; LOCAL<br />';
-                            }
+    }
 
-                        HTML = HTML +'</div>\
+    HTML = HTML + '</div>\
                     </td>\
                 </tr>\
             </table>\
@@ -116,16 +116,16 @@ export default class facturaPDF extends PureComponent{
                     color: #000;">Importe</td>\
                 </tr>';
 
-              let detalle = this.state.pedido.Detalle_Pedidos;
-              let total = 0;
-              detalle.forEach( function(valor, indice) {
-              
-                let producto = "";
+    let detalle = this.state.pedido.Detalle_Pedidos;
+    let total = 0;
+    detalle.forEach(function (valor, indice) {
 
-                if(valor.elaborado){producto = valor.elaborado.nombre;}
-                else{producto = valor.bebida.Articulo.nombre;}
+      let producto = "";
 
-                  HTML = HTML + '<tr>\
+      if (valor.elaborado) { producto = valor.elaborado.nombre; }
+      else { producto = valor.bebida.Articulo.nombre; }
+
+      HTML = HTML + '<tr>\
                                     <td style="border-right: 1px solid #ccc; margin: 0;\
                                     padding: 2px;\
                                     line-height: 10px;\
@@ -133,7 +133,7 @@ export default class facturaPDF extends PureComponent{
                                     border-bottom: 1px solid #ccc;\
                                     font-size: 6px;\
                                     color: #666;">\
-                                         '+producto+'\
+                                         '+ producto + '\
                                     </td>\
                                     <td style="border-right: 1px solid #ccc; margin: 0;\
                                     padding: 2px;\
@@ -142,7 +142,7 @@ export default class facturaPDF extends PureComponent{
                                     border-bottom: 1px solid #ccc;\
                                     font-size: 6px;\
                                     color: #666;">\
-                                            '+valor.cantidad+'\
+                                            '+ valor.cantidad + '\
                                     </td>\
                                     <td style="text-align: center;\
                                     margin: 0;\
@@ -152,22 +152,22 @@ export default class facturaPDF extends PureComponent{
                                     border-bottom: 1px solid #ccc;\
                                     font-size: 6px;\
                                     color: #666;">\
-                                          $'+valor.precioDetalle+'ARS\
+                                          $'+ valor.precioDetalle + 'ARS\
                                     </td>\
                                 </tr>';
 
-                                total = total+valor.precioDetalle;
-                                
-              });
-              
+      total = total + valor.precioDetalle;
 
-                HTML = HTML + '<tr style="font-size: 6px;\
+    });
+
+
+    HTML = HTML + '<tr style="font-size: 6px;\
                 font-weight: normal;\
                 line-height: 15px;\
                 text-transform: uppercase;">\
                     <td colspan="2" style="text-align: right;\
                     border-right: 1px solid #ccc;  padding-right:10px;">Sub Total:</td>\
-                    <td style="text-align: center;">$'+total+'ARS</td>\
+                    <td style="text-align: center;">$'+ total + 'ARS</td>\
                 </tr>\
                 <tr style="font-size: 6px;\
                 font-weight: normal;\
@@ -183,22 +183,24 @@ export default class facturaPDF extends PureComponent{
                 text-transform: uppercase;">\
                     <td colspan="2" style="text-align: right;\
                     border-right: 1px solid #ccc; padding-right:10px;">Total:</td>\
-                    <td style="text-align: center;">$'+total+'ARS</td>\
+                    <td style="text-align: center;">$'+ total + 'ARS</td>\
                 </tr>\
             </table>\
             </div>\
           </body>\
-        </html>';     
+        </html>';
 
 
-      var binary = doc.output('Factura');
+    var binary = doc.output('Factura');
 
-      const data = {email : this.state.pedido.Usuario.email,
-                      factura : binary}
-  
-      const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
+    const data = {
+      email: this.state.pedido.Usuario.email,
+      factura: binary
+    }
 
-      console.log(resp);
+    const resp = axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
+
+    console.log(resp);
 
     doc.html(
       HTML,
@@ -208,32 +210,34 @@ export default class facturaPDF extends PureComponent{
         }
       });
 
-     
+
 
 
   }
 
-  generarFactura = async () =>{
+  generarFactura = async () => {
 
-    const data = {id_pedido : this.state.pedido.id,
-                  id_cajero : JSON.parse(jwtDecode(sessionStorage.getItem("token")).id)}
+    const data = {
+      id_pedido: this.state.pedido.id,
+      id_cajero: JSON.parse(jwtDecode(sessionStorage.getItem("token")).id)
+    }
 
-    const resp = await axiosAutorizado().post('http://localhost:4000/api/facturas/',data);
+    const resp = await axiosAutorizado().post('http://localhost:4000/api/facturas/', data);
 
-  
+
     this.jsPDF(resp.data.Detalle);
 
   }
 
 
 
-  render(){
+  render() {
 
-    return(<button onClick={this.generarFactura}
+    return (<button onClick={this.generarFactura}
       className="d-flex align-items-center justify-content-center"
       style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
       Generar Factura<i className="fa fa-file-upload mr-2"></i>
-      </button>)
+    </button>)
   }
 
 
