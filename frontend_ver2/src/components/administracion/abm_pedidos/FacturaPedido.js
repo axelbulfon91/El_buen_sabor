@@ -11,8 +11,6 @@ export default class facturaPDF extends PureComponent {
   constructor(props) {
     super(props)
 
-    console.log(props);
-
     this.state = {
       pedido: props.pedido
     };
@@ -209,10 +207,12 @@ export default class facturaPDF extends PureComponent {
           email: pedido.Usuario.email,
           factura: result
         }
-        const resp = axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
-      }
-    });
 
+        const resp = axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
+
+      }
+
+    });
 
   }
 
@@ -220,14 +220,21 @@ export default class facturaPDF extends PureComponent {
 
     const data = {
       id_pedido: this.state.pedido.id,
-      id_cajero: JSON.parse(jwtDecode(sessionStorage.getItem("token")).id)
+      usuario: (jwtDecode(sessionStorage.getItem("token")))
     }
-
     const resp = await axiosAutorizado().post('http://localhost:4000/api/facturas/', data);
 
+    if (resp.data.success) {
 
-    console.log(resp.data);
-    this.jsPDF(resp.data.Detalle);
+      this.jsPDF(resp.data.Detalle);
+
+    } else {
+
+      alert(resp.data.message);
+
+    }
+
+
 
   }
 

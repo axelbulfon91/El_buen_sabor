@@ -7,9 +7,11 @@ const detalle_pedido_model = require('../models/detalle_pedido');
 const elaboradoModel = require('../models/elaborado');
 const {comprobarToken} = require('../lib/service_jwt');
 
+
 router.post('/',comprobarToken,async (req, res) => {
 
     const id_pedido = req.body.id_pedido; //Id del pedido
+    const usuario = req.body.usuario; //Id del pedido
 
     const pedidoFacturado = await pedidoModel.findOne( // Verifica que exista pedido con el id y el estado "Finalizado" para generar factura
         {
@@ -32,22 +34,27 @@ router.post('/',comprobarToken,async (req, res) => {
         
         if(existeFactura){
 
-            res.status(200).json({ 'message': 'Factura encontrada', 'Detalle': existeFactura })
+            res.status(200).json({'success': true, 'message': 'Factura encontrada', 'Detalle': existeFactura })
 
         }else{
 
-            const id_cajero = req.body.id_cajero; //Id del cajero que genera la factura
+            if(usuario.rol == "CAJERO"){
 
-            const factura = await facturaModel.create({
-                id_pedido: pedidoFacturado.dataValues.id,
-                id_cajero
-            })
-            res.status(200).json({ 'message': 'Factura realizada con exito', 'Detalle': factura })
+                const id_cajero = usuario.id; //Id del cajero que genera la factura
 
+                const factura = await facturaModel.create({
+                    id_pedido: pedidoFacturado.dataValues.id,
+                    id_cajero
+                })
+                res.status(200).json({ 'success': true,'message': 'Factura realizada con exito', 'Detalle': factura })
+                
+            }else{
+                res.status(200).json({  'success': false, 'message': 'Debe esperar a que se genere la factura.' })
+            }
         }
 
     } else {
-        res.json({ 'message': 'El pedido indicado no esta indicado como Finalizado o no tiene un ID correcto' })
+        res.status(200).json({  'success': false, 'message': 'El pedido no está como Finalizado o no tiene un ID correcto' })
     }
 
 
