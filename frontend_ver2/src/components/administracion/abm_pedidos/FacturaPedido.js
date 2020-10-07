@@ -1,9 +1,9 @@
-import React, { createElement, PureComponent } from 'react';
-
+import React, { PureComponent } from 'react';
 import { jsPDF } from "jspdf";
 
 import axiosAutorizado from '../../../utils/axiosAutorizado';
 import jwtDecode from 'jwt-decode';
+import mensaje from '../../../utils/Toast';
 
 
 export default class facturaPDF extends PureComponent {
@@ -117,12 +117,9 @@ export default class facturaPDF extends PureComponent {
     let detalle = this.state.pedido.Detalle_Pedidos;
     let total = 0;
     detalle.forEach(function (valor, indice) {
-
       let producto = "";
-
       if (valor.elaborado) { producto = valor.elaborado.nombre; }
       else { producto = valor.bebida.Articulo.nombre; }
-
       HTML = HTML + '<tr>\
                                     <td style="border-right: 1px solid #ccc; margin: 0;\
                                     padding: 2px;\
@@ -193,7 +190,7 @@ export default class facturaPDF extends PureComponent {
       HTML,
       {
         callback: function (doc) {
-          doc.save('DOC.pdf')
+          doc.save(`factura_pedido_nro${pedido.id}.pdf`)
         }
       });
 
@@ -207,17 +204,18 @@ export default class facturaPDF extends PureComponent {
           email: pedido.Usuario.email,
           factura: result
         }
-
-        const resp = axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
-
+        try {
+          axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
+          mensaje("exito", "Se ha enviado la factura al email del usuario exitosamente")
+        } catch (error) {
+          mensaje("error", "No se ha podido enviar la factura por correo electrónico")
+          console.log(error);
+        }
       }
-
     });
-
   }
 
   generarFactura = async () => {
-
     const data = {
       id_pedido: this.state.pedido.id,
       usuario: (jwtDecode(sessionStorage.getItem("token")))
@@ -233,12 +231,7 @@ export default class facturaPDF extends PureComponent {
       alert(resp.data.message);
 
     }
-
-
-
   }
-
-
 
   render() {
 
@@ -252,6 +245,4 @@ export default class facturaPDF extends PureComponent {
       Factura &nbsp;<i className="fa fa-file-upload"></i>
     </button>)
   }
-
-
 }
