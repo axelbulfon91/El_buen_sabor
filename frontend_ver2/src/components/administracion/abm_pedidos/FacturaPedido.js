@@ -197,13 +197,6 @@ export default class facturaPDF extends PureComponent {
         }
       });
 
-<<<<<<< HEAD
-     /* const data = {email : this.state.pedido.Usuario.email,
-        factura : doc.output('datauristring')}
-
-      const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
-*/
-      //console.log(facturaPDF.output('datauristring'));
       var pedido = this.state.pedido;
       
       facturaPDF.output('datauristring').then(function(result) {
@@ -220,55 +213,26 @@ export default class facturaPDF extends PureComponent {
         }
 
     });
-=======
-    var pedido = this.state.pedido;
-
-    facturaPDF.output('datauristring').then(function (result) {
-
-      if (pedido.Usuario.email) {
-
-        const data = {
-          email: pedido.Usuario.email,
-          factura: result
-        }
-
-        const resp = axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/', data);
-
-      });
->>>>>>> c995a7f6e8e1da2eb45f23feb9bbe9e3ff6b8c3d
-
 
   }
 
   generarFactura = async () => {
 
-    const data = {
-      id_pedido: this.state.pedido.id,
-      id_cajero: JSON.parse(jwtDecode(sessionStorage.getItem("token")).id)
-    }
-
-<<<<<<< HEAD
-  
-
     const data = {id_pedido : this.state.pedido.id,
                   usuario : (jwtDecode(sessionStorage.getItem("token")))}
-=======
     const resp = await axiosAutorizado().post('http://localhost:4000/api/facturas/', data);
->>>>>>> c995a7f6e8e1da2eb45f23feb9bbe9e3ff6b8c3d
 
+    if(resp.data.success){
 
-    console.log(resp.data);
-  if(resp.data.success){
+      this.jsPDF(resp.data.Detalle);
 
-    this.jsPDF(resp.data.Detalle);
+    }else{
 
-  }else{
+      alert(resp.data.message);
 
-    alert(resp.data.message);
+    }
 
-  }
-
-  
+    
 
   }
 
