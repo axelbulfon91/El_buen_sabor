@@ -10,7 +10,6 @@ const {comprobarToken} = require('../lib/service_jwt');
 router.post('/',comprobarToken,async (req, res) => {
 
     const id_pedido = req.body.id_pedido; //Id del pedido
-    const id_cajero = req.body.id_cajero; //Id del cajero que genera la factura
 
     const pedidoFacturado = await pedidoModel.findOne( // Verifica que exista pedido con el id y el estado "Finalizado" para generar factura
         {
@@ -35,14 +34,17 @@ router.post('/',comprobarToken,async (req, res) => {
 
             res.status(200).json({ 'message': 'Factura encontrada', 'Detalle': existeFactura })
 
+        }else{
+
+            const id_cajero = req.body.id_cajero; //Id del cajero que genera la factura
+
+            const factura = await facturaModel.create({
+                id_pedido: pedidoFacturado.dataValues.id,
+                id_cajero
+            })
+            res.status(200).json({ 'message': 'Factura realizada con exito', 'Detalle': factura })
+
         }
-
-        const factura = await facturaModel.create({
-            id_pedido: pedidoFacturado.dataValues.id,
-            id_cajero
-        })
-        res.status(200).json({ 'message': 'Factura realizada con exito', 'Detalle': factura })
-
 
     } else {
         res.json({ 'message': 'El pedido indicado no esta indicado como Finalizado o no tiene un ID correcto' })
