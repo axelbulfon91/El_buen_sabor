@@ -48,7 +48,7 @@ const HistorialPedidos = () => {
                     estado: devolverEstado(pedido.estado),
                     factura: botonFactura
                 }
-                
+               
                 return f
             }
             )
