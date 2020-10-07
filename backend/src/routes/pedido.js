@@ -90,7 +90,7 @@ router.get('/', async (req, res) => {
             }]
         }, {
             model: userModel,
-            attributes: ['id', 'nombre', "telefono","email"]
+            attributes: ['id', 'nombre', "telefono", "email"]
         }]
     });
     res.json({ "pedidos": pedidos });
@@ -191,7 +191,7 @@ router.put('/estado/:id', async (req, res) => {
     });
     if (pedido) {
         //Actualizacion de stock correspondiente
-        if (pedido.dataValues.estado === "pendiente" && req.body.estado === "confirmado") {//Si el pedido es confirmado reduzco el stock correspondiente
+        if ((pedido.dataValues.estado === "confirmado" || pedido.dataValues.estado === "demorado") && req.body.estado === "listo") {//Si el pedido es confirmado reduzco el stock correspondiente
             await actualizarStockPedido(pedido, 'restar');
         }
         if (req.body.estado === "demorado") {//Si el nuevo estado es demorado, sumo 10 minutos al tiempo de elaboracion

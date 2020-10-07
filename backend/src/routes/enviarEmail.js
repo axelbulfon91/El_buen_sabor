@@ -28,7 +28,7 @@ router.post('/recuperarPassword', async (req, res) => {
     await transporter.sendMail(mailOptions, (err, info) => {
         if (err) res.status(500).json({ message: "Error al enviar el email " + err })
 
-        res.status(200).json({message: "OK"})
+        res.status(200).json({ message: "OK" })
 
     })
 })
@@ -40,7 +40,8 @@ router.post('/envioFactura', async (req, res) => {
     const pdf = req.body.factura
 
     console.log(pdf);
-  
+
+
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
@@ -58,17 +59,17 @@ router.post('/envioFactura', async (req, res) => {
                 <p>El Buen sabor</p>                
                 `,
         attachments: [
-                    {
-                        filename: 'Factura.pdf',
-                        path: pdf,
-                        contentType: 'application/pdf',
-                        encoding: 'base64'    //this line!!!!
-                    }] // PDF adjunto
+            {
+                filename: 'Factura.pdf',
+                path: pdf,
+                contentType: 'application/pdf',
+                encoding: 'base64'    //this line!!!!
+            }] // PDF adjunto
 
     }
     await transporter.sendMail(mailOptions, (err, info) => {
         if (err) res.status(500).json({ message: "Error al enviar el email " + err })
-        res.status(200).json({message: "OK"})
+        res.status(200).json({ message: "OK" })
     })
 })
 
