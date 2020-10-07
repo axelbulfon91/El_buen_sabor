@@ -30,6 +30,7 @@ router.post('/', async (req, res) => {
             estado: estado,
             domElegido: domElegido,
             tipoRetiro: req.body.tipoRetiro,
+            tipoPago: req.body.tipoPago,
             //TIEMPO DE ELABORACION DESDE EL FRONT
             tiempoElaboracion: req.body.tiempoElaboracion
 
@@ -225,6 +226,7 @@ router.put('/:id', async (req, res) => {
         await pedido.update({
             estado: req.body.estado,
             tipoRetiro: req.body.tipoRetiro,
+            tipoPago: req.body.tipoPago,
             tiempoElaboracion: req.body.tiempoElaboracion
         })
         const productosPedidos = req.body.productosPedidos // Array de productos

@@ -13,11 +13,13 @@ import '../../../assets/css/TablaHistorial.css';
 import PropTypes from 'prop-types';
 import Footer from '../uso_compartido/Footer';
 import SeccionContacto from '../SeccionContacto';
+import FacturaPedido from '../../administracion/abm_pedidos/FacturaPedido';
+
 
 
 const HistorialPedidos = () => {
 
-    const Header = ["ID", "Fecha", "Detalle", "Total", "Estado"];
+    const Header = ["ID", "Fecha", "Detalle", "Total", "Estado", "Factura"];
     const userData = jwtDecode(sessionStorage.getItem('token'));
     const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
@@ -33,13 +35,16 @@ const HistorialPedidos = () => {
                 setPedidos(resp.data.pedidos)
             }
             const filas = resp.data.pedidos.map((pedido) => {
+
                 const f = {
                     id: pedido.id,
                     fecha: format(new Date(pedido.createdAt), 'es'),
                     detalle: <Link to="#" onClick={() => { setDetalle(pedido); setModalDetalle(true); }} variant="info">Ver detalle</Link>,
                     total: "$ " + (pedido.tipoRetiro === 0 ? obtenerTotal(pedido).toFixed(2) : (obtenerTotal(pedido) - (obtenerTotal(pedido) * 0.1)).toFixed(2)),
-                    estado: devolverEstado(pedido.estado)
+                    estado: devolverEstado(pedido.estado),
+                    factura: pedido.estado === "entregado" && <FacturaPedido pedido={pedido}></FacturaPedido>
                 }
+               
                 return f
             }
             )
@@ -62,7 +67,7 @@ const HistorialPedidos = () => {
                             headers={Header}
                             partialPageCount={1}
                             data={pedidos}
-                            columns="id.fecha.detalle.total.estado"
+                            columns="id.fecha.detalle.total.estado.factura"
                             perPageItemCount={5}
                             totalCount={pedidos.length}
                             arrayOption={[[]]}

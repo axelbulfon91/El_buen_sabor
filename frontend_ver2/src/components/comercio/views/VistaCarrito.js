@@ -21,6 +21,7 @@ const VistaCarrito = () => {
     const [total, setTotal] = useState(0);
     const [costoFinal, setCostoFinal] = useState(0);
     const [tipoRetiro, setTipoRetiro] = useState(0);
+    const [tipoPago, setTipoPago] = useState("Debito")
     const [cambio, setCambio] = useState(false)
     const [tiempoElab, setTiempoElab] = useState(0)
     const [showModal, setShowModal] = useState(false)
@@ -178,6 +179,7 @@ const VistaCarrito = () => {
                             id_usuario: idUsuario,
                             estado: "pendiente",
                             tipoRetiro: tipoRetiro,
+                            tipoPago: tipoPago,
                             domElegido: domElegido,
                             tiempoElaboracion: tiempoElab
                         }
@@ -302,6 +304,19 @@ const VistaCarrito = () => {
                                         </td>
                                         <td colSpan={3} className="text-right pr-2">
                                             <h4 className="text-danger font-weight-bold">Precio final: $ {parseFloat(costoFinal).toFixed(2)}</h4>
+                                        </td>
+                                    </tr>
+                                    <tr >
+                                        <td colSpan="6" style={{ textAlign: "left" }}>
+                                            <h5>-Tipo de pago:
+                                                <select defaultValue={tipoPago} className="ml-1" onChange={(e) => setTipoPago(e.target.value)}>
+                                                    <option value="Debito">Debito</option>
+                                                    <option value="Credito">Credito</option>
+                                                    {tipoRetiro === 1 &&
+                                                        <option value="Efectivo">Efectivo</option>
+                                                    }
+                                                </select>
+                                            </h5>
                                         </td>
                                     </tr>
                                     <tr >

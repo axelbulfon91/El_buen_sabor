@@ -74,4 +74,34 @@ router.post('/envioFactura', async (req, res) => {
 })
 
 
+router.post('/avisarEstadoPedido', async (req, res) => {
+
+    const email = req.body.email
+    const estado = req.body.estado
+    const tiempo = req.body.tiempo
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.EMAIL,
+            pass: process.env.PASS
+        }
+    });
+    var mailOptions = {
+        from: "El Buen sabor",
+        to: email,                      //E-mail del destinatario
+        subject: "Estado de tu pedido",
+        html: `<h1>Te avisamos que tu pedido se encuentra <b>${estado}</b></h1>
+                <p>Tiempo estimado: <b>${tiempo}</b></p> 
+                <p>El Buen sabor</p>                
+                `
+
+    }
+    await transporter.sendMail(mailOptions, (err, info) => {
+        if (err) res.status(500).json({ message: "Error al enviar el email " + err })
+
+        res.status(200).json({message: "OK"})
+
+    })
+})
+
 module.exports = router
