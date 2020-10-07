@@ -199,12 +199,6 @@ export default class facturaPDF extends PureComponent {
         }
       });
 
-    /* const data = {email : this.state.pedido.Usuario.email,
-       factura : doc.output('datauristring')}
-
-     const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
-*/
-    //console.log(facturaPDF.output('datauristring'));
     var pedido = this.state.pedido;
 
     facturaPDF.output('datauristring').then(function (result) {
