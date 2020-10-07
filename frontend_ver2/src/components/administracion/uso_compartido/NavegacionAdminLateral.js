@@ -1,25 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { NavLink } from 'react-router-dom';
-import jwtDecode from 'jwt-decode';
+
 import estilos from '../../../assets/css/NavegacionAdminLateral.module.css';
 import classnames from 'classnames'
 
 
 const NavegacionAdmin = () => {
 
-    const [user, setUser] = useState(null)
-    useEffect(() => {
-        //Revisa si hay token (usuario logueado) y si hay muestra la data del mismo para ver su rol    
-        if (sessionStorage.getItem('token')) {
-            const userData = jwtDecode(sessionStorage.getItem('token'));
-            console.log(userData);
-            setUser(userData)
-        }
-    }, [])
-    const desloguearse = () => {
-        sessionStorage.clear();
-        window.location.href = "/login"
-    }
 
     return (
         <nav id="columna-1" className={classnames("d-flex flex-column justify-content-start", estilos.fondo)} >

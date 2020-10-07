@@ -1,0 +1,17 @@
+.fondo {
+    background-color: #252525!important;
+    -webkit-box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+    -moz-box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+    box-shadow: 2px 3px 5px -1px rgba(0, 0, 0, 0.46);
+    min-height: 100vh;
+}
+
+.botonNavegacion {
+    background: transparent;
+    border: 0;
+    color: white;
+    display: block;
+    margin: 0 0 15px 5px;
+    font-weight: 600;
+    font-size: 1.5em;
+}
