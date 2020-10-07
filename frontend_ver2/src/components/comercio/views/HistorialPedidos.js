@@ -36,17 +36,13 @@ const HistorialPedidos = () => {
             }
             const filas = resp.data.pedidos.map((pedido) => {
 
-                var botonFactura = null;
-                if(pedido.estado == "entregado")
-                 botonFactura = <FacturaPedido pedido={pedido}></FacturaPedido>;
-                
                 const f = {
                     id: pedido.id,
                     fecha: format(new Date(pedido.createdAt), 'es'),
                     detalle: <Link to="#" onClick={() => { setDetalle(pedido); setModalDetalle(true); }} variant="info">Ver detalle</Link>,
                     total: "$ " + (pedido.tipoRetiro === 0 ? obtenerTotal(pedido).toFixed(2) : (obtenerTotal(pedido) - (obtenerTotal(pedido) * 0.1)).toFixed(2)),
                     estado: devolverEstado(pedido.estado),
-                    factura: botonFactura
+                    factura: pedido.estado === "entregado" && <FacturaPedido pedido={pedido}></FacturaPedido>
                 }
                
                 return f
