@@ -208,14 +208,16 @@ export default class facturaPDF extends PureComponent{
       
       facturaPDF.output('datauristring').then(function(result) {
 
-        const data = {
+        if(pedido.Usuario.email){
+        
+          const data = {
                       email : pedido.Usuario.email,
                       factura : result
                     }
   
-        const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
+          const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
 
-        console.log(resp.request)
+        }
     });
 
 
@@ -228,7 +230,7 @@ export default class facturaPDF extends PureComponent{
 
     const resp = await axiosAutorizado().post('http://localhost:4000/api/facturas/',data);
 
-  
+    console.log(resp.data);
     this.jsPDF(resp.data.Detalle);
 
   }
@@ -240,7 +242,7 @@ export default class facturaPDF extends PureComponent{
     return(<button onClick={this.generarFactura}
       className="d-flex align-items-center justify-content-center"
       style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-      Generar Factura &nbsp;<i className="fa fa-file-upload mr-2"></i>
+      Factura &nbsp;<i className="fa fa-file-upload mr-2"></i>
       </button>)
   }
 
