@@ -243,9 +243,13 @@ export default class facturaPDF extends PureComponent {
   render() {
 
     return (<button onClick={this.generarFactura}
-      className="d-flex align-items-center justify-content-center"
-      style={{ border: "1px solid black", width: "165px", backgroundColor: "#E0C700", borderRadius: "15px", padding: "6px", margin: "5px 0px", color: "black", display: "inline-block", fontWeight: "bolder" }}>
-      Factura &nbsp;<i className="fa fa-file-upload mr-2"></i>
+      style={{
+        border: "1px solid black", width: "165px",
+        backgroundColor: "#FFE4B5", borderRadius: "15px",
+        padding: "6px", margin: "5px 0px", color: "black",
+        display: "inline-block", fontWeight: "bolder"
+      }}>
+      Factura &nbsp;<i className="fa fa-file-upload"></i>
     </button>)
   }
 

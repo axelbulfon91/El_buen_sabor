@@ -44,7 +44,7 @@ const HistorialPedidos = () => {
                     estado: devolverEstado(pedido.estado),
                     factura: pedido.estado === "entregado" && <FacturaPedido pedido={pedido}></FacturaPedido>
                 }
-               
+
                 return f
             }
             )
