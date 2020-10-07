@@ -19,7 +19,7 @@ import FacturaPedido from '../../administracion/abm_pedidos/FacturaPedido';
 
 const HistorialPedidos = () => {
 
-    const Header = ["ID", "Fecha", "Detalle", "Total", "Estado","Factura"];
+    const Header = ["ID", "Fecha", "Detalle", "Total", "Estado", "Factura"];
     const userData = jwtDecode(sessionStorage.getItem('token'));
     const idUsuario = userData.id
     const [pedidos, setPedidos] = useState([])
