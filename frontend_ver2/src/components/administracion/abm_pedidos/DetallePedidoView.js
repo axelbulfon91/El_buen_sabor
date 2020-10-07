@@ -87,6 +87,14 @@ const DetallePedidoView = (props) => {
                         </Form.Group>
                         <Form.Group as={Row} >
                             <Form.Label column>
+                                Correo Electrónico:
+                                    </Form.Label>
+                            <Col >
+                                <Form.Control type="text" value={pedido.Usuario.email} disabled />
+                            </Col>
+                        </Form.Group>
+                        <Form.Group as={Row} >
+                            <Form.Label column>
                                 Tel. de Contacto:
                                     </Form.Label>
                             <Col >
