@@ -217,7 +217,10 @@ export default class facturaPDF extends PureComponent{
   
           const resp =  axiosAutorizado().post('http://localhost:4000/api/enviarEmail/envioFactura/',data);
 
+<<<<<<< HEAD
         }
+=======
+>>>>>>> b81c4f4a8c966896ccbfc435c57ff578bd2ec10b
     });
 
 
