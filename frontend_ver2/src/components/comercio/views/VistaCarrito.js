@@ -13,6 +13,7 @@ import Footer from '../uso_compartido/Footer';
 import SeccionContacto from '../SeccionContacto';
 
 
+
 const VistaCarrito = () => {
 
     var datos = useContext(datosContext)
@@ -187,14 +188,16 @@ const VistaCarrito = () => {
 
                         const resp = await Axios.post("http://localhost:4000/api/pedidos", pedido)
                         if (resp.data.message === "OK") {
-                            alert("Pedido realizado correctamente, volvera al inicio")
+                            mensaje("exito", "Pedido realizado correctamente")
                             window.sessionStorage.removeItem('carrito')
-                            window.location.href = "/"
+                            setTimeout(() => {
+                                window.location.href = "/historialPedidos"
+                            }, 1000);
+
 
                         } else if (resp.data.message == "No hay stock") {
-                            alert("No hay stock suficiente para generar el pedidos")
+                            mensaje("error", "Lo sentimos!, nos hemos quedado sin stock suficiente para elaborar tu pedido")
                             //window.sessionStorage.removeItem('carrito')
-                            window.location.href = "/Catalogo"
                         } else {
                             alert(resp.data.message)
                         }

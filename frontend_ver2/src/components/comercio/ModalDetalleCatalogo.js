@@ -74,7 +74,7 @@ const ModalDetalleCatalogo = (props) => {
                             <h4>-Cantidad: </h4>
                         </div>
                         <div className="col-3 d-flex align-items-center justify-content-center" style={{ fontSize: "1.5rem" }}>
-                            <Button variant="outline-dark" size="sm"
+                            <Button variant="outline-dark" size="sm" style={{ borderRadius: "25px", border: "none", color: "darkred" }}
                                 onClick={() => {
                                     if (cantidad > 1) {
                                         setCantidad(prev => prev - 1)
@@ -82,7 +82,7 @@ const ModalDetalleCatalogo = (props) => {
                                 }}
                             ><span className="fa fa-minus"></span></Button>
                             <span className="mx-1">{cantidad}</span>
-                            <Button variant="outline-dark" size="sm"
+                            <Button variant="outline-dark" size="sm" style={{ borderRadius: "25px", border: "none", color: "darkred" }}
                                 onClick={() => setCantidad(prev => prev + 1)}>
 
                                 <span className="fa fa-plus"></span></Button>
@@ -98,7 +98,7 @@ const ModalDetalleCatalogo = (props) => {
                     </div>
                     <div style={{ height: "2vh" }}></div>
                     <div className="text-right">
-                        <Button variant="outline-secondary" block onClick={() => aniadirACarrito()}>Añadir al Pedido</Button>
+                        <Button variant="outline-secondary" block onClick={() => aniadirACarrito()}>+ Añadir al Pedido</Button>
                     </div>
                 </div>
             </Modal.Body>
