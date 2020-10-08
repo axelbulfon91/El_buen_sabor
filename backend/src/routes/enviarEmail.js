@@ -79,6 +79,7 @@ router.post('/avisarEstadoPedido', async (req, res) => {
     const email = req.body.email
     const estado = req.body.estado
     const tiempo = req.body.tiempo
+    const fechaPedido = req.body.fechaPedido
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -86,20 +87,30 @@ router.post('/avisarEstadoPedido', async (req, res) => {
             pass: process.env.PASS
         }
     });
+    var cuerpo = `Tiempo total estimado: <b>${tiempo} minutos desde el momento que pediste (${fechaPedido})</b>`
+    if(estado === "cancelado"){
+        cuerpo = ""
+    }else if(estado === "listo"){
+        cuerpo = "Puedes pasar a buscarlo o esperar al delivery, depende de tu eleccion cuando pediste"
+    }else if(estado === "entregado"){
+        cuerpo = "Que lo disfrutes..."
+    }
+    
     var mailOptions = {
         from: "El Buen sabor",
         to: email,                      //E-mail del destinatario
         subject: "Estado de tu pedido",
-        html: `<h1>Te avisamos que tu pedido se encuentra <b>${estado}</b></h1>
-                <p>Tiempo estimado: <b>${tiempo}</b></p> 
+        html: `<h1>Te avisamos que tu pedido se encuentra <b>${estado}</b></h1>                                
+                <p>${cuerpo}</p>
                 <p>El Buen sabor</p>                
                 `
 
     }
+
     await transporter.sendMail(mailOptions, (err, info) => {
         if (err) res.status(500).json({ message: "Error al enviar el email " + err })
 
-        res.status(200).json({message: "OK"})
+        res.status(200).json({ message: "OK" })
 
     })
 })

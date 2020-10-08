@@ -49,6 +49,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                     </FacturaPedido>
                 )
             }
+
         } else if (rol === "CAJERO") {
             if (estadoActual === "pendiente") {
                 setBotonNuevoEstado(devolverBotonNuevoEstado("confirmado"))
@@ -61,6 +62,7 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
                     </FacturaPedido>
                 )
             }
+
         } else if (rol === "COCINERO") {
             if (estadoActual !== "listo") {
                 setBotonCancelarODemorar(
@@ -110,10 +112,23 @@ export const AccionesPedido = ({ pedido, onHide, setRefreshToken }) => {
     const handleSelectNuevoEstado = async (newState) => {
         setBotonNuevoEstado(devolverBotonNuevoEstado(newState))
     }
+
     const actualizarPedido = async (newState) => {
         try {
             await axios.put(`http://localhost:4000/api/pedidos/estado/${pedido.id}`, { estado: newState });
             setRefreshToken((token) => token + 1)
+            var tiempoAux = pedido.tiempoElaboracion
+            if(newState === "demorado"){
+                tiempoAux += 10
+            }
+            var fechaPedido = (new Date(pedido.createdAt)).toLocaleTimeString()
+            var dataEmail = {
+                email: pedido.Usuario.email,
+                estado: newState,
+                tiempo: tiempoAux, 
+                fechaPedido: fechaPedido
+            }
+            await axios.post(`http://localhost:4000/api/enviarEmail/avisarEstadoPedido`, dataEmail);
             onHide();
             mensaje("exito", "Pedido Actualizado Exitosamente")
         } catch (error) {
