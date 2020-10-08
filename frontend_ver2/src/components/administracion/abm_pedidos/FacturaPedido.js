@@ -38,7 +38,6 @@ export default class facturaPDF extends PureComponent {
 
     let date = new Date(Factura.createdAt);
     let fecha_factura = date.getFullYear() + '-' + (date.getMonth() + 1) + '-' + date.getDate();//prints expected format.
-
     let HTML = '<html>  \
                 <body style="margin: 30px;\
                 background-color: #eaeaea;\
@@ -81,7 +80,7 @@ export default class facturaPDF extends PureComponent {
                             Cliente n°'+ this.state.pedido.Usuario.id + '<br />\
                             &nbsp;<br />';
 
-    if (this.state.pedido.tipo_retiro == 0) {
+    if (this.state.pedido.tipoRetiro == 0) {
       let domicilio = JSON.parse(this.state.pedido.domElegido);
       HTML = HTML + '<strong>Dirección</strong><br />\
                               '+ domicilio.calle.replace(" ", "&nbsp;") + '&nbsp;' + domicilio.numeracion + '<br />\
@@ -155,6 +154,12 @@ export default class facturaPDF extends PureComponent {
 
     });
 
+    let descuento = 0;
+
+    if (this.state.pedido.tipoRetiro == 1) {
+      descuento = total * 0.1;
+   
+    }
 
     HTML = HTML + '<tr style="font-size: 6px;\
                 font-weight: normal;\
@@ -169,8 +174,8 @@ export default class facturaPDF extends PureComponent {
                 line-height: 15px;\
                 text-transform: uppercase;">\
                     <td colspan="2" style="text-align: right;\
-                    border-right: 1px solid #ccc; padding-right:10px;">Crédito:</td>\
-                    <td style="text-align: center;"><b>$0,00ARS</b></td>\
+                    border-right: 1px solid #ccc; padding-right:10px;">Descuento:</td>\
+                    <td style="text-align: center;">$'+ descuento +'ARS</td>\
                 </tr>\
                 <tr style="font-size: 6px;\
                 font-weight: normal;\
@@ -178,7 +183,7 @@ export default class facturaPDF extends PureComponent {
                 text-transform: uppercase;">\
                     <td colspan="2" style="text-align: right;\
                     border-right: 1px solid #ccc; padding-right:10px;">Total:</td>\
-                    <td style="text-align: center;">$'+ total + 'ARS</td>\
+                    <td style="text-align: center;">$'+ (total-descuento) + 'ARS</td>\
                 </tr>\
             </table>\
             </div>\
