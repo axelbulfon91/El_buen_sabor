@@ -83,7 +83,7 @@ function VistaLogin() {
                     margin: "5em auto",
                 }}>
                     <div>
-                        <h3 className="text-center text-dark display-4">Log in</h3>
+                        <h3 className="text-center text-dark display-4 mb-3"><i className="fa fa-user"></i> Ingresar</h3>
                         <div className="d-flex flex-column" >
                             <form onSubmit={(e) => handleOnSubmit(e)}>
                                 <div className="form-group text-left">

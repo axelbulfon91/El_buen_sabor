@@ -69,7 +69,7 @@ function VistaRegistro() {
                 <div className={estilos.fondoBarra}></div>
                 <BarraNavegacion></BarraNavegacion>
                 <Container className="mt-5" >
-                    <h3 className="text-center text-dark display-4">Registro</h3>
+                    <h3 className="text-center text-dark display-4"><i className="fa fa-user"></i> Registro</h3>
                     <div className="row justify-content-center mt-5">
                         <div className="col-md-6">
                             <div className="form-group text-left">
