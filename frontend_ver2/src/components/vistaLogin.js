@@ -18,8 +18,7 @@ function VistaLogin() {
         }
         const resp = await Axios.post("http://localhost:4000/api/usuarios/login/google", user)
 
-        if (resp.data.message !== 'Error al registrar el usuario') {
-            alert(resp.data.message)
+        if (resp.data.message !== 'Error al registrar el usuario') {            
             window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 

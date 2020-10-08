@@ -175,6 +175,10 @@ const VistaCarrito = () => {
                                 return { "idElaborado": c.producto.id, "cantidad": c.cant }
                             }
                         })
+                        var tiempoAux = tiempoElab
+                        if(tipoRetiro === 0){
+                            tiempoAux += 10 // + 10 min de tiempo de delivery
+                        }
                         var pedido = {
                             productosPedidos: carritoListo,
                             id_usuario: idUsuario,
@@ -182,7 +186,7 @@ const VistaCarrito = () => {
                             tipoRetiro: tipoRetiro,
                             tipoPago: tipoPago,
                             domElegido: domElegido,
-                            tiempoElaboracion: tiempoElab
+                            tiempoElaboracion: tiempoAux
                         }
 
 
