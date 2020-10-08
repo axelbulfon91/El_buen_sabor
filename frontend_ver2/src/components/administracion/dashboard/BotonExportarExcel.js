@@ -6,6 +6,7 @@ const BotonExportarExcel = (props) => {
     const { pedidosPorMesJson } = props
     const { prodPorCatPedidaJson } = props
     const { pedidosPorEstadoJson } = props
+    const { ingresosPorMesJson } = props
 
     const ExcelFile = ExportExcel.ExcelFile;
     const ExcelSheet = ExportExcel.ExcelFile.ExcelSheet;
@@ -16,7 +17,11 @@ const BotonExportarExcel = (props) => {
         <ExcelFile element=
             {<button className="btn btn-success btn-lg">Exportar a Excel <i className="fa fa-upload"></i></button>
             } filename={"Reporte"}>
-            <ExcelSheet data={pedidosPorMesJson} name="Pedidos Por Meses">
+            <ExcelSheet data={ingresosPorMesJson} name="Ingresos Por Mes">
+                <ExcelColumn label="Mes" value="mes" />
+                <ExcelColumn label="Ingresos" value="ingresosPorMes" />
+            </ExcelSheet>
+            <ExcelSheet data={pedidosPorMesJson} name="Pedidos Por Mes">
                 <ExcelColumn label="Mes" value="mes" />
                 <ExcelColumn label="Cantidad de Pedidos" value="cantidadPedidos" />
             </ExcelSheet>
