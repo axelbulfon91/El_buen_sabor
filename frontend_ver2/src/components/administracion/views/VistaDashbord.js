@@ -7,6 +7,7 @@ import estilos from '../../../assets/css/VistaDashboard.module.css';
 import PedidosPorEstado from '../dashboard/PedidosPorEstado';
 import PedidosPorMes from '../dashboard/PedidosPorMes';
 import CategDeProductosPedidos from '../dashboard/CategDeProductosPedidos';
+import BotonExportarExcel from '../dashboard/BotonExportarExcel';
 
 
 const VistaDashbord = () => {
@@ -14,7 +15,9 @@ const VistaDashbord = () => {
     const [categorias, setCategorias] = useState([])
     const [meses] = useState(["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"])
     const [estados] = useState(["pendiente", "confirmado", "demorado", "listo", "entregado", "cancelado"])
+
     const [pedidosPorMes, setPedidosPorMes] = useState([])
+    const [pedidosPorMesJson, setPedidosPorMesJson] = useState([])
     const [pedidosPorEstado, setPedidosPorEstado] = useState([])
     const [prodPorCatPedida, setProdPorCatPedida] = useState([])
 
@@ -62,14 +65,19 @@ const VistaDashbord = () => {
     }, [data])
 
     const obtenerPedidosPorMes = (pedidos) => {
-        let pedPorMesAux = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        let pedPorMesAux = meses.map(() => 0)
         pedidos.forEach(ped => {
             const fechaCreacion = new Date(ped.createdAt);
             const mesCreacion = fechaCreacion.getMonth();
             pedPorMesAux[mesCreacion] = pedPorMesAux[mesCreacion] + 1;
         })
+        let dataJson = meses.map((valor, i) => {
+            return { mes: meses[i], cantidadPedidos: pedPorMesAux[i] }
+        })
         setPedidosPorMes(pedPorMesAux)
+        setPedidosPorMesJson(dataJson)
     }
+
     const obtenerPedidosPorCategoria = (pedidos) => {
         let pedPorCatAux = categorias.map(() => 0);//Mapeo un arreglo de elementos 0 por cada categoria
         pedidos.forEach(ped => {//Recorro cada pedido
@@ -129,6 +137,7 @@ const VistaDashbord = () => {
 
                 <div id="columna-2" className="m-5">
                     <h1 className="display-4 p-3" style={{ borderLeft: "8px solid DarkRed" }}>Administración / <strong>Dashboard</strong></h1>
+
                     <div className={estilos.contenedorGraficos}>
                         <div className={estilos.pedidosPorMes}>
                             <PedidosPorMes meses={meses} pedidosPorMes={pedidosPorMes} />
@@ -139,7 +148,9 @@ const VistaDashbord = () => {
                         <div className={estilos.catDeProdPedidos}>
                             <CategDeProductosPedidos categorias={categorias} prodPorCatPedida={prodPorCatPedida} />
                         </div>
-
+                    </div>
+                    <div className="d-flex justify-content-center mt-5">
+                        <BotonExportarExcel pedidosPorMesJson={pedidosPorMesJson} />
                     </div>
                 </div>
             </GridLayoutAdmin>

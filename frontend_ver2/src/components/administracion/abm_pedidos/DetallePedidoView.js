@@ -27,7 +27,7 @@ const DetallePedidoView = (props) => {
     }
     const obtenerDomicilioElegido = (domElegido) => {
         const domJson = JSON.parse(domElegido)
-        return `${domJson.calle} ${domJson.numeracion}, ${domJson.nombreLocalidad}`
+        return domJson !== null ? `${domJson.calle} ${domJson.numeracion}, ${domJson.nombreLocalidad}` : "-"
     }
 
     return (

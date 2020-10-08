@@ -5,8 +5,8 @@ import Footer from '../components/comercio/uso_compartido/Footer';
 import SeccionContacto from '../components/comercio/SeccionContacto';
 import estilos from '../assets/css/VistaPerfil.module.css'
 import BarraNavegacion from '../components/comercio/uso_compartido/BarraNavegacion';
-
 import { Container } from "react-bootstrap";
+import mensaje from '../utils/Toast';
 
 function VistaRegistro() {
 
@@ -25,7 +25,7 @@ function VistaRegistro() {
                 const resp = await Axios.post("http://localhost:4000/api/usuarios/registro", user)
                 console.log(resp.data)
                 if (resp.data.message === "Usuario creado correctamente") {
-                    alert(resp.data.message)
+                    mensaje("exito", resp.data.message)
                     window.sessionStorage.setItem('token', resp.data.token)
                     window.location.href = "/"
 
@@ -50,12 +50,12 @@ function VistaRegistro() {
         const resp = await Axios.post("http://localhost:4000/api/usuarios/login/google", user)
 
         if (resp.data.message !== 'Error al registrar el usuario') {
-            alert(resp.data.message)
+            mensaje("error", resp.data.message)
             window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 
         } else {
-            alert(resp.data.message)
+            mensaje("exito", resp.data.message)
         }
     }
 

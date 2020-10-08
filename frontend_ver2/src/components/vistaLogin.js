@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import GoogleLogin from 'react-google-login';
 import Axios from 'axios';
-import { Container as div, Button } from "react-bootstrap";
 import Footer from '../components/comercio/uso_compartido/Footer';
 import SeccionContacto from '../components/comercio/SeccionContacto';
 import estilos from '../assets/css/VistaPerfil.module.css'
@@ -42,7 +41,6 @@ function VistaLogin() {
         const resp = await Axios.post("http://localhost:4000/api/usuarios/login", user)
 
         if (resp.data.message == "Login correcto") {
-            alert(resp.data.message)
             window.sessionStorage.setItem('token', resp.data.token)
             window.location.href = "/"
 
