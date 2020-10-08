@@ -8,6 +8,7 @@ import PedidosPorEstado from '../dashboard/PedidosPorEstado';
 import PedidosPorMes from '../dashboard/PedidosPorMes';
 import CategDeProductosPedidos from '../dashboard/CategDeProductosPedidos';
 import BotonExportarExcel from '../dashboard/BotonExportarExcel';
+import IngresosPorMes from '../dashboard/IngresosPorMes';
 
 
 const VistaDashbord = () => {
@@ -18,6 +19,8 @@ const VistaDashbord = () => {
 
     const [pedidosPorMes, setPedidosPorMes] = useState([])
     const [pedidosPorMesJson, setPedidosPorMesJson] = useState([])
+    const [ingresosPorMes, setIngresosPorMes] = useState([])
+    const [ingresosPorMesJson, setIngresosPorMesJson] = useState([])
     const [pedidosPorEstado, setPedidosPorEstado] = useState([])
     const [pedidosPorEstadoJson, setPedidosPorEstadoJson] = useState([])
     const [prodPorCatPedida, setProdPorCatPedida] = useState([])
@@ -64,6 +67,7 @@ const VistaDashbord = () => {
         obtenerPedidosPorMes(data);
         obtenerPedidosPorEstado(data);
         obtenerPedidosPorCategoria(data)
+        obtenerIngresosPorMes(data)
     }, [data])
 
     const obtenerPedidosPorMes = (pedidos) => {
@@ -78,6 +82,31 @@ const VistaDashbord = () => {
         })
         setPedidosPorMes(pedPorMesAux)
         setPedidosPorMesJson(dataJson)
+    }
+    const obtenerIngresosPorMes = (pedidos) => {
+        let ingPorMesAux = meses.map(() => 0)
+        pedidos.forEach(ped => {
+            if (ped.estado === "entregado") {
+                const fechaCreacion = new Date(ped.createdAt);
+                const mesCreacion = fechaCreacion.getMonth();
+                const detallesPedido = ped.Detalle_Pedidos;
+                let totalDetalles = 0;
+                detallesPedido.forEach((detalle) => {
+                    totalDetalles += detalle.precioDetalle
+                })
+                console.log("TotalDetalles: ", totalDetalles);
+
+                let totalDelPedido = ped.tipoRetiro == 1 ? totalDetalles * 0.9 : totalDetalles;
+                console.log("TotalDelPedido " + ped.id + ":", totalDelPedido);
+
+                ingPorMesAux[mesCreacion] = ingPorMesAux[mesCreacion] + totalDelPedido;
+            }
+        })
+        let dataJson = meses.map((valor, i) => {
+            return { mes: meses[i], ingresosPorMes: ingPorMesAux[i] }
+        })
+        setIngresosPorMes(ingPorMesAux)
+        setIngresosPorMesJson(dataJson)
     }
 
     const obtenerPedidosPorCategoria = (pedidos) => {
@@ -150,8 +179,12 @@ const VistaDashbord = () => {
 
                     <div className={estilos.contenedorGraficos}>
                         <div className={estilos.pedidosPorMes}>
+                            <IngresosPorMes meses={meses} ingresosPorMes={ingresosPorMes} />
+                        </div>
+                        <div className={estilos.pedidosPorMes}>
                             <PedidosPorMes meses={meses} pedidosPorMes={pedidosPorMes} />
                         </div>
+
                         <div className={estilos.pedidosPorEstado}>
                             <PedidosPorEstado estados={estados} pedidosPorEstado={pedidosPorEstado} />
                         </div>
@@ -164,6 +197,7 @@ const VistaDashbord = () => {
                             pedidosPorMesJson={pedidosPorMesJson}
                             prodPorCatPedidaJson={prodPorCatPedidaJson}
                             pedidosPorEstadoJson={pedidosPorEstadoJson}
+                            ingresosPorMesJson={ingresosPorMesJson}
                         />
                     </div>
                 </div>
