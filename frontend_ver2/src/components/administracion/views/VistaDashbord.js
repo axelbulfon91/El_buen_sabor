@@ -19,7 +19,9 @@ const VistaDashbord = () => {
     const [pedidosPorMes, setPedidosPorMes] = useState([])
     const [pedidosPorMesJson, setPedidosPorMesJson] = useState([])
     const [pedidosPorEstado, setPedidosPorEstado] = useState([])
+    const [pedidosPorEstadoJson, setPedidosPorEstadoJson] = useState([])
     const [prodPorCatPedida, setProdPorCatPedida] = useState([])
+    const [prodPorCatPedidaJson, setProdPorCatPedidaJson] = useState([])
 
     useEffect(() => {
         const fetchPedidos = async () => {
@@ -95,7 +97,11 @@ const VistaDashbord = () => {
                 })
             });
         })
+        let dataJson = categorias.map((valor, i) => {
+            return { categoria: categorias[i], prodPorCatPedida: pedPorCatAux[i] }
+        })
         setProdPorCatPedida(pedPorCatAux)
+        setProdPorCatPedidaJson(dataJson)
     }
     const obtenerPedidosPorEstado = (pedidos) => {
         let pedPorEstAux = estados.map(() => 0);
@@ -123,7 +129,11 @@ const VistaDashbord = () => {
                     break;
             }
         })
+        let dataJson = estados.map((valor, i) => {
+            return { estado: estados[i], pedidosPorEstado: pedPorEstAux[i] }
+        })
         setPedidosPorEstado(pedPorEstAux)
+        setPedidosPorEstadoJson(dataJson)
     }
 
 
@@ -150,7 +160,11 @@ const VistaDashbord = () => {
                         </div>
                     </div>
                     <div className="d-flex justify-content-center mt-5">
-                        <BotonExportarExcel pedidosPorMesJson={pedidosPorMesJson} />
+                        <BotonExportarExcel
+                            pedidosPorMesJson={pedidosPorMesJson}
+                            prodPorCatPedidaJson={prodPorCatPedidaJson}
+                            pedidosPorEstadoJson={pedidosPorEstadoJson}
+                        />
                     </div>
                 </div>
             </GridLayoutAdmin>

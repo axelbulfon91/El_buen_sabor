@@ -4,6 +4,9 @@ import ExportExcel from 'react-export-excel';
 const BotonExportarExcel = (props) => {
 
     const { pedidosPorMesJson } = props
+    const { prodPorCatPedidaJson } = props
+    const { pedidosPorEstadoJson } = props
+
     const ExcelFile = ExportExcel.ExcelFile;
     const ExcelSheet = ExportExcel.ExcelFile.ExcelSheet;
     const ExcelColumn = ExportExcel.ExcelFile.ExcelColumn;
@@ -16,6 +19,14 @@ const BotonExportarExcel = (props) => {
             <ExcelSheet data={pedidosPorMesJson} name="Pedidos Por Meses">
                 <ExcelColumn label="Mes" value="mes" />
                 <ExcelColumn label="Cantidad de Pedidos" value="cantidadPedidos" />
+            </ExcelSheet>
+            <ExcelSheet data={prodPorCatPedidaJson} name="Productos Pedidos por Categoría">
+                <ExcelColumn label="Categoría" value="categoria" />
+                <ExcelColumn label="Productos Pedidos" value="prodPorCatPedida" />
+            </ExcelSheet>
+            <ExcelSheet data={pedidosPorEstadoJson} name="Pedidos por Estado">
+                <ExcelColumn label="Estado" value="estado" />
+                <ExcelColumn label="Cantidad de Pedidos" value="pedidosPorEstado" />
             </ExcelSheet>
 
         </ExcelFile>
