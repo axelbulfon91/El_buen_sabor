@@ -82,14 +82,15 @@ const VistaCarrito = () => {
             } else {
                 auxTiempo += p.producto.tiempoElaboracion * p.cant
             }
-
+            
         });
         var valor = aux.toFixed(2)
-        setTotal(valor)
-        setTiempoElab(auxTiempo)
-        if (tipoRetiro === 0) {
-            setCostoFinal(valor)
+        setTotal(valor)       
+        setTiempoElab(auxTiempo) 
+        if (tipoRetiro === 0) {            
+            setCostoFinal(valor)            
         } else if (tipoRetiro === 1) {
+            
             setCostoFinal((valor - (valor * 0.1).toFixed(2)))
         }
         //setCambio(!cambio)
@@ -293,7 +294,11 @@ const VistaCarrito = () => {
                                     <tr> <br></br></tr>
                                     <tr >
                                         <td colSpan={3} className="text-left">
-                                            <h5 className="text-dark">-Tiempo de elaboracion aproximada: {tiempoElab} min</h5>
+                                            <h5 className="text-dark">-Tiempo de elaboracion aproximada: {tiempoElab} min
+                                            {tipoRetiro === 0 && 
+                                                <span> + 10 min por envio</span>
+                                            }
+                                            </h5>   
                                         </td>
                                         <td colSpan={3} className="text-right pr-2">
                                             <h5 className="text-dark">Total: $ {total}</h5>
