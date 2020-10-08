@@ -10,6 +10,7 @@ const rolModel = require('../models/rol');
 const { secret } = require('../keys')
 const { comprobarToken } = require('../lib/service_jwt');
 const domicilioModel = require('../models/Ubicacion/domicilio');
+const pedidoModel = require('../models/pedido');
 
 //Registro Local
 router.post('/registro', async (req, res) => {
@@ -173,6 +174,9 @@ router.get('/', comprobarToken, async (req, res) => {
                 }, {
                     model: rolModel,
                     attributes: ['rol', 'created_at'],
+                }, {
+                    model: pedidoModel,
+                    attributes: ['id', "createdAt"],
                 }]
             })
             res.json(users)

@@ -9,6 +9,8 @@ import PedidosPorMes from '../dashboard/PedidosPorMes';
 import CategDeProductosPedidos from '../dashboard/CategDeProductosPedidos';
 import BotonExportarExcel from '../dashboard/BotonExportarExcel';
 import IngresosPorMes from '../dashboard/IngresosPorMes';
+import axiosAutorizado from '../../../utils/axiosAutorizado';
+import { PedidosPorCliente } from '../dashboard/PedidosPorCliente';
 
 
 const VistaDashbord = () => {
@@ -16,7 +18,9 @@ const VistaDashbord = () => {
     const [categorias, setCategorias] = useState([])
     const [meses] = useState(["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic"])
     const [estados] = useState(["pendiente", "confirmado", "demorado", "listo", "entregado", "cancelado"])
-
+    const [clientes, setClientes] = useState([])
+    const [clientesJson, setClientesJson] = useState([])
+    const [pedidosPorClientePorMesJson, setPedidosPorClientePorMesJson] = useState({})
     const [pedidosPorMes, setPedidosPorMes] = useState([])
     const [pedidosPorMesJson, setPedidosPorMesJson] = useState([])
     const [ingresosPorMes, setIngresosPorMes] = useState([])
@@ -32,6 +36,23 @@ const VistaDashbord = () => {
                 const pedidosResult = await axios.get("http://localhost:4000/api/pedidos")
                 const result = pedidosResult.data.pedidos;
                 setData(result)
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        const fetchClientes = async () => {
+            try {
+                const axiosAuth = axiosAutorizado();
+                const usuariosResult = await axiosAuth.get("http://localhost:4000/api/usuarios");
+                const usuarios = usuariosResult.data;
+                const clientesAux = []
+                usuarios.forEach((user => {
+                    const largoRoles = user.rols.length
+                    if (user.rols[largoRoles - 1].rol === "CLIENTE") {
+                        clientesAux.push(user)
+                    }
+                }))
+                setClientes(clientesAux)
             } catch (error) {
                 console.log(error);
             }
@@ -55,20 +76,18 @@ const VistaDashbord = () => {
                 console.log(error);
             }
         }
-
-        const intervalo = setInterval(() => {
-            fetchPedidos();
-        }, 5000);
         fetchCategorias();
         fetchPedidos();
-        return () => clearInterval(intervalo)
+        fetchClientes();
+
     }, [])
     useEffect(() => {
         obtenerPedidosPorMes(data);
         obtenerPedidosPorEstado(data);
         obtenerPedidosPorCategoria(data)
         obtenerIngresosPorMes(data)
-    }, [data])
+        obtenerCantidadDePedidosPorCliente(clientes)
+    }, [data, clientes])
 
     const obtenerPedidosPorMes = (pedidos) => {
         let pedPorMesAux = meses.map(() => 0)
@@ -90,14 +109,11 @@ const VistaDashbord = () => {
                 const fechaCreacion = new Date(ped.createdAt);
                 const mesCreacion = fechaCreacion.getMonth();
                 const detallesPedido = ped.Detalle_Pedidos;
-                let totalDetalles = 0;
-                detallesPedido.forEach((detalle) => {
-                    totalDetalles += detalle.precioDetalle
-                })
-                console.log("TotalDetalles: ", totalDetalles);
+                const totalDetalles = detallesPedido.reduce((acc, detalle) => {
+                    return acc + detalle.precioDetalle
+                }, 0)
 
                 let totalDelPedido = ped.tipoRetiro == 1 ? totalDetalles * 0.9 : totalDetalles;
-                console.log("TotalDelPedido " + ped.id + ":", totalDelPedido);
 
                 ingPorMesAux[mesCreacion] = ingPorMesAux[mesCreacion] + totalDelPedido;
             }
@@ -164,6 +180,27 @@ const VistaDashbord = () => {
         setPedidosPorEstado(pedPorEstAux)
         setPedidosPorEstadoJson(dataJson)
     }
+    const obtenerCantidadDePedidosPorCliente = (clientes) => {
+        const obtenerPedidosPorMesDeCliente = (pedidos) => {
+            let pedPorMesAux = meses.map(() => 0)
+            pedidos.forEach(ped => {
+                const fechaCreacion = new Date(ped.createdAt);
+                const mesCreacion = fechaCreacion.getMonth();
+                pedPorMesAux[mesCreacion] = pedPorMesAux[mesCreacion] + 1;
+            })
+            return pedPorMesAux
+        }
+        let clientesJsonAux = clientes.map((cli) => {
+            return {
+                nombre: cli.nombre,
+                cantidadDePedidos: obtenerPedidosPorMesDeCliente(cli.Pedidos)
+            }
+        })
+        const mesesParaTabla = ["", ...meses]
+
+
+        setClientesJson(clientesJsonAux)
+    }
 
 
     return (
@@ -190,6 +227,9 @@ const VistaDashbord = () => {
                         </div>
                         <div className={estilos.catDeProdPedidos}>
                             <CategDeProductosPedidos categorias={categorias} prodPorCatPedida={prodPorCatPedida} />
+                        </div>
+                        <div className={estilos.catDeProdPedidos}>
+                            <PedidosPorCliente meses={meses} clientesJson={clientesJson} />
                         </div>
                     </div>
                     <div className="d-flex justify-content-center mt-5">
